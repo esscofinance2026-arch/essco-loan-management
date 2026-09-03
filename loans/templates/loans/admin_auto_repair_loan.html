@@ -1,0 +1,68 @@
+<!-- loans/templates/loans/admin_auto_repair_loan.html -->
+
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Auto-Repair Loan{% endblock %}
+
+{% block staff_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4><i class="fas fa-tools me-2"></i>Auto-Repair Loan</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <p><strong>Loan:</strong> {{ loan.loan_id }}</p>
+                        <p><strong>Current Status:</strong> {{ loan.status }}</p>
+                        <p><strong>Total Paid:</strong> ${{ loan.total_paid|floatformat:2 }}</p>
+                        <p><strong>Outstanding:</strong> ${{ loan.outstanding_balance|floatformat:2 }}</p>
+                        <p><strong>Deposit Paid:</strong> ${{ loan.deposit_paid|floatformat:2 }}</p>
+                    </div>
+                    
+                    <h5>📋 Repair Summary (Dry Run)</h5>
+                    <div class="alert alert-secondary">
+                        <p><strong>Status:</strong> {{ summary.old_status }} → <span class="text-primary">{{ summary.new_status }}</span></p>
+                        <p><strong>Total Paid:</strong> ${{ summary.old_total_paid|floatformat:2 }} → <span class="text-primary">${{ summary.new_total_paid|floatformat:2 }}</span></p>
+                        <p><strong>Outstanding:</strong> ${{ summary.old_outstanding|floatformat:2 }} → <span class="text-primary">${{ summary.new_outstanding|floatformat:2 }}</span></p>
+                        <p><strong>Deposit:</strong> ${{ summary.old_deposit_paid|floatformat:2 }} → <span class="text-primary">${{ summary.new_deposit_paid|floatformat:2 }}</span></p>
+                        <p><strong>Deposit Complete:</strong> {{ summary.old_deposit_complete }} → <span class="text-primary">{{ summary.deposit_complete }}</span></p>
+                        <hr>
+                        <p><strong>Active Payments:</strong> {{ summary.active_payments_count }}</p>
+                        <p><strong>Reversed Payments:</strong> {{ summary.reversed_payments_count }}</p>
+                        <p><strong>Total Payments:</strong> {{ summary.total_payments_count }}</p>
+                    </div>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="dry_run" name="dry_run" checked>
+                            <label class="form-check-label" for="dry_run">
+                                Dry Run (preview only - no changes made)
+                            </label>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Warning:</strong> This will reset all schedule entries and re-apply payments from scratch.
+                            <br>
+                            <small>This is safe to run - it uses the source of truth (payments) to rebuild everything.</small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-warning w-100">
+                            <i class="fas fa-tools me-2"></i>
+                            Run Repair
+                        </button>
+                        <a href="{% url 'staff_loan_detail' loan.id %}" class="btn btn-secondary w-100 mt-2">
+                            Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

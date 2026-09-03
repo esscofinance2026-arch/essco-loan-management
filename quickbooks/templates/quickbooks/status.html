@@ -1,0 +1,156 @@
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block staff_content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="page-title">
+                <i class="fas fa-cloud text-primary"></i> QuickBooks Connection Status
+            </h2>
+            <p class="text-muted">View and manage your QuickBooks integration</p>
+        </div>
+        <div>
+            <a href="{% url 'sync_dashboard' %}" class="btn btn-outline-primary">
+                <i class="fas fa-chart-bar"></i> Sync Dashboard
+            </a>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Main Status Card -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Connection Details</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Status Badge -->
+                    <div class="alert alert-success mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle fa-2x me-3"></i>
+                            <div>
+                                <h4 class="alert-heading mb-1">Connected!</h4>
+                                <p class="mb-0">Your QuickBooks account is successfully connected and ready to sync.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Connection Details Table -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th><i class="fas fa-building"></i> Realm ID:</th>
+                                    <td><code>{{ realm_id }}</code></td>
+                                </tr>
+                                <tr>
+                                    <th><i class="fas fa-calendar-alt"></i> Connected Since:</th>
+                                    <td>{{ created_at|date:"F j, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <th><i class="fas fa-sync"></i> Last Updated:</th>
+                                    <td>{{ updated_at|date:"F j, Y H:i" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th><i class="fas fa-clock"></i> Expires At:</th>
+                                    <td>{{ expires_at|date:"F j, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <th><i class="fas fa-hourglass-half"></i> Time Until Expiry:</th>
+                                    <td>
+                                        <strong>{{ hours_until_expiry }}</strong> hours, 
+                                        <strong>{{ minutes_until_expiry }}</strong> minutes
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th><i class="fas fa-shield-alt"></i> Token Status:</th>
+                                    <td>
+                                        <span class="badge bg-success">Active</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- Quick Stats -->
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-simple"></i> Quick Stats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Total Syncs:</span>
+                        <strong>{{ total_syncs|default:"0" }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Successful:</span>
+                        <strong class="text-success">{{ successful|default:"0" }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Failed:</span>
+                        <strong class="text-danger">{{ failed|default:"0" }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Pending:</span>
+                        <strong class="text-warning">{{ pending|default:"0" }}</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-cogs"></i> Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'sync_dashboard' %}" class="btn btn-primary">
+                            <i class="fas fa-chart-bar"></i> View Sync Dashboard
+                        </a>
+                        <a href="{% url 'sync_all_loans' %}" class="btn btn-success">
+                            <i class="fas fa-cloud-upload-alt"></i> Sync All Loans
+                        </a>
+                        <a href="{% url 'connect_quickbooks' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-sync"></i> Reconnect
+                        </a>
+                        <a href="{% url 'disconnect_quickbooks' %}" class="btn btn-outline-danger" 
+                           onclick="return confirm('Are you sure you want to disconnect from QuickBooks? This will remove all saved tokens.')">
+                            <i class="fas fa-times-circle"></i> Disconnect
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Token Debug Info (Optional - remove in production) -->
+    {% if debug %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-bug"></i> Debug Information</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-2">Token preview (first 20 characters):</p>
+                    <code>{{ access_token_preview }}</code>
+                    <hr>
+                    <p class="text-muted mb-2">Refresh token preview (first 20 characters):</p>
+                    <code>{{ refresh_token_preview }}</code>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

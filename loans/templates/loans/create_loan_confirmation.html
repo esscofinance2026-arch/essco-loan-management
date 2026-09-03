@@ -1,0 +1,78 @@
+<!-- loans/templates/loans/create_loan_confirmation.html -->
+{% extends 'Appbase.html' %}
+{% load static %}
+
+{% block title %}Create Loan{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Create Loan from Application</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5>Application Details</h5>
+                        <p><strong>Application ID:</strong> {{ application.reference_number|default:application.id }}</p>
+                        <p><strong>Customer:</strong> {{ application.customer.get_full_name }}</p>
+                        <p><strong>Item:</strong> {{ application.item_name }}</p>
+                        <p><strong>Purchase Value:</strong> ${{ application.Purchase_Value|floatformat:2 }}</p>
+                        <p><strong>Deposit Paid:</strong> ${{ deposit_amount|floatformat:2 }}</p>
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5>Loan Terms</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Principal Amount</th>
+                                    <td>${{ principal|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Interest Rate</th>
+                                    <td>{{ interest_rate }}%</td>
+                                </tr>
+                                <tr>
+                                    <th>Tenure</th>
+                                    <td>{{ tenure_months }} months</td>
+                                </tr>
+                                <tr>
+                                    <th>Monthly Installment</th>
+                                    <td><strong>${{ monthly_installment|floatformat:2 }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th>Total Payable</th>
+                                    <td>${{ total_payable|floatformat:2 }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="principal" value="{{ principal }}">
+                        <input type="hidden" name="interest_rate" value="{{ interest_rate }}">
+                        <input type="hidden" name="tenure_months" value="{{ tenure_months }}">
+
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Confirm:</strong> This will create a loan and transfer the deposit from the application.
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-block">
+                            <i class="fas fa-check-circle"></i> Create Loan
+                        </button>
+                        <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary btn-block">
+                            Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+<!-- loans/templates/loans/reverse_payment.html -->
+{% extends 'Appbase.html' %}
+{% load static %}
+
+{% block title %}Reverse Payment{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4>Reverse Payment</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <p><strong>Payment:</strong> {{ payment.receipt_number }}</p>
+                        <p><strong>Amount:</strong> ${{ payment.amount|floatformat:2 }}</p>
+                        <p><strong>Date:</strong> {{ payment.created_at|date:"Y-m-d H:i" }}</p>
+                        <p><strong>Loan:</strong> {{ loan.loan_id }}</p>
+                    </div>
+
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Warning:</strong> This action cannot be undone. The payment will be removed and the loan balance will be updated.
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Reason for Reversal</label>
+                            <input type="text" name="reason" class="form-control" placeholder="e.g., Incorrect amount, Duplicate payment" required>
+                        </div>
+                        <button type="submit" class="btn btn-danger btn-block">
+                            <i class="fas fa-undo"></i> Reverse Payment
+                        </button>
+                        <a href="{% url 'loans:loan_detail' loan.id %}" class="btn btn-secondary btn-block">
+                            Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

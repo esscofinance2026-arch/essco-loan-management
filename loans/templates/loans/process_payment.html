@@ -1,0 +1,424 @@
+<!-- loans/templates/loans/process_payment.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Make Payment{% endblock %}
+
+{% block extra_css %}
+<style>
+    .payment-header {
+        background: linear-gradient(135deg, #BF2034 0%, #8B1A24 100%);
+        color: white;
+        padding: 25px 30px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+    }
+    
+    .payment-header h3 {
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+    
+    .payment-header .subtitle {
+        opacity: 0.8;
+        font-size: 0.95rem;
+    }
+    
+    .loan-summary {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 18px 22px;
+        margin-bottom: 24px;
+        border: 1px solid #e9ecef;
+    }
+    
+    .loan-summary .row {
+        margin-top: 4px;
+    }
+    
+    .loan-summary .label {
+        font-size: 0.8rem;
+        color: #6c757d;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+    
+    .loan-summary .value {
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+    
+    .loan-summary .value-danger { color: #b91c1c; }
+    .loan-summary .value-success { color: #0a8f4a; }
+    
+    .payment-form .form-control {
+        border-radius: 10px;
+        padding: 12px 16px;
+        border: 2px solid #e0e0e0;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .payment-form .form-control:focus {
+        border-color: #BF2034;
+        box-shadow: 0 0 0 3px rgba(191, 32, 52, 0.12);
+    }
+    
+    .payment-form .form-control-lg {
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+    
+    .payment-form .input-group-text {
+        background: #f8f9fa;
+        border: 2px solid #e0e0e0;
+        border-right: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 10px 0 0 10px;
+    }
+    
+    .payment-form .input-group .form-control {
+        border-radius: 0 10px 10px 0;
+        border-left: none;
+    }
+    
+    .payment-form .input-group .form-control:focus {
+        border-left: none;
+    }
+    
+    .payment-form select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236c757d' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        padding-right: 40px;
+    }
+    
+    .payment-form .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 6px;
+    }
+    
+    .payment-form .form-text {
+        font-size: 0.8rem;
+        color: #888;
+    }
+    
+    .payment-form .btn-submit {
+        background: linear-gradient(135deg, #00c853 0%, #00e676 100%);
+        color: white;
+        border: none;
+        padding: 14px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .payment-form .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0, 200, 83, 0.35);
+        color: white;
+    }
+    
+    .payment-form .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .payment-form .btn-cancel {
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: 600;
+        width: 100%;
+    }
+    
+    .info-box {
+        background: #fff4e6;
+        border-left: 4px solid #ff9800;
+        padding: 14px 18px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .info-box i {
+        color: #ff9800;
+        margin-right: 10px;
+    }
+    
+    .info-box .text {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .info-box .text strong {
+        color: #333;
+    }
+    
+    .range-indicator {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: #888;
+        margin-top: 4px;
+    }
+    
+    @media (max-width: 768px) {
+        .payment-header { padding: 20px; }
+        .payment-header h3 { font-size: 1.2rem; }
+        .loan-summary { padding: 14px 16px; }
+        .loan-summary .value { font-size: 0.95rem; }
+        .payment-form .form-control-lg { font-size: 1.1rem; }
+    }
+</style>
+{% endblock %}
+
+{% block dashboard_content %}
+
+<!-----------------------------------------------------------EXCESS--------------------------------------------------------------------------------->
+<H1>BEGIN</H1>
+<!-- ===== HEADER ===== -->
+<div class="payment-header">
+    <h3>
+        <i class="fas {% if is_deposit %}fa-money-bill-wave{% else %}fa-credit-card{% endif %} me-2"></i>
+        {% if is_deposit %}
+            Pay Deposit
+        {% else %}
+            Make a Payment
+        {% endif %}
+    </h3>
+    <p class="subtitle mb-0">
+        {% if is_deposit %}
+            Pay your deposit to activate your loan
+        {% else %}
+            Pay your monthly installment or make an extra payment
+        {% endif %}
+    </p>
+</div>
+
+<!-- ===== LOAN SUMMARY ===== -->
+<div class="loan-summary">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="label">Loan ID</div>
+            <div class="value">{{ loan.loan_id }}</div>
+        </div>
+        <div class="col-sm-4">
+            <div class="label">Outstanding Balance</div>
+            <div class="value value-danger">${{ loan.outstanding_balance|floatformat:2 }}</div>
+        </div>
+        <div class="col-sm-4">
+            <div class="label">
+                {% if is_deposit %}
+                    Deposit Remaining
+                {% else %}
+                    Minimum Payment
+                {% endif %}
+            </div>
+            <div class="value value-success">
+                {% if is_deposit %}
+                    ${{ deposit_remaining|floatformat:2 }}
+                {% else %}
+                    ${{ min_payment|floatformat:2 }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== DEPOSIT PROGRESS (if deposit) ===== -->
+{% if is_deposit %}
+    <div class="deposit-progress">
+        <div class="d-flex justify-content-between">
+            <span>Deposit Progress</span>
+            <span>{{ deposit_percentage|floatformat:0 }}%</span>
+        </div>
+        <div class="progress mt-1">
+            <div class="progress-bar bg-info"
+                 role="progressbar"
+                 style="width: {{ deposit_percentage|floatformat:0 }}%;"
+                 aria-valuenow="{{ deposit_percentage|floatformat:0 }}"
+                 aria-valuemin="0"
+                 aria-valuemax="100">
+                {{ deposit_percentage|floatformat:0 }}%
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-4">
+                <small class="text-muted">Target</small>
+                <div><strong>${{ deposit_target|floatformat:2 }}</strong></div>
+            </div>
+            <div class="col-4">
+                <small class="text-muted">Paid</small>
+                <div><strong class="text-success">${{ deposit_paid|floatformat:2 }}</strong></div>
+            </div>
+            <div class="col-4">
+                <small class="text-muted">Remaining</small>
+                <div><strong class="text-danger">${{ deposit_remaining|floatformat:2 }}</strong></div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<!-- ===== FORM ===== -->
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Amount -->
+            <div class="form-group mb-3">
+                <label class="form-label">
+                    {% if is_deposit %}
+                        Deposit Amount ($)
+                    {% else %}
+                        Payment Amount ($)
+                    {% endif %}
+                </label>
+                <input type="number" 
+                       name="amount" 
+                       step="0.01" 
+                       class="form-control form-control-lg" 
+                       value="{% if is_deposit %}{{ deposit_remaining|floatformat:2 }}{% else %}{{ suggested_payment|floatformat:2 }}{% endif %}"
+                       min="0.01"
+                       max="{% if is_deposit %}{{ deposit_remaining|floatformat:2 }}{% else %}{{ loan.outstanding_balance|floatformat:2 }}{% endif %}" 
+                       required>
+                <div class="range-indicator">
+                    <span>Min: $0.01</span>
+                    <span>Max: ${% if is_deposit %}{{ deposit_remaining|floatformat:2 }}{% else %}{{ loan.outstanding_balance|floatformat:2 }}{% endif %}</span>
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="form-group mb-3">
+                <label class="form-label">Payment Method</label>
+                <select name="payment_method" class="form-control" required>
+                    <option value="">Select payment method...</option>
+                    {% for method in payment_methods %}
+                    <option value="{{ method.id }}">{{ method.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Buttons -->
+            <button type="submit" class="btn btn-success w-100">
+                <i class="fas fa-check-circle me-2"></i>
+                {% if is_deposit %}
+                    Pay Deposit
+                {% else %}
+                    Submit Payment
+                {% endif %}
+            </button>
+            <a href="{% url 'loans:loan_detail' loan.id %}" class="btn btn-secondary w-100 mt-2">
+                Cancel
+            </a>
+        </form>
+    </div>
+</div>
+<H1>END</H1>
+
+
+
+
+
+<!-----------------------------------------------------------EXCESS-------------------------------------------------------------------------------
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- ===== HEADER ===== 
+        <div class="payment-header">
+            <h3><i class="fas fa-money-bill-wave me-2"></i>Make a Payment</h3>
+            <p class="subtitle mb-0">Pay your monthly installment or make an extra payment</p>
+        </div>
+
+        <!-- ===== LOAN SUMMARY ===== 
+        <div class="loan-summary">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="label">Loan ID</div>
+                    <div class="value">{{ loan.loan_id }}</div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="label">Outstanding Balance</div>
+                    <div class="value value-danger">${{ loan.outstanding_balance|floatformat:2 }}</div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="label">Minimum Payment</div>
+                    <div class="value value-success">${{ min_payment|floatformat:2 }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== FORM ===== 
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" class="payment-form">
+                    {% csrf_token %}
+                    
+                    <!-- Amount 
+                    <div class="form-group mb-3">
+                        <label class="form-label">Payment Amount ($)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" 
+                                   name="amount" 
+                                   step="0.01" 
+                                   class="form-control form-control-lg" 
+                                   value="{{ suggested_payment|floatformat:2 }}"
+                                   min="{{ min_payment|floatformat:2 }}"
+                                   max="{{ loan.outstanding_balance|floatformat:2 }}" 
+                                   required>
+                        </div>
+                        <div class="range-indicator">
+                            <span>Min: ${{ min_payment|floatformat:2 }}</span>
+                            <span>Max: ${{ loan.outstanding_balance|floatformat:2 }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method 
+                    <div class="form-group mb-3">
+                        <label class="form-label">Payment Method</label>
+                        <select name="payment_method" class="form-control" required>
+                            <option value="">Select payment method...</option>
+                            {% for method in payment_methods %}
+                            <option value="{{ method.id }}">{{ method.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Notes 
+                    <div class="form-group mb-3">
+                        <label class="form-label">Notes <span class="text-muted">(Optional)</span></label>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="Any additional notes about this payment..."></textarea>
+                    </div>
+
+                    <!-- Info Box 
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <span class="text">
+                            This payment will be applied to your loan balance. 
+                            <strong>Principal</strong> and <strong>interest</strong> will be allocated 
+                            according to your payment schedule.
+                        </span>
+                    </div>
+
+                    <!-- Buttons 
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-check-circle me-2"></i>Submit Payment
+                    </button>
+                    <a href="{% url 'loans:loan_detail' loan.id %}" class="btn btn-secondary btn-cancel mt-2">
+                        Cancel
+                    </a>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+-->
+{% endblock %}

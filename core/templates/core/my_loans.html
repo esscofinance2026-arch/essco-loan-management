@@ -1,0 +1,285 @@
+<!-- core/templates/core/my_loans.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Loans{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        margin-bottom: 30px;
+    }
+
+    .page-header h2 {
+        font-weight: 700;
+        color: #1a1a2e;
+    }
+
+    .page-header h2 span {
+        color: #CC0000;
+    }
+
+    .page-header .text-muted {
+        font-size: 0.95rem;
+    }
+
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 25px;
+    }
+
+    .stat-box {
+        background: white;
+        padding: 18px 20px;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid #f0f0f0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .stat-box .number {
+        font-size: 1.6rem;
+        font-weight: 700;
+    }
+
+    .stat-box .label {
+        font-size: 0.8rem;
+        color: #888;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .stat-box .number-blue { color: #1a56db; }
+    .stat-box .number-green { color: #0a8f4a; }
+    .stat-box .number-red { color: #b91c1c; }
+
+    .table-loans thead th {
+        background: #f8f9fa;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        color: #495057;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .table-loans td {
+        vertical-align: middle;
+        padding: 12px 14px;
+    }
+
+    .table-loans tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .badge-status {
+        padding: 4px 14px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .badge-active { background: #e6f7ed; color: #0a8f4a; }
+    .badge-delinquent { background: #fff4e6; color: #c07600; }
+    .badge-defaulted { background: #fde8e8; color: #b91c1c; }
+    .badge-paid_off { background: #e8edfd; color: #1a56db; }
+    .badge-draft { background: #f0f0f0; color: #666; }
+    .badge-closed { background: #e9ecef; color: #495057; }
+
+    .btn-view {
+        padding: 4px 14px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .empty-state {
+        padding: 50px 20px;
+        text-align: center;
+    }
+
+    .empty-state i {
+        font-size: 2rem;
+        color: #dee2e6;
+        margin-bottom: 16px;
+    }
+
+    .empty-state h5 {
+        color: #495057;
+        font-weight: 600;
+    }
+
+    .empty-state p {
+        color: #6c757d;
+    }
+
+    /* Deposit Progress Styles */
+    .deposit-progress {
+        min-width: 120px;
+    }
+
+    .deposit-progress .progress {
+        height: 6px;
+        border-radius: 3px;
+        background-color: #e9ecef;
+        margin-top: 4px;
+    }
+
+    .deposit-progress .progress-bar {
+        border-radius: 3px;
+    }
+
+    .deposit-label {
+        font-size: 0.7rem;
+        color: #6c757d;
+    }
+
+    .deposit-label .paid {
+        color: #0a8f4a;
+        font-weight: 600;
+    }
+
+    .deposit-label .remaining {
+        color: #b91c1c;
+        font-weight: 600;
+    }
+
+    .deposit-label .complete {
+        color: #0a8f4a;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 576px) {
+        .stat-grid { grid-template-columns: 1fr; }
+        .table-loans { font-size: 0.85rem; }
+        .table-loans td, .table-loans th { padding: 8px 10px; }
+        .deposit-progress { min-width: 80px; }
+    }
+</style>
+{% endblock %}
+
+{% block dashboard_content %}
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center">
+    <div>
+        <h2>My <span>Loans</span></h2>
+        <p class="text-muted">View and manage all your active and past loans.</p>
+    </div>
+    <span class="badge bg-primary px-3 py-2">{{ loans|length }} Total</span>
+</div>
+
+<!-- ===== STATS ===== -->
+<div class="stat-grid">
+    <div class="stat-box">
+        <div class="number number-blue">{{ loans|length }}</div>
+        <div class="label">Total Loans</div>
+    </div>
+    <div class="stat-box">
+        <div class="number number-green">{{ active_count|default:0 }}</div>
+        <div class="label">Active Loans</div>
+    </div>
+    <div class="stat-box">
+        <div class="number number-red">${{ total_outstanding|default:0|floatformat:2 }}</div>
+        <div class="label">Total Outstanding</div>
+    </div>
+</div>
+
+<!-- ===== LOANS TABLE ===== -->
+<div class="card">
+    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-bold"><i class="fas fa-list me-2"></i>All Loans</h6>
+    </div>
+    <div class="card-body p-0">
+        {% if loans %}
+        <div class="table-responsive">
+            <table class="table table-loans mb-0">
+                <thead>
+                    <tr>
+                        <th>Loan ID</th>
+                        <th>Initial Principal</th>
+                        <th>Rate</th>
+                        <th>Monthly</th>
+                        <th>Principal</th>
+                        <th>Status</th>
+                        <th>Deposit</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in loans %}
+                    <tr>
+                        <td><strong>{{ loan.loan_id }}</strong></td>
+                        <td>${{ loan.application.Financed_Amt|floatformat:2 }}</td>
+                        <td>{{ loan.interest_rate }}%</td>
+                        <td>${{ loan.monthly_installment|floatformat:2 }}</td>
+                        <td>
+                            {% if loan.outstanding_balance > 0 %}
+                                <span class="text-danger fw-bold">${{ loan.outstanding_balance|floatformat:2 }}</span>
+                            {% else %}
+                                <span class="text-success fw-bold">$0.00</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge-status badge-{{ loan.status|lower }}">
+                                {{ loan.status }}
+                            </span>
+                        </td>
+                        <!-- ✅ Deposit Progress Column -->
+                        <td>
+                            {% if loan.deposit_target > 0 %}
+                                <div class="deposit-progress">
+                                    <div class="d-flex justify-content-between deposit-label">
+                                        <span>Paid: <span class="paid">${{ loan.deposit_paid|floatformat:2 }}</span></span>
+                                        <span>Target: ${{ loan.deposit_target|floatformat:2 }}</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar {% if loan.deposit_complete %}bg-success{% else %}bg-warning{% endif %}"
+                                            role="progressbar"
+                                            style="width: {{ loan.deposit_percentage|floatformat:0 }}%;"
+                                            aria-valuenow="{{ loan.deposit_percentage|floatformat:0 }}"
+                                            aria-valuemin="0"
+                                            aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <div class="deposit-label">
+                                        {% if loan.deposit_complete %}
+                                            <span class="complete">✅ Complete</span>
+                                        {% else %}
+                                            <span class="remaining">${{ loan.deposit_remaining|floatformat:2 }} remaining</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{% url 'loans:loan_detail' loan.id %}" class="btn btn-primary btn-view">
+                                <i class="fas fa-eye me-1"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-hand-holding-usd"></i>
+            <h5>No Loans Yet</h5>
+            <p>You don't have any loans at the moment.</p>
+            <a href="{% url 'apply' %}" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-2"></i>Apply for a Loan
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

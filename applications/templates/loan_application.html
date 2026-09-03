@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        <!-- LOAD THE CUSTOM TEMPLATE TAG -->
+        {% load file_upload_tags %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+        <link rel="stylesheet" href="{% static 'css/Applyform.css' %}">
+
+        <link rel="icon" type="image/x-icon" href="{% static 'images/ESSCO-Finance-Icon.png' %}?v=2">
+
+    </head>
+
+    <body>
+        <div class="application-container">
+            <a href="{% url 'Essco_Cover' %}">Home</a>
+            <div class="progress-container">
+
+                <div class="progress-text sticky-box">
+                    Step <span id="current-step">1</span> of 7
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+
+            </div>
+            <form method="POST" action="{% url 'apply' %}" enctype="multipart/form-data" id="applicationForm" novalidate>
+                {% csrf_token %}
+
+                <!--------------------------------------------------------- Step 1 - Personal Information ---------------------------------------------------------->
+
+                <div class="step active">
+                    <div class="logoimg">
+                        <img src="{% static 'images/ESSCO Finance Logo.svg' %}" alt="ESSCO Logo" >
+                    </div>
+                    <!-- <div class="top">
+                        <h2>Requirements - You will need to upload the following</h2>
+                        <ul>
+                            <li>
+                                <strong class="red-text">1)  Valid I.D.</strong>
+                                <span>National I.D., Drivers License, Drivers Permit or Passport</span>
+                            </li>
+                            <li>
+                                <strong class="red-text">2) Proof of Income</strong>
+                                <span>Job letter and recent pay slip</span>
+                            </li>
+                            <li>
+                                <strong class="red-text">3) Proof of Address</strong>
+                                <span>Recent utility bill (electricity, water, telephone or cable bill, no more than 3 months old)</span>
+                            </li>
+                            <li>
+                                <strong class="red-text">4) References</strong>
+                                <span>Contact details of 2 references (1 family and 1 friend)</span>
+                            </li>
+                        </ul>
+                    </div> -->
+
+                    <h2>Requirements - You will need to upload the following</h2>
+                    <div class="container">
+                        <div class="column">
+                            <strong class="red-text">1)  Valid I.D.</strong>
+                            <div>National I.D., Drivers License, Drivers Permit or Passport</div>
+                        </div>
+
+                        <div class="column">
+                            <strong class="red-text">2) Proof of Income</strong>
+                            <div>Job letter and recent pay slip</div>
+                        </div>
+
+                        <div class="column">
+                            <strong class="red-text">3) Proof of Address</strong>
+                            <div>Recent utility bill (electricity, water, telephone or cable bill, no more than 3 months old)</div>
+                        </div>
+
+                        <div class="column">
+                            <strong class="red-text">4) References</strong>
+                            <div>Contact details of 2 references (1 family and 1 friend)</div>
+                        </div>
+                    </div>
+
+                    <h2>You are applying for {{ item_name  }} Priced at <span class="red-text"> {{ item_price  }}</span></h2>
+
+                    <h2 class="sticky-box">Personal Information <span class="red-text"> - Step 1 of 7</span></h2>
+
+                    <!-- Add hidden fields for item_name and item_sku -->
+                    <input type="hidden" name="item_name" value="{{ item_name }}">
+                    <input type="hidden" name="item_sku" value="{{ item_sku }}">
+
+                    <!-- First and Last  Name  -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Prefix.id_for_label }}">Prefix</label>
+                            {{ form.Prefix }}
+                            {{ form.Prefix.errors }}
+                        </div>
+
+                    </div>
+
+                    <!-- First and Last  Name  -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Fname.id_for_label }}">First Name</label>
+                            {{ form.Fname }}
+                            {{ form.Fname.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Lname.id_for_label }}" class="" style="color: black;">
+                                Last Name
+                            </label>
+                            {{ form.Lname }}
+                            {{ form.Lname.errors }}
+                        </div>
+                    </div>
+
+                    <!-- Cell Phone and Email and Existing Customer -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Cell_Phone.id_for_label }}" class="" style="color: black;">
+                                Cell Phone #
+                            </label>
+                            {{ form.Cell_Phone }}
+                            {{ form.Cell_Phone.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.email.id_for_label }}" class="" style="color: black;">
+                                Email Address
+                            </label>
+                            {{ form.email }}
+                            {{ form.email.errors }}
+                        </div>
+
+                    </div>
+
+                    <!-- Home Phone and Work Phone -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Home_Phone.id_for_label }}" class="" style="color: black;">
+                                Home Phone #
+                            </label>
+                            {{ form.Home_Phone }}
+                            {{ form.Home_Phone.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Work_Phone.id_for_label }}" class="" style="color: black;">
+                                Work Phone
+                            </label>
+                            {{ form.Work_Phone }}
+                            {{ form.Work_Phone.errors }}
+                        </div>
+
+                    </div>
+
+                    <!-- Address -->
+                    <div class="form-group">
+                        <label for="{{ form.Address.id_for_label }}" class="" style="color: black;">
+                            Address
+                        </label>
+                        {{ form.Address }}
+                        {{ form.Address.errors }}
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="{{ form.Parish.id_for_label }}" class="" style="color: black;">
+                                Parish
+                            </label>
+                            {{ form.Parish }}
+                            {{ form.Parish.errors }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.Length_at_Address.id_for_label }}" class="" style="color: black;">
+                                Length of Time at Address (Years)
+                            </label>
+                            {{ form.Length_at_Address }}
+                            {{ form.Length_at_Address.errors }}
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="{{ form.Residential_Status.id_for_label }}" class="" style="color: black;">
+                                Residential Status
+                            </label>
+                            {{ form.Residential_Status }}
+                            {{ form.Residential_Status.errors }}
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Date of Birth and Nationality -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.DOB.id_for_label }}" class="" style="color: black;">
+                                Date of Birth
+                            </label>
+                            {{ form.media }}
+                            {{ form.DOB }}
+                            {{ form.DOB.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Nationality.id_for_label }}" class="" style="color: black;">
+                                Nationality
+                            </label>
+                            {{ form.Nationality }}
+                            {{ form.Nationality.errors }}
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ID Type and ID Number -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.ID_Type.id_for_label }}" class="" style="color: black;">
+                                ID Type
+                            </label>
+                            {{ form.ID_Type }}
+                            {{ form.ID_Type.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.ID_number.id_for_label }}" class="" style="color: black;">
+                                ID Number
+                            </label>
+                            {{ form.ID_number }}
+                            {{ form.ID_number.errors }}
+                        </div>
+
+                    </div>
+                    <!-- Gender and Marital Status -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Gender.id_for_label }}" class="" style="color: black;">
+                                Gender
+                            </label>
+                            {{ form.Gender }}
+                            {{ form.Gender.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Marital_Status.id_for_label }}" class="" style="color: black;">
+                                Marital Status
+                            </label>
+                            {{ form.Marital_Status }}
+                            {{ form.Marital_Status.errors }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- Number of Dependents  -->
+                    <div class="form-group">
+                        <label for="{{ form.Num_Dependents.id_for_label }}" class="" style="color: black;">
+                            Number of Dependents - This is a child or adult who is financially dependent on you for support and welfare.
+                        </label>
+                        {{ form.Num_Dependents }}
+                        {{ form.Num_Dependents.errors }}
+                    </div>
+
+
+
+
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="{{ form.Existing_Customer.id_for_label }}" class="" style="color: black;">
+                                Are you an existing Essco Customer?
+                            </label>
+                            {{ form.Existing_Customer }}
+                            {{ form.Existing_Customer.errors }}
+                        </div>
+                    </div>
+
+                    <div class="button-row">
+                        <button type="button" class="next-btn">Next</button>
+                    </div>
+
+                </div>
+
+
+
+                <!--------------------------------------------------------- Step 2 - Employment ---------------------------------------------------------->
+                <div class="step">
+                    <div class="logoimg">
+                        <img src="{% static 'images/ESSCO Finance Logo.svg' %}" alt="ESSCO Logo" >
+                    </div>
+                    <!--- <div class="top">
+                        <h2>Requirements - You will need to upload the following</h2>
+                        <ul>
+                            <li>
+                                <strong class="red-text">Valid I.D.</strong>
+                                <span>National I.D., Drivers Permit or Passport</span>
+                            </li>
+                            <li>
+                                <strong class="red-text">Proof of Income</strong>
+                                <span>Job letter and recent pay slip</span>
+                            </li>
+                            <li>
+                                <strong class="red-text">Proof of Address</strong>
+                                <span>Recent utility bill (electricity, water, telephone or cable bill, no more than 3 months old)</span>
+                            </li>
+                            <li>
+                                <strong class="red-text">References</strong>
+                                <span>Contact details of 2 references (1 family and 1 friend)</span>
+                            </li>
+                        </ul>
+                    </div> -->
+
+                    <h2>Requirements - You will need to upload the following</h2>
+                    <div class="container">
+                        <div class="column">
+                            <strong class="red-text">1)  Valid I.D.</strong>
+                            <div>National I.D., Drivers License, Drivers Permit or Passport</div>
+                        </div>
+
+                        <div class="column">
+                            <strong class="red-text">2) Proof of Income</strong>
+                            <div>Job letter and recent pay slip</div>
+                        </div>
+
+                        <div class="column">
+                            <strong class="red-text">3) Proof of Address</strong>
+                            <div>Recent utility bill (electricity, water, telephone or cable bill, no more than 3 months old)</div>
+                        </div>
+
+                        <div class="column">
+                            <strong class="red-text">4) References</strong>
+                            <div>Contact details of 2 references (1 family and 1 friend)</div>
+                        </div>
+                    </div>
+
+                    <h2>Employment <span class="red-text"> - Step 2 of 7</span></h2>
+                    <!-- Employer Name and Address  -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            {{ form.Employer_Name.label_tag }}
+                            {{ form.Employer_Name }}
+                            {{ form.Employer_Name.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.Employer_Address.label_tag }}
+                            {{ form.Employer_Address }}
+                            {{ form.Employer_Address.errors }}
+                        </div>
+
+                    </div>
+
+                    <!-- Employer Number -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            {{ form.Employer_Num.label_tag }}
+                            {{ form.Employer_Num }}
+                            {{ form.Employer_Num.errors }}
+                        </div>
+
+                    </div>
+
+                    <!-- Employer Type and Job Title -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            {{ form.Employer_Type.label_tag }}
+                            {{ form.Employer_Type }}
+                            {{ form.Employer_Type.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.Job_Title.label_tag }}
+                            {{ form.Job_Title }}
+                            {{ form.Job_Title.errors }}
+                        </div>
+
+                    </div>
+                    <!-- Employed less than 2 years and Lenght of employment -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Len_Employ.id_for_label }}" class="" style="color: black;">
+                                Has your current employment been less than six months?
+                            </label>
+                            {{ form.less_than_six }}
+                            {{ form.less_than_six.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Len_Employ.id_for_label }}" class="" style="color: black;">
+                                Length of employment
+                            </label>
+                            {{ form.Len_Employ }}
+                            {{ form.Len_Employ.errors }}
+                        </div>
+
+                    </div>
+                    <!-- Gross Income and Previous Employer -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            {{ form.Gross_Monthly_Income.label_tag }}
+                            {{ form.Gross_Monthly_Income }}
+                            {{ form.Gross_Monthly_Income.errors }}
+                        </div>
+
+                        <div class="form-group" id="previous-employer-group">
+                            <label for="{{ form.Previous_Employer.id_for_label }}">
+                                Previous Employer
+                            </label>
+
+                            {{ form.Previous_Employer }}
+                            {{ form.Previous_Employer.errors }}
+                        </div>
+
+                    </div>
+
+                    <div class="button-row">
+                        <button type="button" class="prev-btn">Previous</button>
+                        <button type="button" class="next-btn">Next</button>
+                    </div>
+                </div>
+
+                <!--------------------------------------------------------- Step 3 - Financial ------------------------------------------------------------------>
+                <div class="step">
+                    <div class="logoimg">
+                        <img src="{% static 'images/ESSCO Finance Logo.svg' %}" alt="ESSCO Logo" >
+                    </div>
+                    <!-- <div class="top">
+                        <h2>Requirements - You will need to upload the following</h2>
+                        <ul>
+                            <li>
+                                <strong class="red-text">Valid I.D.</strong>
+                                <span>National I.D., Drivers Permit or Passport</span>
+                            </li>
+                            <li>
+                                <strong class="red-text">Proof of Income</strong>
+                                <span>Job letter and recent pay slip</span>
+                            </li>
+                            <li>
+                                <strong class="red-text">Proof of Address</strong>
+                                <span>Recent utility bill (electricity, water, telephone or cable bill, no more than 3 months old)</span>
+                            </li>
+                            <li>
+                                <strong class="red-text">References</strong>
+                                <span>Contact details of 2 references (1 family and 1 friend)</span>
+                            </li>
+                        </ul>
+                    </div> -->
+
+                    <h2>Requirements - You will need to upload the following</h2>
+                    <div class="container">
+                        <div class="column">
+                            <strong class="red-text">1)  Valid I.D.</strong>
+                            <div>National I.D., Drivers License, Drivers Permit or Passport</div>
+                        </div>
+
+                        <div class="column">
+                            <strong class="red-text">2) Proof of Income</strong>
+                            <div>Job letter and recent pay slip</div>
+                        </div>
+
+                        <div class="column">
+                            <strong class="red-text">3) Proof of Address</strong>
+                            <div>Recent utility bill (electricity, water, telephone or cable bill, no more than 3 months old)</div>
+                        </div>
+
+                        <div class="column">
+                            <strong class="red-text">4) References</strong>
+                            <div>Contact details of 2 references (1 family and 1 friend)</div>
+                        </div>
+                    </div>
+
+                    <h2>Financial <span class="red-text"> - Step 3 of 7</span></h2>
+                    <!-- Cost of Item -->
+                    <div class="form-group">
+                        {{ form.Purchase_Value.label_tag }}
+                        <!--{{ form.Purchase_Value }}-->
+                        <input type="text" name="Purchase_Value" value="{{ form.Purchase_Value.value|default:cleaned_price|default:'0.00' }}" readonly
+                               class="form-control readonly-field" style="background: #e9ecef; cursor: not-allowed; border: 1px solid #ced4da;">
+                        {{ form.Purchase_Value.errors }}
+
+                        <!-- Show where the value came from -->
+                        {% if item_price %}
+                        <small style="color: #6c757d; display: block; margin-top: 4px;"> Auto-filled from WordPress product: {{ item_price }} </small>
+                        {% endif %}
+                    </div>
+                    <!-- Mortgage Payment Amount and Credit Card Payment Amount -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Loan_mortgages_payments.id_for_label }}" class="" style="color: black;">
+                                Mortgages Payments (Monthly)
+                            </label>
+                            {{ form.Loan_mortgages_payments }}
+                            {{ form.Loan_mortgages_payments.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.CCPayments.id_for_label }}" class="" style="color: black;">
+                                Credit Card Payments (Monthly)
+                            </label>
+                            {{ form.CCPayments }}
+                            {{ form.CCPayments.errors }}
+                        </div>
+
+                    </div>
+                    <!-- Other Debt Payment Amount and Rent Amount -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Other_Debt_Payments.id_for_label }}" class="" style="color: black;">
+                                Other Debt Payments (Monthly)
+                            </label>
+                            {{ form.Other_Debt_Payments }}
+                            {{ form.Other_Debt_Payments.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Rent.id_for_label }}" class="" style="color: black;">
+                                Rent (Monthly)
+                            </label>
+                            {{ form.Rent }}
+                            {{ form.Rent.errors }}
+                        </div>
+
+                    </div>
+                    <!-- Transportation Amount and Insurance Amount -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Transportation.id_for_label }}" class="" style="color: black;">
+                                Transportation (Monthly)
+                            </label>
+                            {{ form.Transportation }}
+                            {{ form.Transportation.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Insurance.id_for_label }}" class="" style="color: black;">
+                                Insurance (Auto, Health, Home, Life) (Monthly)
+                            </label>
+                            {{ form.Insurance }}
+                            {{ form.Insurance.errors }}
+                        </div>
+
+                    </div>
+                    <!-- Food Amount and Utilities Amount -->
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.food.id_for_label }}" class="" style="color: black;">
+                                Food (Monthly)
+                            </label>
+                            {{ form.food }}
+                            {{ form.food.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.utilities.id_for_label }}" class="" style="color: black;">
+                                Utilities (Monthly)
+                            </label>
+                            {{ form.utilities }}
+                            {{ form.utilities.errors }}
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.Other_Living_Expenses.id_for_label }}" class="" style="color: black;">
+                            Other Living Expenses (Monthly)
+                        </label>
+                        {{ form.Other_Living_Expenses }}
+                        {{ form.Other_Living_Expenses.errors }}
+                    </div>
+
+                    <div class="button-row">
+                        <button type="button" class="prev-btn">Previous</button>
+                        <button type="button" class="next-btn">Next</button>
+                    </div>
+                </div>
+
+                <!--------------------------------------------------------- Step 4 - References ------------------------------------------------------------------>
+                <div class="step">
+                    <div class="logoimg">
+                        <img src="{% static 'images/ESSCO Finance Logo.svg' %}" alt="ESSCO Logo" >
+                    </div>
+
+                    <!-- <div class="top">
+                        <h2>Requirements - You will need to upload the following</h2>
+                        <ul>
+                            <li>
+                                <strong class="red-text">Valid I.D.</strong>
+                                <span>National I.D., Drivers Permit or Passport</span>
+                            </li>
+                            <li>
+                                <strong class="red-text">Proof of Income</strong>
+                                <span>Job letter and recent pay slip</span>
+                            </li>
+                            <li>
+                                <strong class="red-text">Proof of Address</strong>
+                                <span>Recent utility bill (electricity, water, telephone or cable bill, no more than 3 months old)</span>
+                            </li>
+                            <li>
+                                <strong class="red-text">References</strong>
+                                <span>Contact details of 2 references (1 family and 1 friend)</span>
+                            </li>
+                        </ul>
+                    </div> -->
+
+
+                    <h2>Requirements - You will need to upload the following</h2>
+                    <div class="container">
+                        <div class="column">
+                            <strong class="red-text">1)  Valid I.D.</strong>
+                            <div>National I.D., Drivers License, Drivers Permit or Passport</div>
+                        </div>
+
+                        <div class="column">
+                            <strong class="red-text">2) Proof of Income</strong>
+                            <div>Job letter and recent pay slip</div>
+                        </div>
+
+                        <div class="column">
+                            <strong class="red-text">3) Proof of Address</strong>
+                            <div>Recent utility bill (electricity, water, telephone or cable bill, no more than 3 months old)</div>
+                        </div>
+
+                        <div class="column">
+                            <strong class="red-text">4) References</strong>
+                            <div>Contact details of 2 references (1 family and 1 friend)</div>
+                        </div>
+                    </div>
+
+                    <h2>References - Reference must not be living in the same household as the applicant <span class="red-text"> - Step 4 of 7</span></h2>
+
+                    <h3>Reference 1</h3>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Reference1_FullName.id_for_label }}">
+                                Full Name
+                            </label>
+                            {{ form.Reference1_FullName }}
+                            {{ form.Reference1_FullName.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Reference1_Relationship.id_for_label }}">
+                                Relationship to Reference
+                            </label>
+                            {{ form.Reference1_Relationship }}
+                            {{ form.Reference1_Relationship.errors }}
+                        </div>
+
+                    </div>
+
+                    <!-- Reference One Address -->
+                    <div class="form-group">
+                        <label for="{{ form.Reference1_Address.id_for_label }}">
+                            Reference's Address
+                        </label>
+                        {{ form.Reference1_Address }}
+                        {{ form.Reference1_Address.errors }}
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Reference1_Employer.id_for_label }}">
+                                Reference's Employer
+                            </label>
+                            {{ form.Reference1_Employer }}
+                            {{ form.Reference1_Employer.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Reference1_Job_Title.id_for_label }}">
+                                Reference's Job Title
+                            </label>
+                            {{ form.Reference1_Job_Title }}
+                            {{ form.Reference1_Job_Title.errors }}
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Reference1_Contact_Number.id_for_label }}">
+                                Reference's Contact Number
+                            </label>
+                            {{ form.Reference1_Contact_Number }}
+                            {{ form.Reference1_Contact_Number.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Reference1_Len_Time_Known.id_for_label }}">
+                                How long have you known Reference?
+                            </label>
+                            {{ form.Reference1_Len_Time_Known }}
+                            {{ form.Reference1_Len_Time_Known.errors }}
+                        </div>
+
+                    </div>
+
+                    <h3>Reference 2</h3>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Reference2_FullName.id_for_label }}">
+                                Full Name
+                            </label>
+                            {{ form.Reference2_FullName }}
+                            {{ form.Reference2_FullName.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Reference2_Relationship.id_for_label }}">
+                                Relationship to Reference
+                            </label>
+                            {{ form.Reference2_Relationship }}
+                            {{ form.Reference2_Relationship.errors }}
+                        </div>
+
+                    </div>
+
+                    <!-- Reference One Address -->
+                    <div class="form-group">
+                        <label for="{{ form.Reference2_Address.id_for_label }}">
+                            Reference's Address
+                        </label>
+                        {{ form.Reference2_Address }}
+                        {{ form.Reference2_Address.errors }}
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Reference2_Employer.id_for_label }}">
+                                Reference's Employer
+                            </label>
+                            {{ form.Reference2_Employer }}
+                            {{ form.Reference2_Employer.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Reference2_Job_Title.id_for_label }}">
+                                Reference's Job Title
+                            </label>
+                            {{ form.Reference2_Job_Title }}
+                            {{ form.Reference2_Job_Title.errors }}
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="{{ form.Reference2_Contact_Number.id_for_label }}">
+                                Reference's Contact Number
+                            </label>
+                            {{ form.Reference2_Contact_Number }}
+                            {{ form.Reference2_Contact_Number.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Reference2_Len_Time_Known.id_for_label }}">
+                                How long have you known Reference?
+                            </label>
+                            {{ form.Reference2_Len_Time_Known }}
+                            {{ form.Reference2_Len_Time_Known.errors }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="button-row">
+                        <button type="button" class="prev-btn">Previous</button>
+                        <button type="button" class="next-btn">Next</button>
+                    </div>
+                </div>
+
+                <!--------------------------------------------------------- Step 5 - Document Upload ------------------------------------------------------------------>
+                <div class="step">
+                    <h2>Document Upload <span class="red-text"> - Step 5 of 7</span></h2>
+
+                    <ul class="requirement-list">
+                        <li>
+                            All documents need to be valid
+
+                        </li>
+                        <li>
+                            <span class="badge red-text">Pay Slip</span>
+                            If Self-Employed, please upload your Business Registration Certificate
+                            <span class="note"></span>
+                        </li>
+                        <li>
+                            <span class="badge red-text">Utility Bill</span>
+                            Should be electricity, water, telephone or cable bill
+
+                        </li>
+                        <li>
+                            <span class="badge red-text">Job Letter</span>
+                            Should state current employment and be
+
+                        </li>
+                        <li>
+                            <span class="badge red-text">Selfie</span>
+                            Make sure that the whole ID and your face are framed in the picture
+
+                        </li>
+                    </ul>
+                    <h3>Employed</h3>
+                    <br>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="{{ form.Identification.id_for_label }}">
+                                Identification - National ID, Drivers License or Passport.
+                            </label>
+                            {{ form.Identification }}
+                            {{ form.Identification.errors }}
+                            <div id="errorMessage" style="color: red; display: none;"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.Payslip.id_for_label }}">
+                                Payslip - Should be no more than 1 month old.
+                            </label>
+                            {{ form.Payslip }}
+                            {{ form.Payslip.errors }}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="{{ form.Job_Letter.id_for_label }}">
+                                Job Letter - Should be no more than 3 months old.
+                            </label>
+                            {{ form.Job_Letter }}
+                            {{ form.Job_Letter.errors }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.Utility_Bill.id_for_label }}">
+                                Utility Bill - Should be no more than 1 month old
+                            </label>
+                            {{ form.Utility_Bill }}
+                            {{ form.Utility_Bill.errors }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.Selfie.id_for_label }}">
+                                Selfie - Take a picture of your face holding your ID next to it.
+                            </label>
+                            {{ form.Selfie }}
+                            {{ form.Selfie.errors }}
+                        </div>
+                    </div>
+                    <h3>Self employed</h3>
+                    <br>
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.Financial_Statement.label_tag }}
+                            {{ form.Financial_Statement }}
+                            {{ form.Financial_Statement.errors }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.Bank_Statement.label_tag }}
+                            {{ form.Bank_Statement }}
+                            {{ form.Bank_Statement.errors }}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.Business_Registration.label_tag }}
+                            {{ form.Business_Registration }}
+                            {{ form.Business_Registration.errors }}
+                        </div>
+                    </div>
+
+                    <div class="button-row">
+                        <button type="button" class="prev-btn">Previous</button>
+                        <button type="button" class="next-btn">Next</button>
+                    </div>
+                </div>
+
+                <!--------------------------------------------------------- Step 6 - Consent ------------------------------------------------------------------>
+                <div class="step">
+                    <div class="logoimg">
+                        <img src="{% static 'images/ESSCO Finance Logo.svg' %}" alt="ESSCO Logo" >
+                    </div>
+                    <h2>Consent <span class="red-text"> - Step 6 of 7</span></h2>
+                    <!--
+                    <div class="form-row">
+                        <div class="form-group">
+                             <label for="{{ form.accept_terms.id_for_label }}">
+                                 I confirm that I have read and agree to the
+                                <a href="{% url 'terms' %}" target="_blank">Terms and Conditions</a>
+                                and
+                                <a href="{% url 'privacy' %}" target="_blank">Privacy Policy</a>,
+                                and I consent to the collection and processing of my personal information
+                                for the purpose of this Finance application.
+                            </label>
+                            {{ form.accept_terms }}
+                            {{ form.accept_terms.errors }}
+                        </div>
+                    </div>
+                    <div class="consent-container">
+                        <div class="consent-wrapper">
+                            {{ form.accept_terms }}
+                            <label for="{{ form.accept_terms.id_for_label }}" class="consent-label">
+                                <span class="consent-text">
+                                    I confirm that I have read and agree to the
+                                    <a href="{% url 'terms' %}" target="_blank" class="consent-link">Terms and Conditions</a>
+                                    and
+                                    <a href="{% url 'privacy' %}" target="_blank" class="consent-link">Privacy Policy</a>,
+                                    and I consent to the collection and processing of my personal information
+                                    for the purpose of this Finance application.
+                                    <br> <br>
+                                    I hereby declare that the information given in this form and attachments are true, complete and accurate.
+                                    I agree to notify ESSCO Finance immediately of any situation which materially changes the representation of this application.
+                                    <br> <br>
+                                    I acknowledge ESSCO Finance may obtain, verify, share and exchange Credit Information and Personal Information about me from and with Credit Bureaus.
+                                    <br> <br>
+                                    I authorise ESSCO Finance to obtain further information on my credit and employment history and any such source is hereby authorised to provide the requested information.
+                                    ESSCO Finance is authorised to disclose to any Credit Bureau, Credit Advice and other credit grantor any information about my credit history.
+                                </span>
+                            </label>
+                        </div>
+                        {{ form.accept_terms.errors }}
+                    </div>-->
+                    <div class="consent-container">
+                        <div class="consent-wrapper">
+                            <label>
+                                {{ form.accept_terms }}
+                                <span class="consent-text">
+                                    I confirm that I have read and agree to the
+                                    <a href="{% url 'terms' %}" target="_blank" class="consent-link">Terms and Conditions</a>
+                                    and
+                                    <a href="{% url 'privacy' %}" target="_blank" class="consent-link">Privacy Policy</a>,
+                                    and I consent to the collection and processing of my personal information
+                                    for the purpose of this Finance application.
+                                    <br><br>
+                                    I hereby declare that the information given in this form and attachments are true, complete and accurate.
+                                    I agree to notify ESSCO Finance immediately of any situation which materially changes the representation of this application.
+                                    <br><br>
+                                    I acknowledge ESSCO Finance may obtain, verify, share and exchange Credit Information and Personal Information about me from and with Credit Bureaus.
+                                    <br><br>
+                                    I authorise ESSCO Finance to obtain further information on my credit and employment history and any such source is hereby authorised to provide the requested information.
+                                    ESSCO Finance is authorised to disclose to any Credit Bureau, Credit Advice and other credit grantor any information about my credit history.
+                                </span>
+                            </label>
+                        </div>
+                        {{ form.accept_terms.errors }}
+                    </div>
+
+                    <div class="button-row">
+                        <button type="button" class="prev-btn">Previous</button>
+                        <button type="button" class="next-btn">Next</button>
+                    </div>
+                </div>
+
+                <!--------------------------------------------------------- Step 7 - Review-Content ------------------------------------------------------------------>
+                <div class="step">
+                    <h2>Review <span class="red-text"> - Step 1 of 7</span> </h2>
+
+                    <div id="review-content"></div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="confirm-check">
+                            I confirm all information is correct
+                        </label>
+                    </div>
+
+                    <button type="button" class="prev-btn">Previous</button>
+
+                    <!-- ⭐ SUBMIT BUTTON - Initially disabled -->
+                    <button type="submit" id="submit-btn" class="btn btn-primary" disabled>
+                        <span id="submitText">Submit Application</span>
+                        <span id="submitSpinner" style="display: none;">
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                            Processing...
+                        </span>
+                    </button>
+
+                </div>
+
+            </form>
+            <script src="{% static 'js/applyform.js' %}"></script>
+            <script src="{% static 'js/file-validation.js' %}"></script>
+            <script src="{% static 'js/phone-validation.js' %}"></script>
+            <script src="{% static 'js/email-validation.js' %}"></script>
+            <script src="{% static 'js/id-validation.js' %}"></script>
+            <script src="{% static 'js/integer_validation.js' %}"></script>
+            <script src="{% static 'js/age.js' %}"></script>
+            <!--<script src="{% static 'js/form_handler.js' %}"></script>-->
+
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const submitBtn = document.getElementById('submit-btn');
+                    const confirmCheck = document.getElementById('confirm-check');
+                    const form = document.getElementById('applicationForm');
+
+                    // Enable button when checkbox is checked
+                    if (confirmCheck && submitBtn) {
+                        confirmCheck.addEventListener('change', function() {
+                            submitBtn.disabled = !this.checked;
+                        });
+                    }
+
+                    // Use form's submit event, not button click
+                    if (form) {
+                        form.addEventListener('submit', function(e) {
+                            const submitBtn = document.getElementById('submit-btn');
+                            const submitText = document.getElementById('submitText');
+                            const submitSpinner = document.getElementById('submitSpinner');
+
+                            // Check if button is already disabled (prevent double submission)
+                            if (submitBtn.disabled) {
+                                e.preventDefault();
+                                return false;
+                            }
+
+                            // Disable button and show spinner
+                            submitBtn.disabled = true;
+                            if (submitText) submitText.textContent = 'Submitting...';
+                            if (submitSpinner) submitSpinner.style.display = 'inline';
+
+                            // Allow form to submit
+                            return true;
+                        });
+                    }
+                });
+            </script>
+            <script>
+                // ✅ Updated script with duplicate protection
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    const form = document.getElementById('applicationForm');
+                    const submitBtn = document.getElementById('submit-btn');
+                    const confirmCheck = document.getElementById('confirm-check');
+                    let isSubmitting = false;
+                    let timeoutId = null;
+                    let hasSubmitted = false;  // ✅ NEW: Track if already submitted
+
+                    if (!form || !submitBtn) return;
+
+                    if (confirmCheck) {
+                        confirmCheck.addEventListener('change', function() {
+                            submitBtn.disabled = !this.checked;
+                        });
+                    }
+
+                    form.addEventListener('submit', function(e) {
+                        // ✅ Prevent double submit
+                        if (isSubmitting) {
+                            e.preventDefault();
+                            return;
+                        }
+
+                        // ✅ Prevent duplicate submissions (even after timeout)
+                        if (hasSubmitted) {
+                            e.preventDefault();
+                            // Show message to user
+                            const errorDiv = document.getElementById('errorMessage');
+                            if (errorDiv) {
+                                errorDiv.textContent = '⚠️ Your application is already being processed. Please wait.';
+                                errorDiv.style.display = 'block';
+                                errorDiv.style.color = '#ff9800';
+                            }
+                            return;
+                        }
+
+                        hasSubmitted = true;  // ✅ Mark as submitted
+                        isSubmitting = true;
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+                        if (timeoutId) {
+                            clearTimeout(timeoutId);
+                        }
+
+                        // ✅ 5-second timeout - re-enable button (but keep hasSubmitted = true)
+                        timeoutId = setTimeout(function() {
+                            isSubmitting = false;
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = 'Submit Application';
+
+                            const errorDiv = document.getElementById('errorMessage');
+                            if (errorDiv) {
+                                errorDiv.textContent = '⚠️ Still processing... Please wait. Do not resubmit.';
+                                errorDiv.style.display = 'block';
+                                errorDiv.style.color = '#ff9800';
+                            }
+                        }, 5000);
+                    });
+                });
+
+            </script>
+        </div>
+    </body>
+</html>

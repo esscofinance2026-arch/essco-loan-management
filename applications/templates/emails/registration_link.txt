@@ -1,0 +1,13 @@
+Complete Your Registration - Essco Finance
+
+Hello,
+
+Please click the link below to set/rest your password:
+
+{{ set_password_url }}
+
+If you didn't request this, please ignore this email.
+
+Best regards,
+Essco Finance Team
+{{ support_email }}

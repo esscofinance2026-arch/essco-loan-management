@@ -1,0 +1,44 @@
+<!-- payments/templates/payments/admin_reject_payment.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Reject Payment{% endblock %}
+
+{% block staff_content %}
+<div class="row">
+    <div class="col-lg-6 mx-auto">
+        <div class="staff-card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-times-circle me-2"></i>Reject Payment</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <p><strong>Receipt:</strong> {{ payment.receipt_number }}</p>
+                    <p><strong>Customer:</strong> {{ payment.customer.get_full_name|default:payment.customer.username }}</p>
+                    <p><strong>Amount:</strong> ${{ payment.amount|floatformat:2 }}</p>
+                    <p><strong>Category:</strong> {{ payment.category }}</p>
+                </div>
+
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Warning:</strong> Rejecting this payment will mark it as REJECTED. This cannot be undone.
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <label>Reason for Rejection <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="3" placeholder="Explain why this payment is being rejected..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="fas fa-times"></i> Reject Payment
+                    </button>
+                    <a href="{% url 'payments:admin_pending_payments' %}" class="btn btn-secondary w-100 mt-2">
+                        Cancel
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

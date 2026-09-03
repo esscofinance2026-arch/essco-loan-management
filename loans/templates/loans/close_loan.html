@@ -1,0 +1,55 @@
+<!-- loans/templates/loans/close_loan.html -->
+{% extends 'Appbase.html' %}
+{% load static %}
+
+{% block title %}Close Loan{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4>Close Loan</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <p><strong>Loan:</strong> {{ loan.loan_id }}</p>
+                        <p><strong>Customer:</strong> {{ loan.customer.get_full_name }}</p>
+                        <p><strong>Outstanding Balance:</strong> ${{ loan.outstanding_balance|floatformat:2 }}</p>
+                    </div>
+
+                    {% if loan.outstanding_balance > 0 %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Cannot close loan with outstanding balance of ${{ loan.outstanding_balance|floatformat:2 }}.
+                    </div>
+                    <a href="{% url 'loans:process_payment' loan.id %}" class="btn btn-warning btn-block">
+                        <i class="fas fa-money-bill-wave"></i> Make Payment First
+                    </a>
+                    {% else %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        Loan is fully paid. Ready to close.
+                    </div>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Reason (Optional)</label>
+                            <input type="text" name="reason" class="form-control" placeholder="e.g., Fully paid, Refinanced, etc.">
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block">
+                            <i class="fas fa-check"></i> Close Loan
+                        </button>
+                    </form>
+                    {% endif %}
+
+                    <a href="{% url 'loans:loan_detail' loan.id %}" class="btn btn-secondary btn-block">
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

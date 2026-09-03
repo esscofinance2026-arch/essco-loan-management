@@ -1,0 +1,111 @@
+{% extends 'Appbase.html' %}
+{% load static %}
+
+{% block title %}Contact Us - ESSCO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contactus.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="contact-section">
+
+    <h2>Contact Us</h2>
+
+    <p class="subtitle">
+        If you have any questions or suggestions, our support team will be happy to help.
+    </p>
+
+    <!-- Showroom & Office -->
+    <div class="contact-card">
+        <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+        <div class="contact-content">
+            <h3>Showroom & Office</h3>
+            <p>Clapham Court, Wildey Main Road, St. Michael, Barbados</p>
+        </div>
+    </div>
+
+    <!-- General Information -->
+    <div class="contact-card">
+        <div class="contact-icon"><i class="fa-solid fa-phone"></i></div>
+        <div class="contact-content">
+            <h3>General Information</h3>
+            <p><strong>PBX:</strong> (246) 537-0790</p>
+            <p><strong>Email:</strong> <a href="mailto:ESSCO@electricsales.com">ESSCO@electricsales.com</a></p>
+        </div>
+    </div>
+
+    <!-- Projects -->
+    <div class="contact-card">
+        <div class="contact-icon"><i class="fa-regular fa-clipboard"></i></div>
+        <div class="contact-content">
+            <h3>Projects</h3>
+            <p><strong>EXT:</strong> 1037</p>
+            <p><strong>Email:</strong> <a href="mailto:ProjectsDepartment@electricsales.com">ProjectsDepartment@electricsales.com</a></p>
+        </div>
+    </div>
+
+    <!-- Parts -->
+    <div class="contact-card">
+        <div class="contact-icon"><i class="fa-solid fa-wrench"></i></div>
+        <div class="contact-content">
+            <h3>Parts</h3>
+            <p><strong>Whatsapp:</strong> (246) 256-9051</p>
+            <p><strong>Email:</strong> <a href="mailto:parts@electricsales.com">parts@electricsales.com</a></p>
+        </div>
+    </div>
+
+    <!-- Departments Section -->
+    <h3 class="departments-title">Departments</h3>
+
+    <!-- Air Conditioning -->
+    <div class="department-grid">
+        <div class="department-card">
+            <h4>Air Conditioning</h4>
+            <div class="dept-sub">
+                <p><strong>Sales</strong></p>
+                <p>Email: <a href="mailto:acsales@electricsales.com">acsales@electricsales.com</a></p>
+                <p><strong>EXT:</strong> 1040</p>
+            </div>
+            <div class="dept-sub">
+                <p><strong>Service</strong></p>
+                <p>Email: <a href="mailto:acservice@electricsales.com">acservice@electricsales.com</a></p>
+                <p><strong>EXT:</strong> 1007</p>
+            </div>
+        </div>
+
+        <!-- Appliance -->
+        <div class="department-card">
+            <h4>Appliance</h4>
+            <div class="dept-sub">
+                <p><strong>Sales</strong></p>
+                <p>Email: <a href="mailto:appliancesales@electricsales.com">appliancesales@electricsales.com</a></p>
+                <p><strong>EXT:</strong> 1013</p>
+            </div>
+            <div class="dept-sub">
+                <p><strong>Service</strong></p>
+                <p>Email: <a href="mailto:applianceservice@electricsales.com">applianceservice@electricsales.com</a></p>
+                <p><strong>EXT:</strong> 1014</p>
+            </div>
+        </div>
+
+        <!-- Elevators & Lifts -->
+        <div class="department-card">
+            <h4>Elevators & Lifts</h4>
+            <div class="dept-sub">
+                <p><strong>Sales</strong></p>
+                <p>Email: <a href="mailto:elevatorsales@electricsales.com">elevatorsales@electricsales.com</a></p>
+                <p><strong>EXT:</strong> 1009</p>
+            </div>
+            <div class="dept-sub">
+                <p><strong>Service</strong></p>
+                <p>Email: <a href="mailto:elevatorservice@electricsales.com">elevatorservice@electricsales.com</a></p>
+                <p><strong>EXT:</strong> 1029</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

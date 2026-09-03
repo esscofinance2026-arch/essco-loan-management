@@ -1,0 +1,29 @@
+🎉 ESSCO FINANCE - APPLICATION APPROVED!
+
+Dear {{ name }},
+
+We are pleased to inform you that your credit application has been APPROVED!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Application ID:  {{ reference }}
+Applicant:      {{ name }}
+Credit Limit:   {{ credit_limit }}
+Deposit Required: {{ Deposit }}
+Payment Term:   {{ term }}
+Monthly Payment: {{ monthly_payment }}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 WHAT HAPPENS NEXT?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Visit our store to complete your purchase
+2. Bring your valid ID and this approval email
+3. Our team will assist you with the final steps
+
+Visit our store:
+Clapham Court, Wildey Main Road, St. Michael, Barbados
+
+If you have any questions, please contact us at +1 (246) 537-0790.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+© 2026 Electric Sales & Service Ltd. All rights reserved.
+www.esscoonline.com

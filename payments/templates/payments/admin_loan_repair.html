@@ -1,0 +1,239 @@
+<!-- payments/templates/payments/admin_loan_repair.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Repair Loan{% endblock %}
+
+{% block extra_css %}
+<style>
+    .comparison-table {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .comparison-table table {
+        margin-bottom: 0;
+    }
+
+    .comparison-table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        color: #495057;
+    }
+
+    .value-mismatch {
+        background: #fde8e8;
+        color: #b91c1c;
+        font-weight: 700;
+    }
+
+    .value-correct {
+        background: #e6f7ed;
+        color: #0a8f4a;
+        font-weight: 700;
+    }
+
+    .value-current {
+        font-weight: 600;
+    }
+
+    .repair-warning {
+        background: #fff4e6;
+        border-left: 4px solid #c07600;
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .repair-warning i {
+        color: #c07600;
+        margin-right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block staff_content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="staff-card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Loan Repair Tool</h5>
+            </div>
+            <div class="card-body">
+                <!-- Loan Info -->
+                <div class="alert alert-info">
+                    <h6>Loan Information</h6>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong>Loan ID:</strong> {{ loan.loan_id }}
+                        </div>
+                        <div class="col-sm-4">
+                            <strong>Customer:</strong>
+                            {% if customer %}
+                                {{ customer.get_full_name|default:customer.username }}
+                            {% elif loan.customer %}
+                                {{ loan.customer.get_full_name|default:loan.customer.username }}
+                            {% elif loan.application %}
+                                {{ loan.application.Fname }} {{ loan.application.Lname }}
+                            {% elif loan.customer_name %}
+                                {{ loan.customer_name }}
+                            {% else %}
+                                Unknown Customer
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-4">
+                            <strong>Status:</strong> {{ loan.status }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mismatch Warning -->
+                {% if is_mismatch %}
+                <div class="repair-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Data Mismatch Detected!</strong>
+                    The loan's total paid ({{ current_total_paid|floatformat:2 }})
+                    does not match the sum of payments ({{ correct_total_paid|floatformat:2 }}).
+                </div>
+                {% else %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>All data is consistent!</strong>
+                    Total paid matches the sum of payments.
+                </div>
+                {% endif %}
+
+                <!-- Comparison Table -->
+                <div class="comparison-table">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th class="text-end">Current Value</th>
+                                <th class="text-end">Correct Value</th>
+                                <th class="text-end">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Total Paid</strong></td>
+                                <td class="text-end value-current">${{ current_total_paid|floatformat:2 }}</td>
+                                <td class="text-end value-correct">${{ correct_total_paid|floatformat:2 }}</td>
+                                <td class="text-end">
+                                    {% if current_total_paid != correct_total_paid %}
+                                        <span class="badge bg-danger">MISMATCH</span>
+                                    {% else %}
+                                        <span class="badge bg-success">OK</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Schedule Total</strong></td>
+                                <td class="text-end value-current">${{ schedule_total_paid|floatformat:2 }}</td>
+                                <td class="text-end value-correct">${{ schedule_total_paid|floatformat:2 }}</td>
+                                <td class="text-end">
+                                    <span class="badge bg-success">OK</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Principal</strong></td>
+                                <td class="text-end value-current">-</td>
+                                <td class="text-end value-correct">${{ correct_principal|floatformat:2 }}</td>
+                                <td class="text-end">
+                                    <span class="badge bg-info">INFO</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Interest</strong></td>
+                                <td class="text-end value-current">-</td>
+                                <td class="text-end value-correct">${{ correct_interest|floatformat:2 }}</td>
+                                <td class="text-end">
+                                    <span class="badge bg-info">INFO</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Payments List -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">Payments Included in Calculation</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Receipt</th>
+                                        <th class="text-end">Amount</th>
+                                        <th>Category</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for payment in payments %}
+                                    <tr>
+                                        <td>{{ payment.receipt_number }}</td>
+                                        <td class="text-end">${{ payment.amount|floatformat:2 }}</td>
+                                        <td>{{ payment.category }}</td>
+                                        <td>
+                                            {% if payment.is_reversed %}
+                                                <span class="badge bg-danger">REVERSED</span>
+                                            {% else %}
+                                                <span class="badge bg-success">ACTIVE</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">No payments found</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <th>Total</th>
+                                        <th class="text-end">${{ correct_total_paid|floatformat:2 }}</th>
+                                        <th colspan="2"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="mt-4">
+                    {% if is_mismatch %}
+                    <form method="POST" action="{% url 'payments:admin_repair_loan' loan.id %}"
+                          onsubmit="return confirm('⚠️ This will update the loan totals. Continue?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-warning btn-lg w-100">
+                            <i class="fas fa-tools"></i> Repair Loan
+                        </button>
+                        <p class="text-muted text-center mt-2 small">
+                            This will update Total Paid to ${{ correct_total_paid|floatformat:2 }}
+                            and Outstanding Balance to ${{ loan.total_payable|add:correct_total_paid|floatformat:2 }}
+                        </p>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-success text-center">
+                        <i class="fas fa-check-circle"></i>
+                        <strong>No repair needed!</strong> All data is consistent.
+                    </div>
+                    {% endif %}
+
+                    <a href="{% url 'staff_loan_detail' loan.id %}" class="btn btn-secondary w-100 mt-2">
+                        <i class="fas fa-arrow-left"></i> Back to Loan
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

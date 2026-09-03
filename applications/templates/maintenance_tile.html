@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<style>
+            .config-container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 30px 0;
+            }
+
+            .config-card {
+                background: white;
+                border-radius: 15px;
+                padding: 35px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                border: 1px solid #e9ecef;
+            }
+
+            .config-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 25px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid #f7fafc;
+            }
+
+            .config-header .left {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .config-header .left .back-btn {
+                color: #718096;
+                text-decoration: none;
+                padding: 8px 15px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                transition: all 0.3s;
+                font-size: 0.9rem;
+            }
+
+            .config-header .left .back-btn:hover {
+                background: #f7fafc;
+                color: #2d3748;
+            }
+
+            .config-header .left h2 {
+                margin: 0;
+                font-weight: 600;
+                color: #2d3748;
+            }
+
+            .config-header .status-badge {
+                font-size: 0.75rem;
+                padding: 6px 16px;
+                border-radius: 20px;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+
+            .status-badge.enabled {
+                background: #c6f6d5;
+                color: #276749;
+            }
+
+            .status-badge.disabled {
+                background: #fed7d7;
+                color: #9b2c2c;
+            }
+
+            .form-group {
+                margin-bottom: 25px;
+            }
+
+            .form-group label {
+                display: block;
+                font-weight: 600;
+                color: #2d3748;
+                margin-bottom: 5px;
+                font-size: 0.95rem;
+            }
+
+            .form-group .help-text {
+                font-size: 0.85rem;
+                color: #a0aec0;
+                margin-top: 5px;
+            }
+
+            .form-control {
+                width: 100%;
+                padding: 12px 15px;
+                border: 2px solid #e2e8f0;
+                border-radius: 8px;
+                transition: all 0.3s;
+                font-size: 0.95rem;
+                background: white;
+            }
+
+            .form-control:focus {
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                outline: none;
+            }
+
+            .form-control.error {
+                border-color: #fc8181;
+            }
+
+            .form-check {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 0;
+                background: #f7fafc;
+                border-radius: 8px;
+                padding: 15px 20px;
+            }
+
+            .form-check-input {
+                width: 22px;
+                height: 22px;
+                cursor: pointer;
+                accent-color: #667eea;
+            }
+
+            .form-check-label {
+                cursor: pointer;
+                font-weight: 600;
+                color: #2d3748;
+                font-size: 1rem;
+            }
+
+            .form-actions {
+                margin-top: 30px;
+                padding-top: 20px;
+                border-top: 2px solid #f7fafc;
+                display: flex;
+                justify-content: flex-end;
+                gap: 15px;
+            }
+
+            .btn {
+                padding: 12px 30px;
+                border: none;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s;
+                font-size: 0.95rem;
+            }
+
+            .btn-primary {
+                background: #667eea;
+                color: white;
+            }
+
+            .btn-primary:hover {
+                background: #5a6fd6;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            }
+
+            .btn-secondary {
+                background: #e2e8f0;
+                color: #4a5568;
+            }
+
+            .btn-secondary:hover {
+                background: #cbd5e0;
+            }
+
+            .btn-success {
+                background: #48bb78;
+                color: white;
+            }
+
+            .btn-success:hover {
+                background: #38a169;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+            }
+
+            .btn-danger {
+                background: #fc8181;
+                color: white;
+            }
+
+            .btn-danger:hover {
+                background: #f56565;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(252, 129, 129, 0.3);
+            }
+
+            .btn-sm {
+                padding: 8px 20px;
+                font-size: 0.85rem;
+            }
+
+            .alert {
+                padding: 15px 20px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .alert-success {
+                background: #c6f6d5;
+                color: #276749;
+                border: 1px solid #9ae6b4;
+            }
+
+            .alert-error {
+                background: #fed7d7;
+                color: #9b2c2c;
+                border: 1px solid #feb2b2;
+            }
+
+            .alert-info {
+                background: #bee3f8;
+                color: #2a69ac;
+                border: 1px solid #90cdf4;
+            }
+
+            .alert-warning {
+                background: #fefcbf;
+                color: #975a16;
+                border: 1px solid #f6e05e;
+            }
+
+            .preview-box {
+                margin-top: 20px;
+                padding: 20px;
+                background: #f7fafc;
+                border-radius: 8px;
+                border: 2px dashed #e2e8f0;
+            }
+
+            .preview-box h4 {
+                margin-top: 0;
+                color: #2d3748;
+            }
+
+            .preview-box .preview-content {
+                padding: 20px;
+                background: white;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+            }
+
+            .text-muted { color: #a0aec0; }
+            .mt-2 { margin-top: 10px; }
+            .mt-3 { margin-top: 15px; }
+            .mb-2 { margin-bottom: 10px; }
+            .d-flex { display: flex; }
+            .gap-2 { gap: 10px; }
+            .align-items-center { align-items: center; }
+
+            @media (max-width: 768px) {
+                .config-card {
+                    padding: 20px;
+                }
+
+                .config-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 10px;
+                }
+
+                .config-header .left {
+                    flex-wrap: wrap;
+                }
+
+                .form-actions {
+                    flex-direction: column;
+                }
+
+                .form-actions .btn {
+                    width: 100%;
+                    text-align: center;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container config-container">
+            <div class="config-card">
+                <!-- Header -->
+                <div class="config-header">
+                    <div class="left">
+                        <a href="{% url 'settings' %}" class="back-btn">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
+                        <h2>🔧 Maintenance Settings</h2>
+                    </div>
+                    <span class="status-badge {% if settings.maintenance_mode %}enabled{% else %}disabled{% endif %}">
+                        <i class="fas {% if settings.maintenance_mode %}fa-circle{% else %}fa-circle{% endif %}"></i>
+                        {% if settings.maintenance_mode %}ENABLED{% else %}DISABLED{% endif %}
+                    </span>
+                </div>
+
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Current Status Info -->
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Current Status:</strong>
+                        {% if settings.maintenance_mode %}
+                            Maintenance mode is <strong>ENABLED</strong>. Visitors will see the maintenance page.
+                        {% else %}
+                            Maintenance mode is <strong>DISABLED</strong>. Your site is live and accessible.
+                        {% endif %}
+                        <br>
+                        <small>Last updated: {{ settings.updated_at|date:"M d, Y H:i" }} by {% if settings.updated_by %}{{ settings.updated_by }}{% else %}System{% endif %}</small>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- Maintenance Mode Toggle -->
+                    <div class="form-group">
+                        <div class="form-check">
+                            {{ form.maintenance_mode }}
+                            <label class="form-check-label" for="{{ form.maintenance_mode.id_for_label }}">
+                                {{ form.maintenance_mode.label }}
+                            </label>
+                        </div>
+                        <div class="help-text">{{ form.maintenance_mode.help_text }}</div>
+                    </div>
+
+                    <!-- Maintenance Title -->
+                    <div class="form-group">
+                        <label for="{{ form.maintenance_title.id_for_label }}">
+                            {{ form.maintenance_title.label }}
+                        </label>
+                        {{ form.maintenance_title }}
+                        <div class="help-text">{{ form.maintenance_title.help_text }}</div>
+                    </div>
+
+                    <!-- Maintenance Message -->
+                    <div class="form-group">
+                        <label for="{{ form.maintenance_message.id_for_label }}">
+                            {{ form.maintenance_message.label }}
+                        </label>
+                        {{ form.maintenance_message }}
+                        <div class="help-text">{{ form.maintenance_message.help_text }}</div>
+                    </div>
+
+                    <!-- Live Preview -->
+                    <div class="preview-box">
+                        <h4>Live Preview</h4>
+                        <div class="preview-content">
+                            <h3 id="preview-title">{{ form.maintenance_title.value|default:"Under Maintenance" }}</h3>
+                            <p id="preview-message">{{ form.maintenance_message.value|default:"We're currently performing scheduled maintenance. Please check back later." }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <a href="{% url 'settings' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Live preview update
+            const titleInput = document.querySelector('#{{ form.maintenance_title.id_for_label }}');
+            const messageInput = document.querySelector('#{{ form.maintenance_message.id_for_label }}');
+            const previewTitle = document.querySelector('#preview-title');
+            const previewMessage = document.querySelector('#preview-message');
+            const statusBadge = document.querySelector('.status-badge');
+            const maintenanceCheckbox = document.querySelector('#{{ form.maintenance_mode.id_for_label }}');
+
+            // Update preview on input
+            if (titleInput) {
+                titleInput.addEventListener('input', function() {
+                    previewTitle.textContent = this.value || 'Under Maintenance';
+                });
+            }
+
+            if (messageInput) {
+                messageInput.addEventListener('input', function() {
+                    previewMessage.textContent = this.value || 'We\'re currently performing scheduled maintenance. Please check back later.';
+                });
+            }
+
+            // Update status badge on toggle
+            if (maintenanceCheckbox) {
+                maintenanceCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        statusBadge.textContent = 'ENABLED';
+                        statusBadge.className = 'status-badge enabled';
+                        statusBadge.innerHTML = '<i class="fas fa-circle"></i> ENABLED';
+                    } else {
+                        statusBadge.textContent = 'DISABLED';
+                        statusBadge.className = 'status-badge disabled';
+                        statusBadge.innerHTML = '<i class="fas fa-circle"></i> DISABLED';
+                    }
+                });
+            }
+
+            // Auto-hide alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert:not(.alert-info)');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.transition = 'opacity 0.5s';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
+                }, 5000);
+            });
+        });
+    </script>
+
+</html>
+
+
+

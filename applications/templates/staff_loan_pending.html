@@ -1,0 +1,74 @@
+<!-- applications/templates/applications/staff_loan_pending.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Pending Loans{% endblock %}
+
+{% block extra_css %}
+<style>
+    .badge-pending { background: #fff4e6; color: #c07600; }
+    .btn-sm { padding: 4px 10px; font-size: 0.8rem; }
+</style>
+{% endblock %}
+
+{% block staff_content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title"><i class="fas fa-clock text-warning me-2"></i>Pending Loans</h1>
+        <p class="page-subtitle">Applications with deposit paid but no loan created yet.</p>
+    </div>
+    <a href="{% url 'staff_loan_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Loans
+    </a>
+</div>
+
+{% if pending_applications %}
+<div class="staff-card">
+    <div class="card-header">
+        <i class="fas fa-list me-2"></i> Pending Applications
+        <span class="badge bg-warning ms-2">{{ pending_applications|length }}</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Reference</th>
+                        <th>Customer</th>
+                        <th>Item</th>
+                        <th>Amount</th>
+                        <th>Deposit</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in pending_applications %}
+                    <tr>
+                        <td><strong>{{ app.reference_number }}</strong></td>
+                        <td>{{ app.Fname }} {{ app.Lname }}</td>
+                        <td>{{ app.item_name|truncatechars:30 }}</td>
+                        <td>${{ app.Purchase_Value|floatformat:2 }}</td>
+                        <td>${{ app.deposit_paid|floatformat:2 }}</td>
+                        <td>
+                            <a href="{% url 'manual_create_loan' app.id %}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-tools"></i> Create Loan
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="staff-card">
+    <div class="card-body text-center py-5">
+        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+        <h5>All caught up!</h5>
+        <p class="text-muted">No pending loans to create. All deposits have been converted to loans.</p>
+        <a href="{% url 'staff_loan_list' %}" class="btn btn-primary">View All Loans</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

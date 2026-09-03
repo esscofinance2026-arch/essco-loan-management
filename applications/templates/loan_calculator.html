@@ -1,0 +1,131 @@
+{% extends 'Appbase.html' %}
+{% load static %}
+
+{% block title %}Loan Calculator - ESSCO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/loan_calculator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="calculator-section">
+    <h2>Loan Calculator</h2>
+    <p class="subtitle">Calculate your monthly payments instantly</p>
+
+    <div class="calculator-grid">
+        <!-- Left: Input Form -->
+        <div class="calculator-form">
+            <div class="form-group">
+                <label for="loanAmount">Loan Amount</label>
+                <div class="input-wrapper">
+                    <span class="currency-symbol">$</span>
+                    <input type="number" 
+                           id="loanAmount" 
+                           class="form-control" 
+                           value="10000.00" 
+                           step="100" 
+                           min="0">
+                </div>
+                <small class="help-text">Enter your total loan amount</small>
+            </div>
+
+            <div class="form-group">
+                <label for="months">Months</label>
+                <input type="number" 
+                       id="months" 
+                       class="form-control" 
+                       value="25" 
+                       min="1" 
+                       max="360">
+                <small class="help-text">Enter the loan term in months</small>
+            </div>
+
+            <div class="form-group">
+                <label for="interestRate">Annual Interest Rate</label>
+                <div class="input-wrapper">
+                    <input type="number" 
+                           id="interestRate" 
+                           class="form-control" 
+                           value="4.5" 
+                           step="0.1" 
+                           min="0">
+                    <span class="percentage-symbol">%</span>
+                </div>
+                <small class="help-text">Enter the annual interest rate</small>
+            </div>
+
+            <div class="disclaimer">
+                <i class="fas fa-info-circle"></i>
+                <p>
+                    <strong>Disclaimer:</strong> This calculator's accuracy and relevance to your 
+                    specific circumstances are not guaranteed. Please consult a qualified professional 
+                    before making any financial decisions or loan commitments based on these results.
+                </p>
+            </div>
+        </div>
+
+        <!-- Right: Summary & Results -->
+        <div class="calculator-results">
+            <h3>Summary</h3>
+            
+            <div class="summary-table">
+                <div class="summary-row">
+                    <span>Loan Amount</span>
+                    <span id="summaryAmount">$10,000.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Annual Interest Rate</span>
+                    <span id="summaryRate">4.5%</span>
+                </div>
+                <div class="summary-row">
+                    <span>Months</span>
+                    <span id="summaryMonths">25</span>
+                </div>
+            </div>
+
+            <div class="monthly-payment">
+                <p>Your Monthly Payment:</p>
+                <h1 id="monthlyPayment">$419.79</h1>
+            </div>
+
+            <button class="btn-calculate" onclick="calculateLoan()">
+                <i class="fas fa-calculator"></i> Calculate
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculateLoan() {
+    // 1. Get input values
+    const loanAmount = parseFloat(document.getElementById('loanAmount').value) || 0;
+    const months = parseInt(document.getElementById('months').value) || 1;
+    const annualRate = parseFloat(document.getElementById('interestRate').value) || 0;
+    
+    // 2. Simple Interest Calculation
+    const years = months / 12;  // Convert months to years
+    const totalInterest = loanAmount * (annualRate / 100) * years;  // I = P × R × T
+    const totalRepayment = loanAmount + totalInterest;  // Total to repay
+    const monthlyPayment = totalRepayment / months;  // Monthly payment
+    
+    // 3. Update summary
+    document.getElementById('summaryAmount').textContent = `$${loanAmount.toFixed(2)}`;
+    document.getElementById('summaryRate').textContent = `${annualRate}%`;
+    document.getElementById('summaryMonths').textContent = months;
+    
+    // 4. Update monthly payment
+    document.getElementById('monthlyPayment').textContent = `$${monthlyPayment.toFixed(2)}`;
+}
+
+// Auto-calculate on any change
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = ['loanAmount', 'months', 'interestRate'];
+    inputs.forEach(id => {
+        document.getElementById(id).addEventListener('input', calculateLoan);
+    });
+    calculateLoan();  // Initial calculation
+});
+</script>
+
+{% endblock %}

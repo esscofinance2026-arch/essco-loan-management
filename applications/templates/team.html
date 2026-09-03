@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Our Team</title>
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+        <style>
+            /* Your existing styles here */
+            .team-hero {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 60px 0;
+                margin-bottom: 40px;
+                border-radius: 0 0 30px 30px;
+            }
+
+            .team-hero h1 {
+                font-size: 3rem;
+                font-weight: 700;
+            }
+
+            .team-hero p {
+                font-size: 1.2rem;
+                opacity: 0.9;
+            }
+
+            .team-stats {
+                display: flex;
+                justify-content: center;
+                gap: 50px;
+                margin-top: 30px;
+            }
+
+            .stat-item {
+                text-align: center;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+                font-weight: 700;
+                display: block;
+            }
+
+            .stat-label {
+                font-size: 0.9rem;
+                opacity: 0.8;
+            }
+
+            .team-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 25px;
+                padding: 20px 0 60px;
+            }
+
+            .team-card {
+                background: white;
+                border-radius: 15px;
+                overflow: hidden;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                transition: all 0.3s ease;
+                border: 1px solid #e9ecef;
+                cursor: pointer;
+            }
+
+            .team-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            }
+
+            .team-card-avatar {
+                height: 120px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+            }
+
+            .team-card-avatar .initials {
+                font-size: 3rem;
+                color: white;
+                font-weight: 700;
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .approval-badge {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: #48bb78;
+                color: white;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 0.7rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .team-card-body {
+                padding: 20px;
+            }
+
+            .team-card-body h3 {
+                margin: 0;
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #2d3748;
+            }
+
+            .team-card-body .role {
+                color: #667eea;
+                font-size: 0.85rem;
+                font-weight: 500;
+                margin: 5px 0;
+                display: inline-block;
+                background: #f0f4ff;
+                padding: 3px 12px;
+                border-radius: 20px;
+            }
+
+            .team-card-body .email {
+                color: #718096;
+                font-size: 0.85rem;
+                margin: 8px 0 0;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .team-card-body .email i {
+                color: #a0aec0;
+                font-size: 0.8rem;
+            }
+
+            .team-card-footer {
+                padding: 12px 20px;
+                border-top: 1px solid #e9ecef;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: #f8f9fa;
+            }
+
+            .role-tag {
+                display: inline-block;
+                padding: 3px 12px;
+                border-radius: 20px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+            }
+
+            .role-tag.manager {
+                background: #ebf8ff;
+                color: #2b6cb0;
+            }
+
+            .role-tag.supervisor {
+                background: #faf5ff;
+                color: #6b46c1;
+            }
+
+            .role-tag.agent {
+                background: #f0fff4;
+                color: #276749;
+            }
+
+            .role-tag.admin {
+                background: #fff5f5;
+                color: #c53030;
+            }
+
+            .role-tag.other {
+                background: #f7fafc;
+                color: #4a5568;
+            }
+
+            .status-indicator {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 0.8rem;
+                color: #48bb78;
+            }
+
+            .status-indicator .dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #48bb78;
+                display: inline-block;
+            }
+
+            .status-indicator.inactive .dot {
+                background: #fc8181;
+            }
+
+            .status-indicator.inactive {
+                color: #fc8181;
+            }
+
+            .filter-section {
+                margin-bottom: 30px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .filter-buttons {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .filter-btn {
+                padding: 8px 20px;
+                border: 2px solid #e9ecef;
+                border-radius: 25px;
+                background: white;
+                color: #4a5568;
+                cursor: pointer;
+                transition: all 0.3s;
+                font-size: 0.85rem;
+            }
+
+            .filter-btn:hover {
+                background: #667eea;
+                color: white;
+                border-color: #667eea;
+            }
+
+            .filter-btn.active {
+                background: #667eea;
+                color: white;
+                border-color: #667eea;
+            }
+
+            .search-box {
+                padding: 10px 20px;
+                border: 2px solid #e9ecef;
+                border-radius: 25px;
+                font-size: 0.9rem;
+                min-width: 250px;
+                outline: none;
+                transition: all 0.3s;
+            }
+
+            .search-box:focus {
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+            .approval-recipients-section {
+                background: #f7fafc;
+                border-radius: 15px;
+                padding: 20px;
+                margin-bottom: 30px;
+                border: 2px solid #e9ecef;
+            }
+
+            .approval-recipients-section h4 {
+                color: #2d3748;
+                margin-bottom: 15px;
+            }
+
+            .approval-recipients-section .badge {
+                background: #48bb78;
+                color: white;
+                padding: 2px 10px;
+                border-radius: 20px;
+                font-size: 0.8rem;
+            }
+
+            .recipient-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .recipient-tag {
+                background: white;
+                padding: 5px 15px;
+                border-radius: 20px;
+                border: 1px solid #e2e8f0;
+                font-size: 0.9rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .recipient-tag .role-badge {
+                font-size: 0.7rem;
+                background: #667eea;
+                color: white;
+                padding: 2px 8px;
+                border-radius: 12px;
+            }
+
+            @media (max-width: 768px) {
+                .team-hero h1 {
+                    font-size: 2rem;
+                }
+
+                .team-stats {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+
+                .filter-section {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .search-box {
+                    min-width: 100%;
+                }
+
+                .team-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            /* Add this to prevent empty state issues */
+            .team-card[style*="display: none"] {
+                display: none !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <!-- Hero Section -->
+            <div class="team-hero">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8 mx-auto text-center">
+                            <a href="{% url 'admin_dashboard' %}"> <h2 style="color:white"> <- Dashboard</h2> </a>
+                            <h2>👥 Our Team</h2>
+
+
+                            <div class="team-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">{{ total_members|default:"0" }}</span>
+                                    <span class="stat-label">Team Members</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">{{ role_stats|length|default:"0" }}</span>
+                                    <span class="stat-label">Roles</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">{{ total_approval_recipients|default:"0" }}</span>
+                                    <span class="stat-label">Approval Recipients</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <!-- Approval Recipients Highlight -->
+                {% if approval_recipients %}
+                <div class="approval-recipients-section">
+                    <h4>
+                        📬 Approval Recipients
+                        <span class="badge">{{ total_approval_recipients }}</span>
+                    </h4>
+                    <div class="recipient-tags">
+                        {% for member in approval_recipients %}
+                        <span class="recipient-tag">
+                            {{ member.name }}
+                            <span class="role-badge">{{ member.get_role_display }}</span>
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Filter Section -->
+                <div class="filter-section">
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        {% for stat in role_stats %}
+                        <button class="filter-btn" data-filter="{{ stat.role }}">
+                            {{ stat.role_display }} ({{ stat.count }})
+                        </button>
+                        {% endfor %}
+                        {% if total_approval_recipients > 0 %}
+                        <button class="filter-btn" data-filter="approval">
+                            ⭐ Approval Recipients ({{ total_approval_recipients }})
+                        </button>
+                        {% endif %}
+                    </div>
+                    <input type="text" class="search-box" placeholder="Search team members..." id="searchInput">
+                </div>
+
+                <!-- Team Grid -->
+                <div class="team-grid" id="teamGrid">
+                    {% for member in team_members %}
+                    <div class="team-card"
+                         data-role="{{ member.role }}"
+                         data-name="{{ member.name|lower }}"
+                         data-email="{{ member.email|lower }}"
+                         data-approval="{% if member.is_approval_recipient %}true{% else %}false{% endif %}">
+                        <div class="team-card-avatar">
+                            <div class="initials">
+                                {% with name_parts=member.name.split %}
+                                    {{ name_parts.0|slice:":1" }}{% if name_parts|length > 1 %}{{ name_parts.1|slice:":1" }}{% endif %}
+                                {% endwith %}
+                            </div>
+                            {% if member.is_approval_recipient %}
+                            <span class="approval-badge">📬 Approval</span>
+                            {% endif %}
+                        </div>
+                        <div class="team-card-body">
+                            <h3>{{ member.name }}</h3>
+                            <span class="role">{{ member.get_role_display }}</span>
+                            <div class="email">
+                                <i class="fas fa-envelope"></i>
+                                {{ member.email }}
+                            </div>
+                        </div>
+                        <div class="team-card-footer">
+                            <span class="role-tag {{ member.role }}">
+                                {{ member.get_role_display }}
+                            </span>
+                            <span class="status-indicator">
+                                <span class="dot"></span>
+                                {% if member.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center py-5">
+                        <h3>No team members found</h3>
+                        <p class="text-muted">Check back later for updates</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        {% block extra_js %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const filterButtons = document.querySelectorAll('.filter-btn');
+                const teamCards = document.querySelectorAll('.team-card');
+                const searchInput = document.getElementById('searchInput');
+
+                // Filter by role or approval status
+                filterButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        // Remove active class from all buttons
+                        filterButtons.forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+
+                        const filter = this.dataset.filter;
+
+                        teamCards.forEach(card => {
+                            let show = false;
+
+                            if (filter === 'all') {
+                                show = true;
+                            } else if (filter === 'approval') {
+                                show = card.dataset.approval === 'true';
+                            } else {
+                                show = card.dataset.role === filter;
+                            }
+
+                            card.style.display = show ? 'block' : 'none';
+                        });
+                    });
+                });
+
+                // Search functionality
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase().trim();
+
+                    teamCards.forEach(card => {
+                        const name = card.dataset.name || '';
+                        const email = card.dataset.email || '';
+                        const role = card.dataset.role || '';
+
+                        if (name.includes(searchTerm) ||
+                            role.includes(searchTerm) ||
+                            email.includes(searchTerm)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        </script>
+        {% endblock %}
+    </body>
+</html>

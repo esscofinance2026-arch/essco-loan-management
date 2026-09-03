@@ -1,0 +1,307 @@
+{% extends 'Appbase.html' %}
+{% load static %}
+{% block content %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+
+<div class="new-hero">
+    <div class="myhero-image">
+        <div class="myhero-text">
+            <h2 style="font-size:50px">Buy What You Love. Pay Later!</h2>
+            <p>From air conditioners and refrigerators to laundry and kitchen appliances, ESSCO Finance makes upgrading your home easier than ever.</p>
+            <!-- <button>Apply for Financing</button> -->
+        </div>
+    </div>
+</div>
+
+<!-- Popular Appliances Section
+<div class="popular-products-section">
+    <h2>Popular Home Upgrades You Can Finance Today</h2>
+    <div class="products-cards">
+        <div class="card">
+            <img src="/static/images/prod-img-sq-top-wash.jpg" alt="Speed Queen top load washer">
+            <h4>SPEED QUEEN</h4>
+            <p>Top Load Homestyle Washer</p>
+            <p><button>Finance This</button></p>
+        </div>
+        <div class="card">
+            <img src="/static/images/prod-img-br-27-fd.jpg" alt="Brama 26 Cubic Foot French Door Refrigerator">
+            <h4>BRAMA</h4>
+            <p>26.6 Cu Ft. French Door Refrigerator</p>
+            <p><button>Finance This</button></p>
+        </div>
+        <div class="card">
+            <img src="/static/images/prod-img-br-30-rng.jpg" alt="Brama 30 inch Gas Range">
+            <h4>BRAMA</h4>
+            <p>30in Range with Convection Oven</p>
+            <p><button>Finance This</button></p>
+        </div>
+    </div>
+</div> -->
+
+<!-- Financing Made Simple Section -->
+<section class="finance-made-simple-section">
+    <h2>Financing Made <span>Simple</span></h2>
+    <p class="section-subtitle">Get the appliances you need with flexible payment plans.</p>
+
+    <div class="fms-grid">
+        <div class="fms-card">
+            <h3>Apply Online</h3>
+            <p>Complete a quick application.</p>
+        </div>
+
+        <div class="fms-card">
+            <h3>Apply Online</h3>
+            <p>Complete a quick application.</p>
+        </div>
+
+        <div class="fms-card">
+            <h3>Get Approved</h3>
+            <p>We’ll review your application and contact you promptly.</p>
+        </div>
+
+        <div class="fms-card">
+            <h3>Bring It Home</h3>
+            <p>Choose your appliance and enjoy easy monthly payments.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="why-essco">
+    <h2>Why Finance With <span>ESSCO</span></h2>
+    <div class="features-grid">
+        <div class="feature">
+            <i class="fas fa-handshake"></i>
+            <h3>Flexible Hire Purchase</h3>
+            <p>Affordable payment plans tailored to your budget and needs.</p>
+        </div>
+
+        <div class="feature">
+            <i class="fas fa-clock"></i>
+            <h3>Quick Approval</h3>
+            <p>Fast and straightforward application process.</p>
+        </div>
+
+        <div class="feature">
+            <i class="fa-solid fa-medal"></i>
+            <h3>Back by a 90 Years Legacy</h3>
+            <p>ESSCO has been serving Barbados and the Caribbean since 1936 with reliable service.</p>
+        </div>
+
+        <div class="feature">
+            <i class="fas fa-store"></i>
+            <h3>Distributors of Trusted Brands</h3>
+            <p>We carry only the most trusted appliance brands.</p>
+        </div>
+        <!--
+        <div class="feature">
+            <i class="fas fa-tools"></i>
+            <h3>Trained Technicians</h3>
+            <p>Professional installation and service by certified technicians.</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Genuine Parts</h3>
+            <p>We supply only authentic, genuine parts for all appliances.</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-clock"></i>
+            <h3>Quick Approval</h3>
+            <p>Fast and straightforward application process.</p>
+        </div> -->
+    </div>
+</section>
+
+<!-- Get In Touch -->
+<section class="get-in-touch-section">
+    <h2>Get In <span>Touch</span></h2>
+
+    <div class="fms-grid">
+        <div class="fms-card">
+            <i class="fas fa-phone"></i>
+            <h3>Call Us</h3>
+            <p>+1(246)537-0790</p>
+        </div>
+
+        <div class="fms-card">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>Visit Us</h3>
+            <p>Clapham Cl · Widley Main Road</p>
+            <p>Saint Michael, Barbados</p>
+        </div>
+
+        <div class="fms-card">
+            <i class="fas fa-envelope"></i>
+            <h3>Email Us</h3>
+            <p>ESSCO@electricsales.com</p>
+        </div>
+
+        <div class="fms-card">
+            <i class="fas fa-clock"></i>
+            <h3>Hours</h3>
+            <p>Mon-Fri: 7:30am - 4:30pm</p>
+            <p>Sat/Sun: Closed</p>
+        </div>
+    </div>
+</section>
+
+<!-- Hero Section
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="hero-text">
+            <span class="hero-tag">ROAD TO</span>
+            <h1>ESSCO <span>FINANCE</span></h1>
+            <p class="hero-subtitle">Bringing value home since 1936</p>
+            <p class="hero-description">
+                Get the appliances you need with flexible hire purchase plans.
+                From air conditioners to washers, we make quality appliances affordable.
+            </p>
+            <div class="hero-buttons">
+                <a href="https://www.esscoonline.com/" class="btn btn-primary">Apply Now</a>
+                <a href="{% url 'loan_calculator' %}" class="btn btn-secondary">Calculate Payments</a>
+            </div>
+        </div>
+        <div class="hero-stats">
+            <div class="stat">
+                <span class="stat-number">90+</span>
+                <span class="stat-label">Years of Service</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">89</span>
+                <span class="stat-label">Years Serving Barbados</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">1936</span>
+                <span class="stat-label">Established</span>
+            </div>
+        </div>
+    </div>
+</section> -->
+
+<!-- Appliances Section
+<section class="appliances-section">
+    <h2>Appliances Available for <span>Finance</span></h2>
+    <p class="section-subtitle">Get the appliances you need with flexible payment plans</p>
+
+    <div class="appliance-grid">
+        <div class="appliance-card">
+            <i class="fas fa-snowflake"></i>
+            <h3>Refrigerators</h3>
+            <p>Keep your foods fresh with Bosh, Brama, GE & Avanti</p>
+            <span class="finance-tag">View Products</span>
+        </div>
+
+        <div class="appliance-card">
+            <i class="fas fa-utensils"></i>
+            <h3>Ranges & Ovens</h3>
+            <p>Cooking like a Pro with Bosh, Brama & GE</p>
+            <span class="finance-tag">View Products</span>
+        </div>
+
+        <div class="appliance-card">
+            <i class="fas fa-tshirt"></i>
+            <h3>Washers & Dryers</h3>
+            <p>Speed Queen - Built Better to Last Longer</p>
+            <span class="finance-tag">View Products</span>
+        </div>
+
+        <div class="appliance-card">
+            <i class="fas fa-snowflake"></i>
+            <h3>Air Conditioners</h3>
+            <p>Stay cool with Dakin & Tempblue</p>
+            <span class="finance-tag">View Products</span>
+        </div>
+    </div>
+</section> -->
+<!--
+<!-- How It Works
+<section class="how-it-works">
+    <h2>How <span>Hire Purchase</span> Works</h2>
+    <div class="steps">
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Choose Your Appliance</h3>
+            <p>Select from our wide range of quality appliances</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Apply for Financing</h3>
+            <p>Fill out our simple online application form</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Get Approved</h3>
+            <p>Receive quick approval and choose your payment plan</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+            <div class="step-number">4</div>
+            <h3>Enjoy Your Appliance</h3>
+            <p>Get delivery and installation by our trained technicians</p>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials
+<section class="testimonials">
+    <h2>What Our Customers Say</h2>
+    <div class="testimonial-grid">
+        <div class="testimonial">
+            <i class="fas fa-quote-left"></i>
+            <p>"ESSCO made it easy to get the AC unit I needed. The payment plan was flexible and affordable."</p>
+            <div class="customer">
+                <span class="name">John B.</span>
+                <span class="location">Christ Church</span>
+            </div>
+        </div>
+        <div class="testimonial">
+            <i class="fas fa-quote-left"></i>
+            <p>"90 years of service and you can see why. Professional, reliable, and always helpful."</p>
+            <div class="customer">
+                <span class="name">Sarah W.</span>
+                <span class="location">Saint Michael</span>
+            </div>
+        </div>
+        <div class="testimonial">
+            <i class="fas fa-quote-left"></i>
+            <p>"The hire purchase option allowed me to get a new washer and dryer without breaking the bank."</p>
+            <div class="customer">
+                <span class="name">David C.</span>
+                <span class="location">Saint James</span>
+            </div>
+        </div>
+    </div>
+</section>
+-->
+<!-- Quick Info
+<section class="quick-info">
+    <div class="info-box">
+        <i class="fas fa-phone"></i>
+        <h3>Call Us</h3>
+        <p>+1(246)537-0790</p>
+    </div>
+    <div class="info-box">
+        <i class="fas fa-map-marker-alt"></i>
+        <h3>Visit Us</h3>
+        <p>Clapham Cl · Widley Main Road</p>
+        <p>Saint Michael, Barbados</p>
+    </div>
+    <div class="info-box">
+        <i class="fas fa-envelope"></i>
+        <h3>Email Us</h3>
+        <p>ESSCO@electricsales.com</p>
+    </div>
+    <div class="info-box">
+        <i class="fas fa-clock"></i>
+        <h3>Hours</h3>
+        <p>Mon-Fri: 7:30am - 4:30pm</p>
+        <p>Sat/Sun: Closed</p>
+    </div>
+</section>-->
+
+{% endblock %}

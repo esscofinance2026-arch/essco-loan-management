@@ -1,0 +1,240 @@
+{% extends "Appbase.html" %}
+{% load static %}
+
+{% block title %}Check Your Email{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Container styling */
+    .email-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        padding: 2rem 0;
+    }
+    
+    .email-card {
+        border-radius: 12px;
+        border: none;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        background: white;
+        border: 1px solid #e9ecef;
+    }
+    
+    /* Red header */
+    .card-header-custom {
+        background: #dc3545;
+        padding: 2rem 1.5rem;
+        border-bottom: none;
+        position: relative;
+    }
+    
+    .card-header-custom h3 {
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        color: white;
+    }
+    
+    .card-header-custom p {
+        opacity: 0.9;
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.9rem;
+    }
+    
+    /* Email icon - red themed */
+    .email-icon {
+        width: 80px;
+        height: 80px;
+        background: #dc3545;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        margin: 0 auto 1.5rem;
+        color: white;
+        box-shadow: 0 10px 30px rgba(220, 53, 69, 0.25);
+    }
+    
+    /* Alert styling - red theme */
+    .alert-custom {
+        border-radius: 8px;
+        border: none;
+        padding: 1.25rem;
+        margin-top: 1.5rem;
+        background: #fff5f5;
+        border-left: 4px solid #dc3545;
+        color: #2d3748;
+        text-align: left;
+    }
+    
+    .alert-custom p {
+        margin-bottom: 0;
+    }
+    
+    .alert-custom strong {
+        color: #dc3545;
+    }
+    
+    /* Red themed link */
+    .email-link {
+        color: #dc3545;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    
+    .email-link:hover {
+        color: #c82333;
+        text-decoration: underline;
+    }
+    
+    /* Red outline button */
+    .btn-outline-red {
+        color: #dc3545;
+        border: 2px solid #dc3545;
+        background: transparent;
+        border-radius: 8px;
+        padding: 0.75rem;
+        font-weight: 600;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        width: 100%;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .btn-outline-red:hover {
+        background: #dc3545;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+        text-decoration: none;
+        color: white;
+    }
+    
+    .btn-outline-red:active {
+        transform: translateY(0);
+    }
+    
+    /* Step list styling */
+    .step-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .step-list li {
+        padding: 0.25rem 0;
+        color: #2d3748;
+    }
+    
+    .step-list li::before {
+        content: "•";
+        color: #dc3545;
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+        .email-card {
+            margin: 0 1rem;
+        }
+        
+        .card-header-custom {
+            padding: 1.5rem 1rem;
+        }
+        
+        .email-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 2rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        .alert-custom {
+            padding: 1rem;
+        }
+    }
+    
+    /* Helper classes */
+    .text-red {
+        color: #dc3545;
+    }
+    
+    .bg-red-light {
+        background: #fff5f5;
+    }
+    
+    .border-red {
+        border-color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="email-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="email-card">
+                    <!-- Card Header - Red -->
+                    <div class="card-header-custom text-center">
+                        <h3 class="mb-0">📧 Check Your Email</h3>
+                        <p class="mb-0">Complete your registration</p>
+                    </div>
+                    
+                    <!-- Card Body -->
+                    <div class="card-body p-4 p-md-5 text-center">
+                        
+                        <!-- Email Icon - Red -->
+                        <div class="email-icon">
+                            ✉️
+                        </div>
+                        
+                        <h4 class="fw-bold text-dark mb-2">Check Your Email</h4>
+                        
+                        <p class="text-muted">
+                            We've sent a registration link to your email address.
+                        </p>
+                        
+                        <!-- Steps Alert - Red themed -->
+                        <div class="alert-custom">
+                            <strong>📌 Next Steps:</strong>
+                            <ul class="step-list mt-2">
+                                <li>Open your email inbox</li>
+                                <li>Click the registration link</li>
+                                <li>Set your password</li>
+                                <li>Start your application</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Help text with red link -->
+                        <p class="small text-muted mt-3">
+                            Didn't receive the email? Check your spam folder or 
+                            <a href="{% url 'register' %}" class="email-link">try again</a>
+                        </p>
+                        
+                        <!-- Red Outline Button -->
+                        <div class="mt-4">
+                            <a href="{% url 'login' %}" class="btn-outline-red">
+                                Go to Login
+                            </a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

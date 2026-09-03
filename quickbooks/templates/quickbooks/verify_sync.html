@@ -1,0 +1,185 @@
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block staff_content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="page-title">
+                <i class="fas fa-check-circle text-primary"></i> Verify Loan Sync
+            </h2>
+            <p class="text-muted">Checking if loan data exists in QuickBooks</p>
+        </div>
+        <div>
+            <a href="{% url 'staff_loan_detail' loan.id %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Loan
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Verification Results for Loan #{{ loan.loan_id }}</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Overall Status -->
+                    <div class="alert {% if verification.verified %}alert-success{% else %}alert-danger{% endif %} mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="fas {% if verification.verified %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} fa-2x me-3"></i>
+                            <div>
+                                <h4 class="alert-heading mb-1">
+                                    {% if verification.verified %}
+                                        ✅ Sync Verified
+                                    {% else %}
+                                        ❌ Sync Issues Found
+                                    {% endif %}
+                                </h4>
+                                <p class="mb-0">
+                                    {% if verification.verified %}
+                                        All data matches between Django and QuickBooks.
+                                    {% else %}
+                                        Some data is missing or mismatched in QuickBooks.
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Results -->
+                    <div class="row">
+                        <!-- Customer Check -->
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6>
+                                        <i class="fas fa-user"></i> Customer
+                                        {% if verification.customer_exists %}
+                                            <span class="badge bg-success float-end">Found</span>
+                                        {% else %}
+                                            <span class="badge bg-danger float-end">Missing</span>
+                                        {% endif %}
+                                    </h6>
+                                    <p class="mb-0 small">
+                                        <strong>ID:</strong> {{ loan.quickbooks_customer_id|default:"None" }}
+                                    </p>
+                                    {% if verification.details.customer %}
+                                        <p class="mb-0 small text-muted">
+                                            Name: {{ verification.details.customer.DisplayName }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Invoice Check -->
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6>
+                                        <i class="fas fa-file-invoice"></i> Invoice
+                                        {% if verification.invoice_exists %}
+                                            <span class="badge bg-success float-end">Found</span>
+                                        {% else %}
+                                            <span class="badge bg-danger float-end">Missing</span>
+                                        {% endif %}
+                                    </h6>
+                                    <p class="mb-0 small">
+                                        <strong>ID:</strong> {{ loan.quickbooks_invoice_id|default:"None" }}
+                                    </p>
+                                    {% if verification.details.amount_match is not None %}
+                                        <p class="mb-0 small">
+                                            <strong>Amount Match:</strong>
+                                            {% if verification.details.amount_match %}
+                                                <span class="text-success">✓ Matches</span>
+                                            {% else %}
+                                                <span class="text-danger">✗ Mismatch</span>
+                                            {% endif %}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Check (if deposit exists) -->
+                    {% if loan.deposit_paid > 0 %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6>
+                                        <i class="fas fa-credit-card"></i> Payment (Deposit)
+                                        {% if verification.payment_exists %}
+                                            <span class="badge bg-success float-end">Found</span>
+                                        {% else %}
+                                            <span class="badge bg-warning float-end">Not Checked</span>
+                                        {% endif %}
+                                    </h6>
+                                    <p class="mb-0 small">
+                                        <strong>Amount:</strong> ${{ loan.deposit_paid|floatformat:2 }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Loan Info</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <strong>Loan ID:</strong> {{ loan.loan_id }}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Customer:</strong> {{ loan.customer.get_full_name }}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Amount:</strong> ${{ loan.principal_amount|floatformat:2 }}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Synced At:</strong> 
+                            {% if loan.quickbooks_synced_at %}
+                                {{ loan.quickbooks_synced_at|date:"Y-m-d H:i" }}
+                            {% else %}
+                                <span class="text-muted">Not synced</span>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-cogs"></i> Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        {% if not verification.verified %}
+                            <a href="{% url 'sync_loan' loan.id %}" class="btn btn-warning">
+                                <i class="fas fa-sync"></i> Resync to QuickBooks
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'staff_loan_detail' loan.id %}" class="btn btn-outline-primary">
+                            <i class="fas fa-eye"></i> View Loan
+                        </a>
+                        <a href="https://app-sandbox.intuit.com/" target="_blank" class="btn btn-outline-secondary">
+                            <i class="fas fa-external-link-alt"></i> Open QuickBooks
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

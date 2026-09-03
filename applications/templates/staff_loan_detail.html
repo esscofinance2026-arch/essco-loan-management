@@ -1,0 +1,497 @@
+<!-- applications/templates/applications/staff_loan_detail.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Loan {{ loan.loan_id }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .loan-header {
+        background: linear-gradient(135deg, #BF2034 0%, #8B1A24 100%);
+        color: white;
+        padding: 25px 30px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+    }
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row .label { color: #6c757d; font-weight: 500; }
+    .info-row .value { font-weight: 600; }
+    .badge-status {
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    .badge-paid { background: #e6f7ed; color: #0a8f4a; }
+    .badge-partial { background: #fff4e6; color: #c07600; }
+    .badge-pending { background: #f0f0f0; color: #666; }
+    .badge-overdue { background: #fde8e8; color: #b91c1c; }
+    .badge-deposit { background: #e3f2fd; color: #0d6efd; }
+    .badge-installment { background: #e6f7ed; color: #0a8f4a; }
+    .badge-reversed { background: #fde8e8; color: #b91c1c; }
+
+    .badge-status-sm {
+        padding: 3px 10px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .btn-sm {
+        padding: 4px 10px;
+        font-size: 0.75rem;
+        border-radius: 6px;
+    }
+
+    .btn-action {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+        border-radius: 4px;
+        margin: 0 2px;
+    }
+
+    /* ✅ Deposit Progress Bar */
+    .deposit-progress {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-top: 8px;
+        border: 1px solid #e9ecef;
+    }
+    .deposit-progress .progress {
+        height: 20px;
+        border-radius: 10px;
+        background-color: #e9ecef;
+        margin-top: 6px;
+    }
+    .deposit-progress .progress-bar {
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        line-height: 20px;
+    }
+    .deposit-progress .deposit-label {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    .deposit-progress .deposit-value {
+        font-weight: 600;
+    }
+
+    /* ✅ Deposit Alert Boxes */
+    .deposit-alert {
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-top: 8px;
+    }
+    .deposit-alert i {
+        margin-right: 8px;
+    }
+    .deposit-complete { background: #e6f7ed; border: 1px solid #b8e6cc; color: #0a8f4a; }
+    .deposit-incomplete { background: #fff4e6; border: 1px solid #ffd699; color: #c07600; }
+    .deposit-reversed { background: #fde8e8; border: 1px solid #f5c6cb; color: #b91c1c; }
+    .deposit-none { background: #f0f0f0; border: 1px solid #ddd; color: #666; }
+</style>
+{% endblock %}
+
+{% block staff_content %}
+<div class="loan-header">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+        <div>
+            <h3><i class="fas fa-hand-holding-usd me-2"></i>Loan {{ loan.loan_id }}</h3>
+            <p class="mb-0 opacity-75">
+                {% if loan.customer %}
+                    {{ loan.customer.get_full_name|default:loan.customer.username }}
+                {% else %}
+                    {{ loan.application.Fname }} {{ loan.application.Lname }}
+                {% endif %}
+            </p>
+            <p class="mb-0 opacity-75">
+                {{ loan.application.reference_number }}
+            </p>
+
+        </div>
+        <div class="mt-2 mt-md-0">
+            <span class="badge bg-light text-dark px-3 py-2 me-2">{{ loan.status }}</span>
+            {% if loan.quickbooks_customer_id %}
+            <span class="badge bg-success px-3 py-2">✅ Synced</span>
+            {% else %}
+            <a href="{% url 'loans:sync_to_quickbooks' loan.id %}" class="btn btn-sm btn-light">
+                <i class="fab fa-quickbooks"></i> Sync
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <div class="staff-card">
+            <div class="card-header">Loan Details</div>
+            <div class="card-body">
+                <div class="info-row"><span class="label">Loan ID</span><span class="value">{{ loan.loan_id }}</span></div>
+                <div class="info-row"><span class="label">Application</span><span class="value">{{ loan.application.reference_number }}</span></div>
+                <div class="info-row">
+                    <span class="label">
+                        Customer</span>
+                    <span class="value">
+                        {% if loan.customer %}
+                            {{ loan.customer.get_full_name|default:loan.customer.username }}
+                        {% else %}
+                            {{ loan.application.Fname }} {{ loan.application.Lname }}
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="info-row"><span class="label">Email</span><span class="value">{{ loan.customer.email|default:loan.application.email }}</span></div>
+                <!--
+                <div class="info-row"><span class="label">Principal</span><span class="value">${{ loan.principal_amount|floatformat:2 }}</span></div>
+                <div class="info-row"><span class="label">Interest Rate</span><span class="value">{{ loan.interest_rate }}%</span></div>
+                -->
+                <div class="info-row"><span class="label">Tenure</span><span class="value">{{ loan.tenure_months }} months</span></div>
+                <div class="info-row"><span class="label">Ininitial Financed Amount</span><span class="value">${{ loan.application.Financed_Amt|floatformat:2 }}</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- ✅ FINANCIAL STATUS WITH DEPOSIT PROGRESS                   -->
+    <!-- ========================================================== -->
+    <div class="col-md-4 mb-3">
+        <div class="staff-card">
+            <div class="card-header">Financial Status</div>
+            <div class="card-body">
+                <div class="info-row"><span class="label">Monthly Payment</span><span class="value">${{ loan.monthly_installment|floatformat:2 }}</span></div>
+                <div class="info-row"><span class="label">Total Payable</span><span class="value">${{ loan.total_payable|floatformat:2 }}</span></div>
+                <div class="info-row"><span class="label">Total Paid</span><span class="value">${{ loan.total_paid|floatformat:2 }}</span></div>
+                <div class="info-row"><span class="label">Outstanding Principal</span><span class="value text-danger">${{ loan.outstanding_principal|floatformat:2 }}</span></div>
+
+
+                <!-- ✅ Deposit Information -->
+                <div class="info-row">
+                    <span class="label">Deposit Paid</span>
+                    <span class="value">
+                        ${{ loan.deposit_paid|floatformat:2 }}
+                        {% if loan.deposit_payment and loan.deposit_payment.is_reversed %}
+                            <span class="badge bg-danger ms-1">REVERSED</span>
+                        {% elif loan.deposit_complete %}
+                            <span class="badge bg-success ms-1">COMPLETE</span>
+                        {% elif loan.deposit_paid > 0 %}
+                            <span class="badge bg-warning ms-1">PARTIAL</span>
+                        {% endif %}
+                    </span>
+                </div>
+
+                <!-- ✅ Deposit Target (if set) -->
+                {% if loan.deposit_target > 0 %}
+                    <div class="info-row">
+                        <span class="label">Deposit Target</span>
+                        <span class="value">${{ loan.deposit_target|floatformat:2 }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Deposit Remaining</span>
+                        <span class="value text-{% if loan.deposit_remaining > 0 %}danger{% else %}success{% endif %}">
+                            ${{ loan.deposit_remaining|floatformat:2 }}
+                        </span>
+                    </div>
+                {% endif %}
+
+                <!-- ✅ Deposit Progress Bar -->
+                {% if loan.deposit_target > 0 %}
+                    <div class="deposit-progress">
+                        <div class="d-flex justify-content-between">
+                            <span class="deposit-label">Deposit Progress</span>
+                            <span class="deposit-value">{{ loan.deposit_percentage|floatformat:2 }}%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar {% if loan.deposit_complete %}bg-success{% elif loan.deposit_paid > 0 %}bg-info{% else %}bg-secondary{% endif %}"
+                                 role="progressbar"
+                                 style="width: {{ loan.deposit_percentage|floatformat:0 }}%;"
+                                 aria-valuenow="{{ loan.deposit_percentage|floatformat:0 }}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                                {{ loan.deposit_percentage|floatformat:2 }}%
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- ✅ Deposit Status Alert -->
+                {% if loan.deposit_payment and loan.deposit_payment.is_reversed %}
+                    <div class="deposit-alert deposit-reversed">
+                        <i class="fas fa-undo-alt"></i>
+                        <strong>Deposit Reversed</strong>
+                        <br>
+                        <small>The deposit payment has been reversed. A new deposit is required.</small>
+                    </div>
+                {% elif loan.deposit_complete %}
+                    <div class="deposit-alert deposit-complete">
+                        <i class="fas fa-check-circle"></i>
+                        <strong>Deposit Complete</strong>
+                        <br>
+                        <small>Deposit target of ${{ loan.deposit_target|floatformat:2 }} has been met.</small>
+                    </div>
+                {% elif loan.deposit_paid > 0 %}
+                    <div class="deposit-alert deposit-incomplete">
+                        <i class="fas fa-clock"></i>
+                        <strong>Deposit In Progress</strong>
+                        <br>
+                        <small>Need ${{ loan.deposit_remaining|floatformat:2 }} more to complete deposit.</small>
+                    </div>
+                {% elif loan.deposit_target > 0 %}
+                    <div class="deposit-alert deposit-none">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>No Deposit Paid</strong>
+                        <br>
+                        <small>Deposit of ${{ loan.deposit_target|floatformat:2 }} is required.</small>
+                    </div>
+                {% endif %}
+
+                <div class="info-row"><span class="label">Start Date</span><span class="value">{{ loan.start_date|date:"M d, Y" }}</span></div>
+                <div class="info-row"><span class="label">First Payment</span><span class="value">{{ loan.first_payment_date|date:"M d, Y" }}</span></div>
+                <div class="info-row"><span class="label">Maturity</span><span class="value">{{ loan.maturity_date|date:"M d, Y" }}</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="staff-card">
+            <div class="card-header">QuickBooks</div>
+            <div class="card-body">
+                <div class="info-row"><span class="label">Status</span>
+                    <span class="value">
+                        {% if loan.quickbooks_customer_id %}
+                            <span class="badge bg-success">✅ Synced</span>
+                        {% else %}
+                            <span class="badge bg-secondary">⏳ Not Synced</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="btn-group">
+                    {% if loan.quickbooks_customer_id %}
+                        <a href="{% url 'verify_loan_sync' loan.id %}" class="btn btn-outline-info">
+                            <i class="fas fa-check-circle"></i> Verify Sync
+                        </a>
+                    {% endif %}
+
+                    {% if not loan.quickbooks_customer_id %}
+                        <a href="{% url 'sync_loan' loan.id %}" class="btn btn-success">
+                            <i class="fas fa-cloud-upload-alt"></i> Sync to QuickBooks
+                        </a>
+                    {% else %}
+                        <a href="{% url 'sync_loan' loan.id %}?force=1" class="btn btn-warning">
+                            <i class="fas fa-sync"></i> Resync
+                        </a>
+                    {% endif %}
+                </div>
+                {% if loan.quickbooks_customer_id %}
+                <div class="info-row"><span class="label">Customer ID</span><span class="value">{{ loan.quickbooks_customer_id }}</span></div>
+                <div class="info-row"><span class="label">Invoice ID</span><span class="value">{{ loan.quickbooks_invoice_id }}</span></div>
+                <div class="info-row"><span class="label">Synced At</span><span class="value">{{ loan.quickbooks_synced_at|date:"M d, Y H:i" }}</span></div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAYMENT SCHEDULE WITH EDIT & REMINDER BUTTONS                -->
+<!-- ============================================================ -->
+<div class="staff-card mt-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-calendar-alt me-2"></i>Payment Schedule</span>
+        <span class="badge bg-secondary">{{ schedule|length }} Payments</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Due Date</th>
+                        <th>Principal</th>
+                        <th>Interest</th>
+                        <th>Total</th>
+                        <th>Paid</th>
+                        <th>Status</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in schedule %}
+                    <tr>
+                        <td>{{ s.installment_number }}</td>
+                        <td>{{ s.due_date|date:"M d, Y" }}</td>
+                        <td>${{ s.principal_due|floatformat:2 }}</td>
+                        <td>${{ s.interest_due|floatformat:2 }}</td>
+                        <td>${{ s.total_due|floatformat:2 }}</td>
+                        <td>${{ s.total_paid|floatformat:2 }}</td>
+                        <td>
+                            <span class="badge-status badge-{{ s.status|lower }}">
+                                {{ s.status }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            {% if user.is_staff and s.status != 'PAID' %}
+                                <!-- ✅ Edit Schedule Button -->
+                                <a href="{% url 'loans:edit_schedule' s.id %}"
+                                   class="btn btn-sm btn-warning btn-action"
+                                   title="Edit Schedule">
+                                    <i class="fas fa-calendar-edit"></i>
+                                </a>
+                                <!-- ✅ Send Reminder Button -->
+                                <button onclick="sendReminder({{ s.id }})"
+                                        class="btn btn-sm btn-info btn-action"
+                                        title="Send Reminder">
+                                    <i class="fas fa-bell"></i>
+                                </button>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ✅ PAYMENT HISTORY WITH DEPOSIT CATEGORY                     -->
+<!-- ============================================================ -->
+<div class="staff-card mt-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-bold"><i class="fas fa-receipt text-success me-2"></i>Payment History</h6>
+        <div>
+            <span class="badge bg-info me-1">Deposit</span>
+            <span class="badge bg-success me-1">Installment</span>
+            <span class="badge bg-danger">Reversed</span>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Receipt</th>
+                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>Principal</th>
+                        <th>Interest</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in payments %}
+                    <tr {% if p.is_reversed %}class="table-danger"{% endif %}>
+                        <td>{{ p.created_at|date:"M d, Y" }}</td>
+                        <td><span class="fw-bold">{{ p.receipt_number }}</span></td>
+                        <td>
+                            ${{ p.amount|floatformat:2 }}
+                            {% if p.is_reversed %}
+                                <span class="badge bg-danger">REVERSED</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if p.category == 'DEPOSIT' %}
+                                <span class="badge badge-deposit">🏦 Deposit</span>
+                            {% elif p.category == 'INSTALLMENT' %}
+                                <span class="badge badge-installment">📋 Installment</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ p.category }}</span>
+                            {% endif %}
+                        </td>
+                        <td>${{ p.principal_applied|floatformat:2 }}</td>
+                        <td>${{ p.interest_applied|floatformat:2 }}</td>
+                        <td>{{ p.payment_method.name }}</td>
+                        <td>
+                            <span class="badge-status-sm
+                                {% if p.is_reversed %}badge-overdue
+                                {% elif p.status == 'CONFIRMED' %}badge-paid
+                                {% elif p.status == 'PENDING' %}badge-pending
+                                {% else %}badge-partial{% endif %}">
+                                {% if p.is_reversed %}Reversed{% else %}{{ p.status }}{% endif %}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">No payments recorded</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ACTION BUTTONS                                               -->
+<!-- ============================================================ -->
+<div class="mt-3 d-flex flex-wrap gap-2">
+    <a href="{% url 'staff_loan_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+    {% if not loan.quickbooks_customer_id %}
+    <a href="{% url 'loans:sync_to_quickbooks' loan.id %}" class="btn btn-info text-white">
+        <i class="fab fa-quickbooks"></i> Sync to QB
+    </a>
+    {% endif %}
+
+    <!--Record Payment Button - Dynamic based on deposit status-->
+
+    {% if not loan.deposit_complete %}
+        <!-- Deposit not complete → allow adding more -->
+        <a href="{% url 'loans:record_payment' loan.id %}" class="btn btn-warning">
+            <i class="fas fa-plus-circle"></i> Continue Deposit
+        </a>
+    {% else %}
+        <!-- Deposit complete → show installment button -->
+        <a href="{% url 'loans:record_payment' loan.id %}" class="btn btn-primary">
+            <i class="fas fa-hand-holding-usd"></i> Record Payment (Installment)
+        </a>
+    {% endif %}
+
+    <a href="{% url 'loans:admin_auto_repair_loan' loan.id %}" class="btn btn-warning">
+        <i class="fas fa-tools"></i> Repair Loan
+    </a>
+</div>
+
+<!-- ============================================================ -->
+<!-- JAVASCRIPT                                                    -->
+<!-- ============================================================ -->
+<script>
+function sendReminder(scheduleId) {
+    if (!confirm('Send payment reminder for this installment?')) {
+        return;
+    }
+
+    fetch(`/payments/admin/reminder/${scheduleId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('✅ Reminder sent successfully!');
+        } else {
+            alert('❌ Failed to send reminder: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        alert('❌ Error: ' + error);
+    });
+}
+</script>
+{% endblock %}

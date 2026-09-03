@@ -1,0 +1,81 @@
+<!-- applications/templates/applications/manual_create_loan.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Manual Loan Creation{% endblock %}
+
+{% block extra_css %}
+<style>
+    .info-box {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+    }
+    .info-box .label { color: #6c757d; font-weight: 500; font-size: 0.85rem; }
+    .info-box .value { font-weight: 600; }
+    .info-box .row { margin-top: 6px; }
+</style>
+{% endblock %}
+
+{% block staff_content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="staff-card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Manual Loan Creation</h5>
+            </div>
+            <div class="card-body">
+                <div class="info-box">
+                    <h6>Application Details</h6>
+                    <div class="row">
+                        <div class="col-sm-6"><span class="label">Reference</span><br><span class="value">{{ application.reference_number }}</span></div>
+                        <div class="col-sm-6"><span class="label">Customer</span><br><span class="value">{{ application.Fname }} {{ application.Lname }}</span></div>
+                        <div class="col-sm-6"><span class="label">Item</span><br><span class="value">{{ application.item_name }}</span></div>
+                        <div class="col-sm-6"><span class="label">Purchase Value</span><br><span class="value">${{ application.Purchase_Value|floatformat:2 }}</span></div>
+                        <div class="col-sm-6"><span class="label">Financed Amount</span><br><span class="value">${{ application.Financed_Amt|floatformat:2 }}</span></div>
+                        <div class="col-sm-6"><span class="label">Deposit Paid</span><br><span class="value">${{ deposit_amount|floatformat:2 }}</span></div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Warning:</strong> Only use this when auto-creation fails.
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="fw-bold">Principal Amount ($)</label>
+                            <input type="number" name="principal_amount" step="0.01"
+                                   class="form-control" value="{{ default_principal|floatformat:2 }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="fw-bold">Interest Rate (%)</label>
+                            <input type="number" name="interest_rate" step="0.01"
+                                   class="form-control" value="{{ default_interest|floatformat:2 }}" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold">Tenure (Months)</label>
+                        <select name="tenure_months" class="form-control" required>
+                            <option value="6" {% if default_tenure == 6 %}selected{% endif %}>6 months</option>
+                            <option value="12" {% if default_tenure == 12 %}selected{% endif %}>12 months</option>
+                            <option value="18" {% if default_tenure == 18 %}selected{% endif %}>18 months</option>
+                            <option value="24" {% if default_tenure == 24 %}selected{% endif %}>24 months</option>
+                            <option value="30" {% if default_tenure == 30 %}selected{% endif %}>30 months</option>
+                            <option value="36" {% if default_tenure == 36 %}selected{% endif %}>36 months</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-check-circle"></i> Create Loan
+                    </button>
+                    <a href="{% url 'staff_loan_pending' %}" class="btn btn-secondary w-100 mt-2">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'Appbase.html' %}
+{% load static %}
+
+{% block title %}Privacy Policy - ESSCO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/privacy.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="privacy-section">
+
+    <h2>Privacy Policy</h2>
+
+    <p class="subtitle">
+        Electric Sales & Service Ltd. (ESSCO) is committed to respecting the privacy of our customers, third-party vendors and all individuals who provide personal data to ESSCO.
+    </p>
+
+    <!-- Introduction -->
+    <div class="privacy-card">
+        <p>
+            As part of our commitment to protecting your privacy and comply with our data protection obligations under the
+            <strong>Data Protection Act, 2019 of Barbados</strong> and other applicable laws, we have developed this Privacy
+            Policy (the "Policy") to outline to you how we protect the personal data you have provided to us.
+        </p>
+        <p>
+            This Policy applies to all personal data you may provide to us, and information that we collect from our customers,
+            or any other person who may interact with us. It outlines:
+        </p>
+        <ul>
+            <li>What data we might collect about you</li>
+            <li>How we might use that data</li>
+            <li>When we might use your details to contact you</li>
+            <li>What data of yours we might share with others</li>
+            <li>Your rights in relation to the personal data you give us</li>
+        </ul>
+    </div>
+
+    <!-- What Does This Policy Cover -->
+    <div class="privacy-card">
+        <h3>What Does This Policy Cover</h3>
+        <p>
+            This Policy covers all services or products offered by all brands within Electric Sales & Service Ltd., that is,
+            <strong>ESSCO, ESSCO Finance, and ..............</strong> under which Electric Sales & Service Ltd. conducts business
+            within Barbados. This policy applies to you when you are in Barbados.
+        </p>
+        <p>
+            The companies identified within Electric Sales & Service Ltd. are the controllers for the purposes of this Policy. This means
+            that we are responsible for deciding how your personal data is used and ensuring that it is used in compliance with
+            applicable data protection law. Sometimes, we may work with other companies to decide how your personal data is
+            used. In those scenarios, we are joint controllers with these companies because we jointly determine the purposes
+            and means of processing your personal data.
+        </p>
+        <p>
+            If you have any comments, queries, or questions about this Policy, feel free to contact us at
+            <a href="">essco.com</a>.
+        </p>
+    </div>
+
+    <!-- Footer Note -->
+    <div class="privacy-footer">
+        <p>
+            <strong>Last Updated:</strong> <span id="last-updated"></span>
+        </p>
+        <p>
+            For any privacy-related concerns, please contact our Data Protection Officer at
+            <a href="">essco@electricsales.com</a>.
+        </p>
+    </div>
+
+</div>
+
+<script>
+    // Auto-update the last updated date
+    document.getElementById('last-updated').textContent = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+</script>
+
+{% endblock %}

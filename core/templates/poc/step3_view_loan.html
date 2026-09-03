@@ -1,0 +1,91 @@
+<!-- poc/step3_view_loan.html -->
+{% extends "Appbase.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h4>Step 3: Loan Created ✅</h4>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-success">
+                <h5>🎉 Loan Created Successfully!</h5>
+                <p><strong>Loan ID:</strong> {{ loan.loan_id }}</p>
+                <p><strong>Principal:</strong> ${{ loan.principal_amount|floatformat:2 }}</p>
+                <p><strong>Interest Rate:</strong> {{ loan.interest_rate }}%</p>
+                <p><strong>Tenure:</strong> {{ loan.tenure_months }} months</p>
+                <p><strong>Monthly Installment:</strong> ${{ loan.monthly_installment|floatformat:2 }}</p>
+                <p><strong>Total Payable:</strong> ${{ loan.total_payable|floatformat:2 }}</p>
+            </div>
+
+            <div class="alert alert-info">
+                <h6>💰 Deposit Information</h6>
+                <p><strong>Amount:</strong> ${{ deposit_info.amount|floatformat:2 }}</p>
+                <p><strong>Date:</strong> {{ deposit_info.date|date:"Y-m-d H:i" }}</p>
+                <p><strong>Method:</strong> {{ deposit_info.method }}</p>
+                <p><strong>Receipt:</strong> {{ deposit_info.receipt }}</p>
+                <p><strong>Source Application:</strong> {{ deposit_info.source_application }}</p>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6>First 5 Installments</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Due Date</th>
+                                <th>Principal</th>
+                                <th>Interest</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for schedule in payment_schedule %}
+                            <tr>
+                                <td>{{ schedule.installment_number }}</td>
+                                <td>{{ schedule.due_date|date:"Y-m-d" }}</td>
+                                <td>${{ schedule.principal_due|floatformat:2 }}</td>
+                                <td>${{ schedule.interest_due|floatformat:2 }}</td>
+                                <td>${{ schedule.total_due|floatformat:2 }}</td>
+                                <td>
+                                    <span class="badge badge-{{ schedule.status|lower }}">
+                                        {{ schedule.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">No installments found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <p class="text-muted">... and {{ total_installments|add:"-5" }} more installments</p>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                {% if is_synced %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <strong>Already synced to QuickBooks!</strong>
+                        <br>Customer ID: {{ loan.quickbooks_customer_id }}
+                        <br>Invoice ID: {{ loan.quickbooks_invoice_id }}
+                    </div>
+                {% else %}
+                    <a href="{% url 'poc_step4_push_quickbooks' loan.id %}" class="btn btn-primary btn-block">
+                        <i class="fas fa-cloud-upload-alt"></i> Step 4: Push to QuickBooks
+                    </a>
+                {% endif %}
+                <a href="{% url 'poc_dashboard' %}" class="btn btn-secondary btn-block">
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

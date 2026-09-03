@@ -1,0 +1,179 @@
+/* ============================================
+   THANK YOU PAGE - ESSCO Style
+   ============================================ */
+
+.thankyou-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 40px 20px;
+    background: #f8f9fa;
+}
+
+.thankyou-container {
+    max-width: 700px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 50px 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    border-left: 5px solid #f0b31e;
+}
+
+/* ============================================
+   CHECKMARK ANIMATION
+   ============================================ */
+
+.checkmark-wrapper {
+    margin-bottom: 25px;
+}
+
+.checkmark-circle {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    animation: bounceIn 0.8s ease;
+    box-shadow: 0 8px 30px rgba(40, 167, 69, 0.3);
+}
+
+.checkmark-circle i {
+    font-size: 40px;
+    color: #ffffff;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    70% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   HEADINGS
+   ============================================ */
+
+.thankyou-container h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #1a3b5d;
+    margin: 0 0 8px 0;
+    letter-spacing: 1px;
+}
+
+.thankyou-container h2 {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #555;
+    margin: 0 0 25px 0;
+}
+
+/* ============================================
+   MESSAGE BOX
+   ============================================ */
+/*
+.message-box {
+    background: #f8f9fa;
+    padding: 25px 30px;
+    border-radius: 10px;
+    border-left: 4px solid #f0b31e;
+}
+
+.message-box p {
+    font-size: 1.05rem;
+    color: #444;
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.message-box .reference-note {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e9ecef;
+    font-size: 1rem;
+    color: #555;
+}
+
+.message-box .reference-note strong {
+    color: #1a3b5d;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .thankyou-container {
+        padding: 35px 25px;
+    }
+    
+    .thankyou-container h1 {
+        font-size: 2.2rem;
+    }
+    
+    .thankyou-container h2 {
+        font-size: 1.1rem;
+    }
+    /*
+    .message-box {
+        padding: 18px 20px;
+    }
+    
+    .message-box p {
+        font-size: 0.95rem;
+    }*/
+}
+
+@media (max-width: 480px) {
+    .thankyou-section {
+        padding: 20px 12px;
+        min-height: 70vh;
+    }
+    
+    .thankyou-container {
+        padding: 25px 18px;
+    }
+    
+    .thankyou-container h1 {
+        font-size: 1.8rem;
+    }
+    
+    .thankyou-container h2 {
+        font-size: 1rem;
+    }
+    /*
+    .message-box {
+        padding: 15px 16px;
+    }
+    
+    .message-box p {
+        font-size: 0.9rem;
+    }*/
+    
+    .checkmark-circle {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .checkmark-circle i {
+        font-size: 28px;
+    }
+}

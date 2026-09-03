@@ -1,0 +1,20 @@
+ESSCO Finance
+⏰ Payment Overdue - {{ loan_id }}
+
+Dear {{ customer_name }},
+
+Your payment is now OVERDUE. Please make your payment as soon as possible.
+
+Loan ID: {{ loan_id }}
+Installment #: {{ installment_number }}
+Due Date: {{ due_date }}
+Amount: {{ amount }}
+Outstanding Balance: {{ outstanding_balance }}
+Days Overdue: {{ days_until_due|abs }}
+
+Make Payment: {{ payment_url }}
+
+Need help? Contact us at {{ support_email }}
+
+ESSCO Finance
+Clapham Court • Wildey Main Road • St. Michael

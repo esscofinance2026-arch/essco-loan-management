@@ -1,0 +1,286 @@
+<!-- accounts/templates/accounts/register.html -->
+
+{% extends "Appbase.html" %}
+{% load static %}
+
+{% block title %}Register{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        padding: 20px;
+    }
+
+    .register-card {
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        width: 100%;
+        max-width: 480px;
+        transition: transform 0.3s ease;
+    }
+
+    .register-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .register-header {
+        background: #BF2034;
+        color: white;
+        padding: 35px 30px;
+        text-align: center;
+    }
+
+    .register-header h3 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 28px;
+        letter-spacing: 1px;
+    }
+
+    .register-header p {
+        margin: 8px 0 0 0;
+        opacity: 0.9;
+        font-size: 14px;
+    }
+
+    .register-body {
+        padding: 35px 30px 30px;
+    }
+
+    .register-body .description {
+        color: #666;
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .register-body .form-group {
+        margin-bottom: 20px;
+    }
+
+    .register-body label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .register-body .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .register-body .form-control:focus {
+        border-color: #1a237e;
+        box-shadow: 0 0 0 4px rgba(26, 35, 126, 0.1);
+        background: #ffffff;
+        outline: none;
+    }
+
+    .register-body .form-control::placeholder {
+        color: #aaa;
+        font-size: 14px;
+    }
+
+    .register-body .form-text {
+        color: #888;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .register-body .text-danger {
+        color: #dc3545;
+        font-size: 13px;
+        margin-top: 4px;
+        display: block;
+    }
+
+    .register-body .btn-primary {
+        background: #BF2034;
+        border: none;
+        color: white;
+        padding: 14px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 5px;
+    }
+
+    .register-body .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(26, 35, 126, 0.3);
+    }
+
+    .register-body .btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .register-body .divider {
+        border: none;
+        border-top: 1px solid #e8e8e8;
+        margin: 25px 0;
+    }
+
+    .register-body .footer-text {
+        text-align: center;
+        color: #BF2034;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .register-body .footer-text a {
+        color: #1a237e;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .register-body .footer-text a:hover {
+        text-decoration: underline;
+    }
+
+    /* Alert Messages */
+    .alert {
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .alert-success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+
+    .alert-error {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+
+    .alert-info {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        color: #0c5460;
+    }
+
+    .alert-warning {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+    }
+
+    .alert .btn-close {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0 0 0 10px;
+        color: inherit;
+        opacity: 0.7;
+    }
+
+    .alert .btn-close:hover {
+        opacity: 1;
+    }
+
+    .alert-link {
+        color: inherit;
+        font-weight: 600;
+        text-decoration: underline;
+    }
+
+    .alert-link:hover {
+        color: #0056b3;
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+        .register-header {
+            padding: 25px 20px;
+        }
+
+        .register-header h3 {
+            font-size: 22px;
+        }
+
+        .register-body {
+            padding: 25px 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-card">
+        <!-- Header -->
+        <div class="register-header">
+            <h3>Password Configuration</h3>
+
+        </div>
+
+        <!-- Body -->
+        <div class="register-body">
+
+            <!-- Display messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        {{ message|safe }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert">×</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <p class="description">
+                Enter your email address which is also your username and we'll send you a secure link to set up or reset your account.
+            </p>
+
+            <form method="POST" novalidate>
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">Email Address</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <span class="text-danger">{{ form.email.errors }}</span>
+                    {% endif %}
+                    <small class="form-text">
+                        We'll send a secure registration link to this email.
+                    </small>
+                </div>
+
+                <button type="submit" class="btn-primary">Send Registration Link</button>
+            </form>
+
+            <hr class="divider">
+
+            <p class="footer-text">
+                Already have an account?
+                <a href="{% url 'login' %}">Login here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

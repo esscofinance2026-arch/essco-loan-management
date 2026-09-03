@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<style>
+            .settings-dashboard {
+                padding: 20px 0;
+            }
+
+            .dashboard-header {
+                margin-bottom: 30px;
+            }
+
+            .dashboard-header h1 {
+                font-size: 2rem;
+                font-weight: 600;
+                color: #2d3748;
+            }
+
+            .dashboard-header p {
+                color: #718096;
+                font-size: 1.1rem;
+            }
+
+            .settings-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+                gap: 25px;
+            }
+
+            .settings-tile {
+                background: white;
+                border-radius: 15px;
+                padding: 25px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                border: 1px solid #e9ecef;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                text-decoration: none;
+                color: inherit;
+                display: block;
+            }
+
+            .settings-tile:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .tile-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+                border-bottom: 2px solid #f7fafc;
+            }
+
+            .tile-header h3 {
+                margin: 0;
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #2d3748;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .tile-header .icon {
+                font-size: 1.5rem;
+            }
+
+            .status-badge {
+                font-size: 0.7rem;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+
+            .status-badge.enabled {
+                background: #c6f6d5;
+                color: #276749;
+            }
+
+            .status-badge.disabled {
+                background: #fed7d7;
+                color: #9b2c2c;
+            }
+
+            .status-badge.configured {
+                background: #bee3f8;
+                color: #2a69ac;
+            }
+
+            .status-badge.coming-soon {
+                background: #f7fafc;
+                color: #a0aec0;
+            }
+
+            .tile-body {
+                color: #4a5568;
+                font-size: 0.9rem;
+            }
+
+            .tile-body p {
+                margin: 0;
+            }
+
+            .tile-footer {
+                margin-top: 15px;
+                padding-top: 15px;
+                border-top: 1px solid #f7fafc;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .tile-footer .arrow {
+                color: #a0aec0;
+                transition: all 0.3s;
+            }
+
+            .settings-tile:hover .tile-footer .arrow {
+                color: #667eea;
+                transform: translateX(5px);
+            }
+
+            .coming-soon-tile {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+            .coming-soon-tile:hover {
+                transform: none;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+
+            .coming-soon-tile .tile-body {
+                color: #a0aec0;
+            }
+        </style>
+
+    </head>
+    <body>
+
+
+        <div class="container-fluid settings-dashboard">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h1><i class="fas fa-sliders-h"></i> Settings <a href="{% url 'admin_dashboard' %}" > <span> Dashboard </span> </a> </h1>
+                        <p>Manage your site configuration and preferences</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Grid -->
+            <div class="settings-grid">
+
+                <!-- TILE 1: Maintenance Mode -->
+                <a href="{% url 'maintenance_settings' %}" class="settings-tile">
+                    <div class="tile-header">
+                        <h3>
+                            <span class="icon">🔧</span>
+                            Maintenance Mode
+                        </h3>
+                        <span class="status-badge {% if site_settings.maintenance_mode %}enabled{% else %}disabled{% endif %}">
+                            {% if site_settings.maintenance_mode %}Enabled{% else %}Disabled{% endif %}
+                        </span>
+                    </div>
+                    <div class="tile-body">
+                        <p>
+                            {% if site_settings.maintenance_mode %}
+                                Site is in maintenance mode. Visitors will see the maintenance page.
+                            {% else %}
+                                Maintenance mode is disabled. Site is live.
+                            {% endif %}
+                        </p>
+                        {% if site_settings.maintenance_mode %}
+                        <p class="text-muted mt-2">
+                            <small>{{ site_settings.maintenance_title }}</small>
+                        </p>
+                        {% endif %}
+                    </div>
+                    <div class="tile-footer">
+                        <span class="text-muted small">Configure</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </a>
+
+                <!-- TILE 2: General Settings (Coming Soon) -->
+                <div class="settings-tile coming-soon-tile">
+                    <div class="tile-header">
+                        <h3>
+                            <span class="icon">⚙️</span>
+                            General Settings
+                        </h3>
+                        <span class="status-badge coming-soon">Coming Soon</span>
+                    </div>
+                    <div class="tile-body">
+                        <p>Site name, contact email, and general configuration.</p>
+                    </div>
+                    <div class="tile-footer">
+                        <span class="text-muted small">Coming soon</span>
+                    </div>
+                </div>
+
+                <!-- TILE 3: Email Settings (Coming Soon) -->
+                <a href="{% url 'email_usage_dashboard' %}" class="settings-tile">
+                    <div class="tile-header">
+                        <h3>
+                            <span class="icon">📧</span>
+                            Email Settings
+                        </h3>
+                        <span class="status-badge coming-soon">Coming Soon</span>
+                    </div>
+                    <div class="tile-body">
+                        <p>SMTP configuration, email templates, and notification settings.</p>
+                    </div>
+                    <div class="tile-footer">
+                        <span class="text-muted small">Coming soon</span>
+                    </div>
+                </a>
+
+                <!-- TILE 4: Loan Settings (Coming Soon) -->
+                <a href="{% url 'rates' %}" class="settings-tile">
+                    <div class="tile-header">
+                        <h3>
+                            <span class="icon">💰</span>
+                            Loan Settings
+                        </h3>
+                        <span class="status-badge coming-soon">Coming Soon</span>
+                    </div>
+                    <div class="tile-body">
+                        <p>Loan limits, interest rates, terms, and approval criteria.</p>
+                    </div>
+                    <div class="tile-footer">
+                        <span class="text-muted small">Coming soon</span>
+                    </div>
+                </a>
+
+                <!-- TILE 5: Analytics Settings (Coming Soon) -->
+                <div class="settings-tile coming-soon-tile">
+                    <div class="tile-header">
+                        <h3>
+                            <span class="icon">📊</span>
+                            Analytics Settings
+                        </h3>
+                        <span class="status-badge coming-soon">Coming Soon</span>
+                    </div>
+                    <div class="tile-body">
+                        <p>Analytics configuration, reporting preferences, and data retention.</p>
+                    </div>
+                    <div class="tile-footer">
+                        <span class="text-muted small">Coming soon</span>
+                    </div>
+                </div>
+
+                <!-- TILE 6: Staff Settings (Coming Soon) -->
+                <div class="settings-tile coming-soon-tile">
+                    <div class="tile-header">
+                        <h3>
+                            <span class="icon">👥</span>
+                            Staff Settings
+                        </h3>
+                        <span class="status-badge coming-soon">Coming Soon</span>
+                    </div>
+                    <div class="tile-body">
+                        <p>Staff roles, permissions, and notification recipients.</p>
+                    </div>
+                    <div class="tile-footer">
+                        <span class="text-muted small">Coming soon</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </body>
+
+</html>
+
+
+

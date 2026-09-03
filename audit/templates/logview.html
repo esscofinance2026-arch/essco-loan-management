@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Audit Log Details #{{ log.id }}</title>
+    
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+        <style>
+            body {
+                background-color: #f4f6f9;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+    
+            .container-fluid {
+                padding: 30px;
+            }
+    
+            .back-link {
+                text-decoration: none;
+                color: #667eea;
+                font-weight: 500;
+                transition: color 0.3s;
+            }
+    
+            .back-link:hover {
+                color: #764ba2;
+            }
+    
+            .back-link i {
+                margin-right: 8px;
+            }
+    
+            .card {
+                border-radius: 12px;
+                box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+                border: none;
+                margin-bottom: 25px;
+            }
+    
+            .card-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-radius: 12px 12px 0 0 !important;
+                padding: 20px 25px;
+            }
+    
+            .card-header .card-title {
+                color: white;
+                font-weight: 600;
+                margin: 0;
+                font-size: 1.4rem;
+            }
+    
+            .card-header .card-title i {
+                margin-right: 10px;
+            }
+    
+            .card-body {
+                padding: 30px;
+                background: white;
+                border-radius: 0 0 12px 12px;
+            }
+    
+            .log-id-badge {
+                background: rgba(255, 255, 255, 0.2);
+                padding: 6px 15px;
+                border-radius: 20px;
+                font-size: 0.9rem;
+                color: white;
+            }
+    
+            .detail-row {
+                padding: 15px 0;
+                border-bottom: 1px solid #f1f3f5;
+            }
+    
+            .detail-row:last-child {
+                border-bottom: none;
+            }
+    
+            .detail-label {
+                font-weight: 600;
+                color: #495057;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+    
+            .detail-value {
+                color: #212529;
+                font-size: 1rem;
+                word-break: break-word;
+            }
+    
+            .detail-value code {
+                background-color: #f8f9fa;
+                padding: 4px 10px;
+                border-radius: 4px;
+                font-size: 0.9rem;
+                color: #495057;
+            }
+    
+            .detail-value .badge {
+                font-size: 0.85rem;
+                padding: 6px 15px;
+            }
+    
+            .action-badge {
+                font-size: 0.9rem;
+                padding: 8px 20px;
+                border-radius: 25px;
+                font-weight: 500;
+            }
+    
+            .action-badge i {
+                margin-right: 8px;
+            }
+    
+            .action-badge.bg-success {
+                background-color: #28a745 !important;
+            }
+            .action-badge.bg-warning {
+                background-color: #ffc107 !important;
+                color: #212529 !important;
+            }
+            .action-badge.bg-danger {
+                background-color: #dc3545 !important;
+            }
+            .action-badge.bg-primary {
+                background-color: #007bff !important;
+            }
+            .action-badge.bg-info {
+                background-color: #17a2b8 !important;
+            }
+            .action-badge.bg-secondary {
+                background-color: #6c757d !important;
+            }
+            .action-badge.bg-dark {
+                background-color: #343a40 !important;
+            }
+            .action-badge.bg-light {
+                background-color: #e9ecef !important;
+                color: #212529 !important;
+            }
+    
+            .user-avatar {
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                font-size: 1.1rem;
+                color: white;
+            }
+    
+            .application-card {
+                background: #f8f9fa;
+                border-radius: 8px;
+                padding: 15px 20px;
+                border-left: 4px solid #667eea;
+                margin-top: 5px;
+            }
+    
+            .application-card .app-field {
+                margin-bottom: 5px;
+            }
+    
+            .application-card .app-field:last-child {
+                margin-bottom: 0;
+            }
+    
+            .application-card .app-label {
+                font-weight: 600;
+                color: #495057;
+                font-size: 0.85rem;
+                min-width: 120px;
+                display: inline-block;
+            }
+    
+            .application-card .app-value {
+                color: #212529;
+            }
+    
+            .description-box {
+                background: #f8f9fa;
+                padding: 15px 20px;
+                border-radius: 8px;
+                border-left: 4px solid #764ba2;
+                font-size: 0.95rem;
+                line-height: 1.6;
+                color: #212529;
+            }
+    
+            .meta-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px 30px;
+            }
+    
+            @media (max-width: 768px) {
+                .meta-grid {
+                    grid-template-columns: 1fr;
+                }
+    
+                .container-fluid {
+                    padding: 15px;
+                }
+    
+                .card-body {
+                    padding: 20px;
+                }
+    
+                .detail-row {
+                    padding: 12px 0;
+                }
+    
+                .detail-label {
+                    font-size: 0.8rem;
+                }
+    
+                .detail-value {
+                    font-size: 0.9rem;
+                }
+    
+                .application-card .app-label {
+                    min-width: 80px;
+                    font-size: 0.8rem;
+                }
+    
+                .action-badge {
+                    font-size: 0.75rem;
+                    padding: 5px 12px;
+                }
+            }
+    
+            @media print {
+                .back-link {
+                    display: none !important;
+                }
+                .no-print {
+                    display: none !important;
+                }
+                .card {
+                    box-shadow: none !important;
+                }
+                .card-header {
+                    background: #333 !important;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <!-- Back Button -->
+            <div class="mb-3">
+                <a href="{% url 'logs' %}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to Audit Logs
+                </a>
+            </div>
+    
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="card-title">
+                                    <i class="fas fa-history"></i> Audit Log Details
+                                </h3>
+                                <span class="log-id-badge">
+                                    <i class="fas fa-hashtag"></i> Log #{{ log.id }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Log Details -->
+                            <div class="row">
+                                <!-- Left Column -->
+                                <div class="col-md-6">
+                                    <!-- Date/Time -->
+                                    <div class="detail-row">
+                                        <div class="detail-label">
+                                            <i class="fas fa-clock text-primary"></i> Date & Time
+                                        </div>
+                                        <div class="detail-value">
+                                            <strong>{{ log.created|date:"l, F j, Y" }}</strong>
+                                            <br>
+                                            <span class="text-muted">{{ log.created|date:"g:i:s A" }}</span>
+                                            <br>
+                                            <small class="text-muted">
+                                                <i class="far fa-calendar-alt"></i> {{ log.created|date:"Y-m-d H:i:s" }}
+                                            </small>
+                                        </div>
+                                    </div>
+    
+                                    <!-- Action -->
+                                    <div class="detail-row">
+                                        <div class="detail-label">
+                                            <i class="fas fa-tag text-warning"></i> Action
+                                        </div>
+                                        <div class="detail-value">
+                                            <span class="badge action-badge
+                                                {% if log.action == 'CREATE' %}bg-success
+                                                {% elif log.action == 'UPDATE' %}bg-warning
+                                                {% elif log.action == 'DELETE' %}bg-danger
+                                                {% elif log.action == 'LOGIN' %}bg-primary
+                                                {% elif log.action == 'LOGOUT' %}bg-secondary
+                                                {% elif log.action == 'EMAIL_SENT' %}bg-info
+                                                {% elif log.action == 'EMAIL_FAILED' %}bg-danger
+                                                {% elif log.action == 'STAFF_EMAIL_SENT' %}bg-info
+                                                {% elif log.action == 'STAFF_EMAIL_FAILED' %}bg-danger
+                                                {% elif log.action == 'ERROR' %}bg-danger
+                                                {% else %}bg-light{% endif %}">
+                                                <i class="fas
+                                                    {% if log.action == 'CREATE' %}fa-plus-circle
+                                                    {% elif log.action == 'UPDATE' %}fa-edit
+                                                    {% elif log.action == 'DELETE' %}fa-trash
+                                                    {% elif log.action == 'LOGIN' %}fa-sign-in-alt
+                                                    {% elif log.action == 'LOGOUT' %}fa-sign-out-alt
+                                                    {% elif log.action == 'EMAIL_SENT' %}fa-envelope
+                                                    {% elif log.action == 'EMAIL_FAILED' %}fa-envelope
+                                                    {% elif log.action == 'STAFF_EMAIL_SENT' %}fa-envelope
+                                                    {% elif log.action == 'STAFF_EMAIL_FAILED' %}fa-envelope
+                                                    {% elif log.action == 'ERROR' %}fa-exclamation-circle
+                                                    {% else %}fa-circle{% endif %}"></i>
+                                                {{ log.get_action_display }}
+                                            </span>
+                                        </div>
+                                    </div>
+    
+                                    <!-- User -->
+                                    <div class="detail-row">
+                                        <div class="detail-label">
+                                            <i class="fas fa-user text-info"></i> User
+                                        </div>
+                                        <div class="detail-value">
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar me-2"
+                                                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                                    {% if log.user %}
+                                                        {{ log.user.username|first|upper }}
+                                                    {% else %}
+                                                        <i class="fas fa-user-slash"></i>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    {% if log.user %}
+                                                        <strong>{{ log.user.username }}</strong>
+                                                        <br>
+                                                        <small class="text-muted">
+                                                            <i class="far fa-envelope"></i> {{ log.user.email|default:"No email" }}
+                                                        </small>
+                                                        <br>
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-id-badge"></i> User ID: {{ log.user.id }}
+                                                        </small>
+                                                    {% else %}
+                                                        <span class="text-muted">
+                                                            <i class="fas fa-user-slash"></i> Anonymous / System
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <!-- Right Column -->
+                                <div class="col-md-6">
+                                    <!-- IP Address -->
+                                    <div class="detail-row">
+                                        <div class="detail-label">
+                                            <i class="fas fa-network-wired text-success"></i> IP Address
+                                        </div>
+                                        <div class="detail-value">
+                                            <code>{{ log.ip_address|default:"N/A" }}</code>
+                                            {% if log.ip_address %}
+                                                <br>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-globe"></i>
+                                                    <a href="https://whatismyipaddress.com/ip/{{ log.ip_address }}"
+                                                       target="_blank" class="text-decoration-none">
+                                                        Lookup IP
+                                                    </a>
+                                                </small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+    
+                                    <!-- User Agent -->
+                                    <div class="detail-row">
+                                        <div class="detail-label">
+                                            <i class="fas fa-desktop text-secondary"></i> User Agent
+                                        </div>
+                                        <div class="detail-value">
+                                            {% if log.user_agent %}
+                                                <code style="font-size: 0.8rem; word-break: break-all;">
+                                                    {{ log.user_agent }}
+                                                </code>
+                                                <br>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    {% if 'Chrome' in log.user_agent %}
+                                                        Browser: Chrome
+                                                    {% elif 'Firefox' in log.user_agent %}
+                                                        Browser: Firefox
+                                                    {% elif 'Safari' in log.user_agent %}
+                                                        Browser: Safari
+                                                    {% elif 'Edge' in log.user_agent %}
+                                                        Browser: Edge
+                                                    {% else %}
+                                                        Browser: Unknown
+                                                    {% endif %}
+                                                </small>
+                                            {% else %}
+                                                <span class="text-muted">N/A</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+    
+                                    <!-- Session ID -->
+                                    <div class="detail-row">
+                                        <div class="detail-label">
+                                            <i class="fas fa-fingerprint text-danger"></i> Session ID
+                                        </div>
+                                        <div class="detail-value">
+                                            {% if log.session_id %}
+                                                <code>{{ log.session_id }}</code>
+                                            {% else %}
+                                                <span class="text-muted">N/A</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <!-- Description -->
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="detail-row">
+                                        <div class="detail-label">
+                                            <i class="fas fa-info-circle text-primary"></i> Description
+                                        </div>
+                                        <div class="detail-value">
+                                            <div class="description-box">
+                                                {{ log.description|linebreaks }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <!-- Application Details (if linked) -->
+                            {% if log.application %}
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="detail-row">
+                                            <div class="detail-label">
+                                                <i class="fas fa-file-alt text-success"></i> Linked Application
+                                            </div>
+                                            <div class="detail-value">
+                                                <div class="application-card">
+                                                    <div class="app-field">
+                                                        <span class="app-label">Application ID:</span>
+                                                        <span class="app-value">
+                                                            <a href="{% url 'admin_dashboard_edit' log.application.id %}"
+                                                               target="_blank" class="text-primary">
+                                                                #{{ log.application.id }}
+                                                                <i class="fas fa-external-link-alt fa-xs"></i>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                    <div class="app-field">
+                                                        <span class="app-label">Applicant Name:</span>
+                                                        <span class="app-value">
+                                                            <strong>{{ log.application.Fname|default:"N/A" }}
+                                                            {{ log.application.Lname|default:"" }}</strong>
+                                                        </span>
+                                                    </div>
+                                                    <div class="app-field">
+                                                        <span class="app-label">Status:</span>
+                                                        <span class="app-value">
+                                                            <span class="badge
+                                                                {% if log.application.Approval_Status == 'Approved' %}bg-success
+                                                                {% elif log.application.Approval_Status == 'Rejected' %}bg-danger
+                                                                {% elif log.application.Approval_Status == 'Pending' %}bg-warning
+                                                                {% else %}bg-secondary{% endif %}">
+                                                                {{ log.application.Approval_Status|default:"Draft" }}
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="app-field">
+                                                        <span class="app-label">Email:</span>
+                                                        <span class="app-value">
+                                                            <a href="mailto:{{ log.application.email }}">
+                                                                {{ log.application.email|default:"N/A" }}
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                    <div class="app-field">
+                                                        <span class="app-label">Gross Monthly Income:</span>
+                                                        <span class="app-value">
+                                                            ${{ log.application.Gross_Monthly_Income_AT|floatformat:2|default:"0.00" }}
+                                                        </span>
+                                                    </div>
+                                                    {% if log.application.created_at %}
+                                                        <div class="app-field">
+                                                            <span class="app-label">Created:</span>
+                                                            <span class="app-value">
+                                                                {{ log.application.created_at|date:"Y-m-d H:i" }}
+                                                            </span>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+    
+                            <!-- Meta Information -->
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="detail-row">
+                                        <div class="detail-label">
+                                            <i class="fas fa-cogs text-secondary"></i> Meta Information
+                                        </div>
+                                        <div class="detail-value">
+                                            <div class="meta-grid">
+                                                <div>
+                                                    <span class="text-muted">Log ID:</span>
+                                                    <code>{{ log.id }}</code>
+                                                </div>
+                                                <div>
+                                                    <span class="text-muted">Created:</span>
+                                                    <span title="{{ log.created|date:'Y-m-d H:i:s' }}">
+                                                        {{ log.created|timesince }} ago
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-muted">Last Modified:</span>
+                                                    <span title="{{ log.updated|date:'Y-m-d H:i:s' }}">
+                                                        {{ log.updated|timesince }} ago
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-muted">Has Application:</span>
+                                                    <span class="badge {% if log.application %}bg-success{% else %}bg-secondary{% endif %}">
+                                                        {% if log.application %}Yes{% else %}No{% endif %}
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-muted">Has User:</span>
+                                                    <span class="badge {% if log.user %}bg-success{% else %}bg-secondary{% endif %}">
+                                                        {% if log.user %}Yes{% else %}No{% endif %}
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-muted">Has IP Address:</span>
+                                                    <span class="badge {% if log.ip_address %}bg-success{% else %}bg-secondary{% endif %}">
+                                                        {% if log.ip_address %}Yes{% else %}No{% endif %}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <!-- Action Buttons -->
+                            <div class="row mt-4 no-print">
+                                <div class="col-12">
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <button onclick="window.print()" class="btn btn-secondary">
+                                            <i class="fas fa-print"></i> Print
+                                        </button>
+                                        <a href="{% url 'logs' %}" class="btn btn-primary">
+                                            <i class="fas fa-list"></i> Back to List
+                                        </a>
+                                        {% if log.application %}
+                                            <a href="{% url 'admin_dashboard_edit' log.application.id %}" class="btn btn-success">
+                                                <i class="fas fa-edit"></i> Edit Application
+                                            </a>
+                                        {% endif %}
+                                        <button onclick="window.history.back()" class="btn btn-outline-secondary">
+                                            <i class="fas fa-undo"></i> Go Back
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Highlight search terms if coming from search
+                const urlParams = new URLSearchParams(window.location.search);
+                const searchTerm = urlParams.get('search');
+    
+                if (searchTerm) {
+                    const descriptionBox = document.querySelector('.description-box');
+                    if (descriptionBox) {
+                        const text = descriptionBox.textContent;
+                        const regex = new RegExp('(' + searchTerm + ')', 'gi');
+                        const highlighted = text.replace(regex, '<mark>$1</mark>');
+                        descriptionBox.innerHTML = highlighted;
+                    }
+                }
+    
+                // Auto-hide alerts after 5 seconds
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    setTimeout(function() {
+                        alert.style.transition = 'opacity 1s';
+                        alert.style.opacity = '0';
+                        setTimeout(function() {
+                            alert.style.display = 'none';
+                        }, 1000);
+                    }, 5000);
+                });
+            });
+        </script>
+    </body>
+</html>

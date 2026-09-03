@@ -1,0 +1,706 @@
+.banner-image {
+    width: 100%;
+    max-width: 1200px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+/* Complete CSS for ESSCO Finance Homepage - White Background Version */
+
+:root {
+    --primary-red: #CC0000;
+    --dark-red: #8B0000;
+    --light-red: #FF1A1A;
+    --white: #FFFFFF;
+    --light-gray: #f5f5f5;
+    --medium-gray: #e0e0e0;
+    --dark-gray: #666666;
+    --black: #000000;
+    --border-gray: #dddddd;
+    --text-dark: #1a1a1a;
+    --text-light: #666666;
+}
+
+body {
+    background: var(--white);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 80px 40px;
+    border-radius: 12px;
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-gray);
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('/static/images/pattern.png') repeat;
+    opacity: 0.03;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-tag {
+    color: var(--primary-red);
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.hero-text h1 {
+    color: var(--text-dark);
+    font-family: 'Roboto', sans-serif;
+    font-size: 52px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.hero-text h1 span {
+    color: var(--primary-red);
+}
+
+.hero-subtitle {
+    color: var(--dark-gray);
+    font-size: 18px;
+    font-style: italic;
+    margin: 10px 0;
+}
+
+.hero-description {
+    color: var(--text-light);
+    font-size: 16px;
+    max-width: 600px;
+    margin: 20px 0;
+    line-height: 1.6;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.btn {
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: var(--primary-red);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background: var(--dark-red);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(204, 0, 0, 0.3);
+    color: var(--white);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-dark);
+    border: 2px solid var(--primary-red);
+}
+
+.btn-secondary:hover {
+    background: var(--primary-red);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+.hero-stats {
+    display: flex;
+    gap: 50px;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border-gray);
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    color: var(--primary-red);
+    font-size: 28px;
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+}
+
+.stat-label {
+    color: var(--dark-gray);
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+/* Why ESSCO Section */
+.why-essco {
+    padding: 60px 40px;
+    background: var(--white);
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 1px solid var(--border-gray);
+}
+
+.why-essco h2 {
+    color: var(--text-dark);
+    font-family: 'Roboto', sans-serif;
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.why-essco h2 span {
+    color: var(--primary-red);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.feature {
+    text-align: center;
+    padding: 25px;
+    background: var(--light-gray);
+    border-radius: 10px;
+    border: 1px solid var(--border-gray);
+    transition: all 0.3s ease;
+}
+
+.feature:hover {
+    border-color: var(--primary-red);
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.feature,.fms-card i {
+    color: var(--primary-red);
+    font-size: 36px;
+    margin-bottom: 15px;
+}
+
+.feature h3 {
+    color: var(--text-dark);
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.feature p {
+    color: var(--text-light);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Appliances Section */
+.appliances-section {
+    padding: 60px 40px;
+    background: var(--light-gray);
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 1px solid var(--border-gray);
+}
+
+.appliances-section h2 {
+    color: var(--text-dark);
+    font-family: 'Roboto', sans-serif;
+    font-size: 36px;
+    text-align: center;
+}
+
+.appliances-section h2 span {
+    color: var(--primary-red);
+}
+
+.section-subtitle {
+    color: var(--text-light);
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 40px;
+}
+
+.appliance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+}
+
+.appliance-card {
+    background: var(--white);
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid var(--border-gray);
+    transition: all 0.3s ease;
+}
+
+.appliance-card:hover {
+    border-color: var(--primary-red);
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.appliance-card i {
+    color: var(--primary-red);
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.appliance-card h3 {
+    color: var(--text-dark);
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.appliance-card p {
+    color: var(--text-light);
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.finance-tag {
+    background: var(--primary-red);
+    color: var(--white);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-block;
+}
+
+/* How It Works */
+.how-it-works {
+    padding: 60px 40px;
+    background: var(--white);
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 1px solid var(--border-gray);
+}
+
+.how-it-works h2 {
+    color: var(--text-dark);
+    font-family: 'Roboto', sans-serif;
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.how-it-works h2 span {
+    color: var(--primary-red);
+}
+
+.steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.step {
+    background: var(--light-gray);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 150px;
+    flex: 1;
+    border: 1px solid var(--border-gray);
+    transition: all 0.3s ease;
+}
+
+.step:hover {
+    border-color: var(--primary-red);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.step-number {
+    background: var(--primary-red);
+    color: var(--white);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.step h3 {
+    color: var(--text-dark);
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.step p {
+    color: var(--text-light);
+    font-size: 13px;
+}
+
+.step-arrow {
+    color: var(--primary-red);
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Testimonials */
+.testimonials {
+    padding: 60px 40px;
+    background: var(--light-gray);
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 1px solid var(--border-gray);
+}
+
+.testimonials h2 {
+    color: var(--text-dark);
+    font-family: 'Roboto', sans-serif;
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.testimonial {
+    background: var(--white);
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid var(--border-gray);
+}
+
+.testimonial i {
+    color: var(--primary-red);
+    font-size: 28px;
+    opacity: 0.4;
+    margin-bottom: 15px;
+}
+
+.testimonial p {
+    color: var(--text-dark);
+    font-size: 15px;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+.customer {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-gray);
+}
+
+.customer .name {
+    display: block;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.customer .location {
+    color: var(--text-light);
+    font-size: 12px;
+}
+
+/* Quick Info */
+.quick-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 40px;
+    background: var(--white);
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 1px solid var(--border-gray);
+}
+
+.info-box {
+    text-align: center;
+    padding: 20px;
+    background: var(--light-gray);
+    border-radius: 10px;
+    border: 1px solid var(--border-gray);
+    transition: all 0.3s ease;
+}
+
+.info-box:hover {
+    border-color: var(--primary-red);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.info-box i {
+    color: var(--primary-red);
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.info-box h3 {
+    color: var(--text-dark);
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.info-box p {
+    color: var(--text-light);
+    font-size: 13px;
+    margin: 3px 0;
+}
+
+/* Hero Image */
+.new-hero {
+    /*height: 50%;*/
+    margin: 0;
+    border: 1px solid var(--border-gray);
+    overflow: hidden;  /* ✅ Prevents any overflow spacing */
+    margin: 20px 0;
+    border-radius: 12px;
+}
+
+.myhero-image {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),  url('/static/images/homepage-hero-1300px-350px.jpg');
+  height: 350px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+.myhero-text {
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+}
+
+.myhero-text button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 10px 25px;
+  color: black;
+  background-color: #ddd;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.myhero-text button:hover {
+  background-color: #555;
+  color: white;
+}
+
+/* Popular Products*/
+.popular-products-section {
+    padding: 60px 40px;
+    background: var(--white);
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 1px solid var(--border-gray);
+}
+
+.popular-products-section h2 {
+    color: var(--text-dark);
+    font-family: 'Roboto', sans-serif;
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+.products-cards {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-gap: 0px;
+}
+
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 75%;
+    margin: auto;
+    border-radius: 10px;
+    text-align: center;
+    padding: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    border-color: var(--primary-red);
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.card img {
+    width: 50%;
+    /*height: 100%;*/
+}
+
+.card button {
+    margin-top: 1rem;
+}
+
+/* Financing Made Simple*/
+.finance-made-simple-section {
+    padding: 60px 40px;
+    background: var(--light-gray);
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 1px solid var(--border-gray);
+}
+
+.finance-made-simple-section h2 {
+    color: var(--text-dark);
+    font-family: 'Roboto', sans-serif;
+    font-size: 36px;
+    text-align: center;
+}
+
+.finance-made-simple-section h2 span {
+    color: var(--primary-red);
+}
+
+.fms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+}
+
+.fms-card {
+    background: var(--white);
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid var(--border-gray);
+    transition: all 0.3s ease;
+}
+
+.fms-card h2 {
+    color: var(--text-dark);
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.fms-card p {
+    color: var(--text-light);
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+/* Get in Touch*/
+.get-in-touch-section {
+    padding: 60px 40px;
+    background: var(--light-gray);
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 1px solid var(--border-gray);
+}
+
+.get-in-touch-section h2 {
+    color: var(--text-dark);
+    font-family: 'Roboto', sans-serif;
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.get-in-touch-section h2 span {
+    color: var(--primary-red);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-text h1 {
+        font-size: 32px;
+    }
+
+    .hero-stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .steps {
+        flex-direction: column;
+    }
+
+    .step-arrow {
+        transform: rotate(90deg);
+    }
+
+    .quick-info {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-section {
+        padding: 40px 20px;
+    }
+
+    .why-essco {
+        padding: 40px 20px;
+    }
+
+    .appliances-section {
+        padding: 40px 20px;
+    }
+
+    .how-it-works {
+        padding: 40px 20px;
+    }
+
+    .testimonials {
+        padding: 40px 20px;
+    }
+
+    .quick-info {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .quick-info {
+        grid-template-columns: 1fr;
+    }
+
+    .appliance-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .testimonial-grid {
+        grid-template-columns: 1fr;
+    }
+}

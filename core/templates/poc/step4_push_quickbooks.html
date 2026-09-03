@@ -1,0 +1,47 @@
+<!-- poc/templates/poc/step4_push_quickbooks.html -->
+{% extends "Appbase.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Step 4: Push to QuickBooks</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5>📋 Loan Summary</h5>
+                        <p><strong>Loan ID:</strong> {{ loan.loan_id }}</p>
+                        <p><strong>Customer:</strong> {{ customer_name }}</p>
+                        <p><strong>Email:</strong> {{ customer_email }}</p>
+                        <p><strong>Amount:</strong> ${{ loan.principal_amount|floatformat:2 }}</p>
+                        <p><strong>Deposit Paid:</strong> ${{ deposit_info.amount|floatformat:2|default:"0.00" }}</p>
+                        <p><strong>Outstanding Balance:</strong> ${{ loan.outstanding_balance|floatformat:2 }}</p>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <h6>📤 What will be sent to QuickBooks:</h6>
+                        <ul>
+                            <li><strong>Customer:</strong> {{ customer_name }} ({{ customer_email }})</li>
+                            <li><strong>Invoice:</strong> ${{ loan.principal_amount|floatformat:2 }} - HP Loan {{ loan.loan_id }}</li>
+                            <li><strong>Deposit Payment:</strong> ${{ deposit_info.amount|floatformat:2|default:"0.00" }} applied to invoice</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- ✅ Make sure method is POST and action is correct -->
+                    <form method="POST" action="{% url 'poc_step4_push_quickbooks' loan.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-block">
+                            <i class="fas fa-cloud-upload-alt"></i> Push to QuickBooks
+                        </button>
+                        <a href="{% url 'poc_step3_view_loan' loan.id %}" class="btn btn-secondary btn-block">
+                            Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

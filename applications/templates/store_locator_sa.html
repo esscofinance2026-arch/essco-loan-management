@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Locator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/storelocator.css' %}">
+    <style>
+        /* ALL YOUR STORE LOCATOR CSS HERE (without !important) */
+        /* Copy the CSS from the previous solution but without !important */
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: white; }
+        .locator-container { display: flex; height: 100vh; background: white; }
+        /* ... rest of your CSS ... */
+    </style>
+</head>
+<body>
+    <div class="store-locator-wrapper">
+    <div class="locator-container">
+        <!-- Map Section -->
+        <div class="map-section" id="mapContainer">
+            <iframe 
+                id="storeMap"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12345.6789!2d-59.5432!3d13.1234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDA3JzI0LjgiTiA1OcKwMzInMzguNSJX!5e0!3m2!1sen!2sbb!4v1234567890"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+
+            <div class="map-controls">
+                <button onclick="alert('Zoom in')" title="Zoom in">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button onclick="alert('Zoom out')" title="Zoom out">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+
+            <div class="map-logo">
+                <span>Google</span>
+            </div>
+        </div>
+
+        <!-- Location List -->
+        <div class="location-list">
+            <div class="store-header">
+                <h2><span id="storeCount">9</span> Stores</h2>
+            </div>
+
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search stores...">
+            </div>
+
+            <div class="store-items" id="storeList">
+                <div class="store-category">Online</div>
+                <div class="store-item" data-lat="13.1234" data-lng="-59.5432" data-store="Online Store">
+                    <div class="store-name">Online Store</div>
+                    <div class="store-address">St. George Street</div>
+                    <div class="store-actions">
+                        <a href="#" class="direction-link" data-address="St. George Street">
+                            <i class="fas fa-directions"></i> Direction
+                        </a>
+                        <a href="#"><i class="fas fa-street-view"></i> Street View</a>
+                    </div>
+                </div>
+
+                <div class="store-category">Optical</div>
+                <div class="store-item" data-lat="13.1076" data-lng="-59.6134" data-store="Optical Bridgetown">
+                    <div class="store-name">Optical Bridgetown</div>
+                    <div class="store-address">St. George Street</div>
+                    <div class="store-actions">
+                        <a href="#" class="direction-link" data-address="St. George Street, Bridgetown">
+                            <i class="fas fa-directions"></i> Direction
+                        </a>
+                        <a href="#"><i class="fas fa-street-view"></i> Street View</a>
+                    </div>
+                </div>
+
+                <div class="store-item" data-lat="13.0761" data-lng="-59.6117" data-store="Optical Sheraton">
+                    <div class="store-name">Optical Sheraton</div>
+                    <div class="store-address">Sheraton Mall, Sargeants</div>
+                    <div class="store-actions">
+                        <a href="#" class="direction-link" data-address="Sheraton Mall, Sargeants">
+                            <i class="fas fa-directions"></i> Direction
+                        </a>
+                        <a href="#"><i class="fas fa-street-view"></i> Street View</a>
+                    </div>
+                </div>
+
+                <div class="store-category">Electronics</div>
+                <div class="store-item" data-lat="13.0761" data-lng="-59.6117" data-store="Radioshack Sheraton">
+                    <div class="store-name">Radioshack Sheraton</div>
+                    <div class="store-address">Sheraton Mall, Sargeants</div>
+                    <div class="store-actions">
+                        <a href="#" class="direction-link" data-address="Sheraton Mall, Sargeants">
+                            <i class="fas fa-directions"></i> Direction
+                        </a>
+                        <a href="#"><i class="fas fa-street-view"></i> Street View</a>
+                    </div>
+                </div>
+
+                <div class="no-results" id="noResults" style="display: none;">
+                    <i class="fas fa-store-slash"></i>
+                    <p>No stores found</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    // Store click handler
+    document.querySelectorAll('.store-item').forEach(item => {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.store-item').forEach(el => {
+                el.classList.remove('active');
+            });
+            this.classList.add('active');
+            
+            const lat = this.dataset.lat;
+            const lng = this.dataset.lng;
+            const iframe = document.getElementById('storeMap');
+            const currentSrc = iframe.src;
+            const baseUrl = currentSrc.split('!2m3!')[0];
+            const newSrc = `${baseUrl}!2m3!1f0!2f0!3f0!2m3!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z${lat}%2C${lng}!5e0!3m2!1sen!2sbb!4v${Date.now()}`;
+            iframe.src = newSrc;
+        });
+    });
+
+    // Direction links
+    document.querySelectorAll('.direction-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const address = this.dataset.address;
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}, Barbados`, '_blank');
+        });
+    });
+
+    // Search
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        const items = document.querySelectorAll('.store-item');
+        const categories = document.querySelectorAll('.store-category');
+        let visibleCount = 0;
+        
+        categories.forEach(cat => cat.style.display = 'none');
+        
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(searchTerm) || searchTerm === '') {
+                item.style.display = 'flex';
+                visibleCount++;
+                const prev = item.previousElementSibling;
+                if (prev && prev.classList.contains('store-category')) {
+                    prev.style.display = 'block';
+                }
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('storeCount').textContent = visibleCount;
+        document.getElementById('noResults').style.display = (visibleCount === 0 && searchTerm !== '') ? 'block' : 'none';
+    });
+
+    // Auto-select first store
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstStore = document.querySelector('.store-item');
+        if (firstStore) {
+            setTimeout(() => firstStore.click(), 500);
+        }
+    });
+</script>
+</html>

@@ -1,0 +1,314 @@
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Record Cash Deposit{% endblock %}
+
+{% block extra_css %}
+<style>
+    .deposit-card {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .customer-summary {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .customer-summary h5 {
+        margin-bottom: 15px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .summary-row:last-child {
+        border-bottom: none;
+    }
+
+    .summary-label {
+        font-weight: 600;
+    }
+
+    .deposit-info {
+        background: #fff8e1;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        margin-bottom: 25px;
+        border-radius: 4px;
+    }
+
+    .required-field {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+
+{% block staff_content %}
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-12">
+
+            <div class="card deposit-card">
+
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Record Cash Deposit
+                    </h4>
+                </div>
+
+                <div class="card-body">
+
+                    <!-- Messages -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+
+                    <!-- Customer / Application Information -->
+                    <div class="customer-summary">
+
+                        <h5>
+                            <i class="fas fa-user"></i>
+                            Customer & Application
+                        </h5>
+
+                        <div class="summary-row">
+                            <span class="summary-label">
+                                Customer
+                            </span>
+
+                            <span>
+                                {{ application.Fname }}
+                                {{ application.Lname }}
+                            </span>
+                        </div>
+
+                        <div class="summary-row">
+                            <span class="summary-label">
+                                Application Reference
+                            </span>
+
+                            <span>
+                                {{ application.reference_number }}
+                            </span>
+                        </div>
+
+                        <div class="summary-row">
+                            <span class="summary-label">
+                                Application ID
+                            </span>
+
+                            <span>
+                                #{{ application.id }}
+                            </span>
+                        </div>
+
+                        <div class="summary-row">
+                            <span class="summary-label">
+                                Product
+                            </span>
+
+                            <span>
+                                {{ application.item_name }}
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Deposit Information -->
+                    <div class="deposit-info">
+
+                        <strong>
+                            <i class="fas fa-info-circle"></i>
+                            Deposit Information
+                        </strong>
+
+                        <div class="mt-2">
+
+                            <div>
+                                Required Deposit:
+                                <strong>
+                                    ${{ application.Deposit|floatformat:2 }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                Already Recorded:
+                                <strong>
+                                    ${{ existing_deposit|floatformat:2 }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Cash Deposit Form -->
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <!-- Amount -->
+                        <div class="form-group mb-3">
+
+                            <label for="amount" class="fw-bold">
+                                Cash Deposit Amount
+                                <span class="required-field">*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                name="amount"
+                                id="amount"
+                                class="form-control"
+                                step="0.01"
+                                min="0.01"
+                                value="{{ application.Deposit }}"
+                                required
+                            >
+
+                            <small class="form-text text-muted">
+                                Enter the amount of cash actually received.
+                            </small>
+
+                        </div>
+
+
+                        <!-- Receipt Number
+                        <div class="form-group mb-3">
+
+                            <label for="receipt_number" class="fw-bold">
+                                Receipt Number
+                                <span class="required-field">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="receipt_number"
+                                id="receipt_number"
+                                class="form-control"
+                                maxlength="50"
+                                required
+                                placeholder="Enter cash receipt number"
+                            >
+
+                        </div> -->
+
+                        <div class="form-group">
+                            <label>Receipt Number</label>
+                            <input type="text" class="form-control" value="{{ auto_receipt_number }}" readonly>
+                            <small class="text-muted">System‑generated receipt number.</small>
+                        </div>
+
+
+                        <!-- Payment Date -->
+                        <div class="form-group mb-3">
+
+                            <label for="payment_date" class="fw-bold">
+                                Payment Date
+                            </label>
+
+                            <input
+                                type="date"
+                                name="payment_date"
+                                id="payment_date"
+                                class="form-control"
+                            >
+
+                        </div>
+
+
+                        <!-- Notes -->
+                        <div class="form-group mb-3">
+
+                            <label for="notes">
+                                Internal Notes
+                                <span class="text-muted">(Optional)</span>
+                            </label>
+
+                            <textarea
+                                name="notes"
+                                id="notes"
+                                class="form-control"
+                                rows="4"
+                                placeholder="Enter any notes about this cash payment..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- Confirmation Warning -->
+                        <div class="alert alert-warning">
+
+                            <i class="fas fa-exclamation-triangle"></i>
+
+                            <strong>Important:</strong>
+
+                            This will record a cash deposit against this
+                            application as a confirmed payment.
+
+                            If automatic loan creation is enabled, the
+                            system will attempt to create the loan after
+                            the deposit is recorded.
+
+                        </div>
+
+
+                        <!-- Buttons -->
+                        <div class="row">
+
+                            <div class="col-md-6 mb-2">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-success w-100"
+                                >
+                                    <i class="fas fa-check-circle"></i>
+                                    Record Cash Deposit
+                                </button>
+
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+
+                                <a
+                                    href="{% url 'admin_dashboard_edit' application.id %}"
+                                    class="btn btn-secondary w-100"
+                                >
+                                    <i class="fas fa-times"></i>
+                                    Cancel
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block staff_content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4><i class="fas fa-cloud-upload-alt"></i> Sync Loan to QuickBooks</h4>
+                </div>
+                <div class="card-body">
+                    <h5>Loan Details</h5>
+                    <div class="alert alert-info">
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>Loan ID:</strong> {{ loan.loan_id }}</li>
+                            <li><strong>Customer:</strong> {{ customer_name }}</li>
+                            <li><strong>Email:</strong> {{ customer_email }}</li>
+                            <li><strong>Customer ID:</strong> {{ loan.customer.customer_id|default:"Not assigned" }}</li>
+                            <li><strong>Principal:</strong> ${{ loan.principal_amount|floatformat:2 }}</li>
+                            <li><strong>Interest:</strong> ${{ loan.total_interest|floatformat:2 }}</li>
+                            <li><strong>Total Payable:</strong> ${{ loan.total_payable|floatformat:2 }}</li>
+                            <li><strong>Deposit:</strong> ${{ loan.deposit_paid|floatformat:2 }}</li>
+                            <li><strong>Outstanding Balance:</strong> ${{ loan.outstanding_balance|floatformat:2 }}</li>
+                            <li><strong>Status:</strong> {{ loan.status }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>This action will:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Create or find the customer in QuickBooks</li>
+                            <li>Create an invoice for this loan amount</li>
+                            <li>Apply the deposit as a payment (if applicable)</li>
+                            <li>Record the sync in the system logs</li>
+                        </ul>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-cloud-upload-alt"></i> Push to QuickBooks
+                            </button>
+                            <!-- ✅ FIX: Use applications:staff_loan_detail -->
+                            <a href="{% url 'staff_loan_detail' loan.id %}" class="btn btn-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

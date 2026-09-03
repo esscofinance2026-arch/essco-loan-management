@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Analytics Dashboard</title>
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+        <style>
+            :root {
+                --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                --primary: #667eea;
+                --primary-dark: #5a67d8;
+                --secondary: #764ba2;
+                --success: #48bb78;
+                --warning: #ed8936;
+                --danger: #fc8181;
+                --info: #63b3ed;
+                --gray-light: #f7fafc;
+                --gray: #e2e8f0;
+                --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+                --radius: 16px;
+                --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                background: #f0f2f5;
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                min-height: 100vh;
+            }
+
+            /* Top Navigation */
+            .top-nav {
+                background: white;
+                padding: 15px 30px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .top-nav .brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .top-nav .brand i {
+                font-size: 28px;
+                background: var(--primary-gradient);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .top-nav .brand h4 {
+                font-weight: 700;
+                color: #2d3748;
+                margin: 0;
+            }
+
+            .top-nav .brand span {
+                font-weight: 300;
+                color: #718096;
+            }
+
+            .top-nav .nav-actions {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .top-nav .nav-actions .date-range {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .top-nav .nav-actions .date-range input {
+                padding: 6px 12px;
+                border: 2px solid var(--gray);
+                border-radius: 8px;
+                font-size: 0.85rem;
+                font-family: inherit;
+                transition: var(--transition);
+            }
+
+            .top-nav .nav-actions .date-range input:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+            }
+
+            .top-nav .nav-actions .date-range button {
+                padding: 6px 16px;
+                background: var(--primary-gradient);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                transition: var(--transition);
+            }
+
+            .top-nav .nav-actions .date-range button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            }
+
+            .top-nav .nav-actions .user-profile {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                cursor: pointer;
+                padding: 5px 15px 5px 10px;
+                border-radius: 50px;
+                transition: var(--transition);
+            }
+
+            .top-nav .nav-actions .user-profile:hover {
+                background: var(--gray-light);
+            }
+
+            .top-nav .nav-actions .user-profile .avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: var(--primary-gradient);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: 600;
+                font-size: 1rem;
+            }
+
+            .top-nav .nav-actions .user-profile .user-info {
+                line-height: 1.2;
+            }
+
+            .top-nav .nav-actions .user-profile .user-info .name {
+                font-weight: 600;
+                font-size: 0.9rem;
+                color: #2d3748;
+            }
+
+            .top-nav .nav-actions .user-profile .user-info .role {
+                font-size: 0.75rem;
+                color: #718096;
+            }
+
+            /* Main Container */
+            .main-container {
+                padding: 30px;
+                max-width: 1600px;
+                margin: 0 auto;
+            }
+
+            /* Page Header */
+            .page-header {
+                margin-bottom: 30px;
+            }
+
+            .page-header h2 {
+                font-weight: 700;
+                color: #2d3748;
+                margin: 0;
+            }
+
+            .page-header p {
+                color: #718096;
+                margin: 5px 0 0 0;
+            }
+
+            /* Stats Grid */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+
+            .stat-card {
+                background: white;
+                padding: 20px 25px;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+                transition: var(--transition);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .stat-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+            }
+
+            .stat-card:nth-child(1)::before { background: var(--primary-gradient); }
+            .stat-card:nth-child(2)::before { background: linear-gradient(135deg, #48bb78, #38a169); }
+            .stat-card:nth-child(3)::before { background: linear-gradient(135deg, #ed8936, #dd6b20); }
+            .stat-card:nth-child(4)::before { background: linear-gradient(135deg, #fc8181, #e53e3e); }
+            .stat-card:nth-child(5)::before { background: linear-gradient(135deg, #63b3ed, #3182ce); }
+            .stat-card:nth-child(6)::before { background: linear-gradient(135deg, #9f7aea, #6b46c1); }
+
+            .stat-card:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--shadow-hover);
+            }
+
+            .stat-card .stat-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+
+            .stat-card .stat-info h6 {
+                color: #718096;
+                font-size: 0.75rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 5px;
+            }
+
+            .stat-card .stat-info h3 {
+                color: #2d3748;
+                font-weight: 700;
+                font-size: 1.8rem;
+                margin: 0;
+            }
+
+            .stat-card .stat-info .trend {
+                font-size: 0.75rem;
+                font-weight: 600;
+                margin-top: 5px;
+            }
+
+            .stat-card .stat-info .trend.up { color: var(--success); }
+            .stat-card .stat-info .trend.down { color: var(--danger); }
+
+            .stat-card .stat-icon {
+                width: 45px;
+                height: 45px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.3rem;
+                color: white;
+            }
+
+            .stat-card:nth-child(1) .stat-icon { background: var(--primary-gradient); }
+            .stat-card:nth-child(2) .stat-icon { background: linear-gradient(135deg, #48bb78, #38a169); }
+            .stat-card:nth-child(3) .stat-icon { background: linear-gradient(135deg, #ed8936, #dd6b20); }
+            .stat-card:nth-child(4) .stat-icon { background: linear-gradient(135deg, #fc8181, #e53e3e); }
+            .stat-card:nth-child(5) .stat-icon { background: linear-gradient(135deg, #63b3ed, #3182ce); }
+            .stat-card:nth-child(6) .stat-icon { background: linear-gradient(135deg, #9f7aea, #6b46c1); }
+
+            .stat-card .stat-progress {
+                margin-top: 12px;
+                height: 6px;
+                background: var(--gray);
+                border-radius: 3px;
+                overflow: hidden;
+            }
+
+            .stat-card .stat-progress .progress-bar {
+                height: 100%;
+                border-radius: 3px;
+                transition: width 1s ease;
+            }
+
+            .stat-card:nth-child(1) .stat-progress .progress-bar { background: var(--primary-gradient); }
+            .stat-card:nth-child(2) .stat-progress .progress-bar { background: linear-gradient(135deg, #48bb78, #38a169); }
+            .stat-card:nth-child(3) .stat-progress .progress-bar { background: linear-gradient(135deg, #ed8936, #dd6b20); }
+            .stat-card:nth-child(4) .stat-progress .progress-bar { background: linear-gradient(135deg, #fc8181, #e53e3e); }
+
+            /* Chart Grid */
+            .chart-grid {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: 25px;
+                margin-bottom: 30px;
+            }
+
+            .chart-card {
+                background: white;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+                padding: 25px;
+                transition: var(--transition);
+            }
+
+            .chart-card:hover {
+                box-shadow: var(--shadow-hover);
+            }
+
+            .chart-card .chart-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .chart-card .chart-header h6 {
+                font-weight: 600;
+                color: #2d3748;
+                margin: 0;
+                font-size: 1rem;
+            }
+
+            .chart-card .chart-header .chart-actions {
+                display: flex;
+                gap: 8px;
+            }
+
+            .chart-card .chart-header .chart-actions button {
+                padding: 4px 12px;
+                border: 2px solid var(--gray);
+                border-radius: 6px;
+                background: transparent;
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #718096;
+                transition: var(--transition);
+                cursor: pointer;
+            }
+
+            .chart-card .chart-header .chart-actions button.active {
+                border-color: var(--primary);
+                background: var(--primary);
+                color: white;
+            }
+
+            .chart-card .chart-header .chart-actions button:hover:not(.active) {
+                border-color: var(--primary);
+                color: var(--primary);
+            }
+
+            .chart-card .chart-container {
+                position: relative;
+                height: 300px;
+            }
+
+            /* Second Row Charts */
+            .chart-grid-2 {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+                margin-bottom: 30px;
+            }
+
+            /* Recent Activity */
+            .recent-activity {
+                background: white;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+                padding: 25px;
+                margin-bottom: 30px;
+            }
+
+            .recent-activity .activity-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .recent-activity .activity-header h6 {
+                font-weight: 600;
+                color: #2d3748;
+                margin: 0;
+                font-size: 1rem;
+            }
+
+            .recent-activity .activity-header a {
+                color: var(--primary);
+                text-decoration: none;
+                font-weight: 500;
+                font-size: 0.85rem;
+            }
+
+            .recent-activity .activity-header a:hover {
+                text-decoration: underline;
+            }
+
+            .activity-item {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding: 12px 0;
+                border-bottom: 1px solid var(--gray-light);
+            }
+
+            .activity-item:last-child {
+                border-bottom: none;
+            }
+
+            .activity-item .activity-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1rem;
+                color: white;
+                flex-shrink: 0;
+            }
+
+            .activity-item .activity-icon.create { background: var(--success); }
+            .activity-item .activity-icon.update { background: var(--warning); }
+            .activity-item .activity-icon.delete { background: var(--danger); }
+            .activity-item .activity-icon.view { background: var(--info); }
+
+            .activity-item .activity-content {
+                flex: 1;
+            }
+
+            .activity-item .activity-content .activity-text {
+                font-size: 0.9rem;
+                color: #2d3748;
+            }
+
+            .activity-item .activity-content .activity-text strong {
+                font-weight: 600;
+            }
+
+            .activity-item .activity-content .activity-time {
+                font-size: 0.75rem;
+                color: #a0aec0;
+            }
+
+            /* Quick Stats */
+            .quick-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 15px;
+                margin-bottom: 30px;
+            }
+
+            .quick-stat {
+                background: white;
+                padding: 15px 20px;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+                text-align: center;
+                transition: var(--transition);
+            }
+
+            .quick-stat:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-hover);
+            }
+
+            .quick-stat .qs-number {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #2d3748;
+            }
+
+            .quick-stat .qs-label {
+                font-size: 0.75rem;
+                color: #718096;
+                font-weight: 500;
+            }
+
+            /* Responsive */
+            @media (max-width: 1200px) {
+                .chart-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            @media (max-width: 992px) {
+                .chart-grid-2 {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .top-nav {
+                    padding: 12px 15px;
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .top-nav .nav-actions {
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                }
+
+                .top-nav .nav-actions .date-range {
+                    flex-wrap: wrap;
+                }
+
+                .top-nav .nav-actions .date-range input {
+                    width: 100%;
+                }
+
+                .main-container {
+                    padding: 15px;
+                }
+
+                .stats-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 12px;
+                }
+
+                .stat-card {
+                    padding: 15px;
+                }
+
+                .stat-card .stat-info h3 {
+                    font-size: 1.3rem;
+                }
+
+                .stat-card .stat-icon {
+                    width: 40px;
+                    height: 40px;
+                    font-size: 1.1rem;
+                }
+
+                .chart-card {
+                    padding: 15px;
+                }
+
+                .chart-card .chart-container {
+                    height: 250px;
+                }
+
+                .quick-stats {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @media (max-width: 480px) {
+                .stats-grid {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 10px;
+                }
+
+                .stat-card .stat-info h6 {
+                    font-size: 0.65rem;
+                }
+
+                .stat-card .stat-info h3 {
+                    font-size: 1.1rem;
+                }
+
+                .stat-card .stat-icon {
+                    width: 35px;
+                    height: 35px;
+                    font-size: 0.9rem;
+                }
+
+                .quick-stats {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 10px;
+                }
+            }
+
+            /* Animations */
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .stat-card, .chart-card, .recent-activity, .quick-stat {
+                animation: fadeInUp 0.6s ease forwards;
+            }
+
+            .stat-card:nth-child(2) { animation-delay: 0.1s; }
+            .stat-card:nth-child(3) { animation-delay: 0.2s; }
+            .stat-card:nth-child(4) { animation-delay: 0.3s; }
+            .stat-card:nth-child(5) { animation-delay: 0.4s; }
+            .stat-card:nth-child(6) { animation-delay: 0.5s; }
+        </style>
+    </head>
+    <body>
+
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="brand">
+                <i class="fas fa-chart-pie"></i>
+                <h4>Analytics <a href="{% url 'admin_dashboard' %}"> <span>Dashboard</span> </a>  </h4>
+            </div>
+            <div class="nav-actions">
+                <div class="date-range">
+                    <input type="date" id="dateFrom" value="{{ date_from|default:'' }}">
+                    <span style="color: #718096;">to</span>
+                    <input type="date" id="dateTo" value="{{ date_to|default:'' }}">
+                    <button onclick="updateDateRange()">
+                        <i class="fas fa-sync-alt"></i> Update
+                    </button>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar">{{request.user}}</div>
+                    <!--
+                    <div class="user-info">
+                        <div class="name">john Doe</div>
+                        <div class="role">Staff Administrator</div>
+                    </div> -->
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Container -->
+        <div class="main-container">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h2>Analytics Overview</h2>
+                <p>Real-time insights and statistics for your applications</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-info">
+                            <h6>Total Applications</h6>
+                            <h3>{{ total_applications|default:0 }}</h3>
+                            <!--
+                            <div class="trend up">
+                                <i class="fas fa-arrow-up"></i> {{ growth_rate|default:"0" }}% from last month
+                            </div> -->
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="progress-bar" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-info">
+                            <h6>Approved</h6>
+                            <h3>{{ approved_count|default:0 }}</h3>
+                            <div class="trend up">
+                                <i class="fas fa-arrow-up"></i> {{ approval_percentage|default:"0" }}% approval rate
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="progress-bar" style="width: {{ approval_percentage|default:0 }}%;"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-info">
+                            <h6>Approved Pending/Human Review</h6>
+                            <h3>{{ approved_pending_count|default:0 }} / {{human_review_count|default:0}}</h3>
+                            <div class="trend down">
+                                <i class="fas fa-arrow-down"></i> {{ pending_percentage|default:"0" }}% initial pass rate
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="progress-bar" style="width: {{ pending_percentage|default:0 }}%;"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-info">
+                            <h6>Rejected</h6>
+                            <h3>{{ rejected_count|default:0 }}</h3>
+                            <div class="trend down">
+                                <i class="fas fa-arrow-down"></i> {{ rejection_percentage|default:"0" }}% rejection rate
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="progress-bar" style="width: {{ rejection_percentage|default:0 }}%;"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-info">
+                            <h6>Untapped Income</h6>
+                            <h3>${{ total_income|floatformat:0|default:"0" }}</h3>
+                            <div class="trend up">
+                                <i class="fas fa-arrow-up"></i> {{ income_change|default:"0" }}% AVG Untapped Income
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="progress-bar" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-info">
+                            <h6>Average Income</h6>
+                            <h3>${{ avg_income|floatformat:2|default:"0.00" }}</h3>
+                            <div class="trend up">
+                                <i class="fas fa-arrow-up"></i> {{ avg_income_change|default:"0" }}% from last month
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="progress-bar" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <div class="quick-stat">
+                    <div class="qs-number">{{ unique_users|default:0 }}</div>
+                    <div class="qs-label"><i class="fas fa-users"></i> Unique Applicants</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="qs-number">{{ avg_age|default:"0" }}</div>
+                    <div class="qs-label"><i class="fas fa-calendar-alt"></i> Average Age</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="qs-number">{{ rejection_percentage|default:"0" }}%</div>
+                    <div class="qs-label"><i class="fas fa-briefcase"></i> Avg Rejection Rate</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="qs-number">{{ avg_debt_ratio|default:"0" }}%</div>
+                    <div class="qs-label"><i class="fas fa-credit-card"></i> Avg Debt Ratio</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="qs-number">{{ total_credit_allowed|floatformat:0|default:"0" }}</div>
+                    <div class="qs-label"><i class="fas fa-hand-holding-usd"></i> Total Credit Allowed</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="qs-number">{{ pending_review|default:0 }}</div>
+                    <div class="qs-label"><i class="fas fa-hourglass-half"></i> Under Review</div>
+                </div>
+            </div>
+
+            <!-- Main Charts -->
+            <div class="chart-grid">
+                <!-- Status Distribution -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h6><i class="fas fa-chart-pie" style="color: var(--secondary);"></i> Status Distribution</h6>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Second Row Charts -->
+            <div class="chart-grid-2">
+                <!-- Income Distribution -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h6><i class="fas fa-dollar-sign" style="color: var(--success);"></i> Income Distribution</h6>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="incomeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Employment Length -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h6><i class="fas fa-briefcase" style="color: var(--warning);"></i> Employment Length</h6>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="employmentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <div class="activity-header">
+                    <h6><i class="fas fa-bell" style="color: var(--primary);"></i> Recent Activity</h6>
+                    <a href="{% url 'logs' %}">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                {% for log in recent_activities|slice:":10" %}
+                    <div class="activity-item">
+                        <div class="activity-icon {{ log.action|lower }}">
+                            <i class="fas
+                                {% if log.action == 'CREATE' %}fa-plus
+                                {% elif log.action == 'UPDATE' %}fa-edit
+                                {% elif log.action == 'DELETE' %}fa-trash
+                                {% elif log.action == 'VIEW' %}fa-eye
+                                {% else %}fa-circle{% endif %}">
+                            </i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                <strong>{{ log.user.username|default:"System" }}</strong>
+                                {{ log.get_action_display|lower }}
+                                {% if log.application %}
+                                    application #{{ log.application.id }}
+                                    ({{ log.application.Fname }} {{ log.application.Lname }})
+                                {% else %}
+                                    a record
+                                {% endif %}
+                            </div>
+                            <div class="activity-time">
+                                <i class="far fa-clock"></i> {{ log.created|timesince }} ago
+                                {% if log.ip_address %}
+                                    · <i class="fas fa-network-wired"></i> {{ log.ip_address }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-2x" style="color: var(--gray);"></i>
+                        <p style="color: #718096; margin-top: 10px;">No recent activity</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            // ============================================
+            // CHARTS INITIALIZATION
+            // ============================================
+
+            // Color palette
+            const colors = {
+                primary: '#667eea',
+                primaryLight: 'rgba(102, 126, 234, 0.1)',
+                secondary: '#764ba2',
+                success: '#48bb78',
+                warning: '#ed8936',
+                danger: '#fc8181',
+                info: '#63b3ed',
+                purple: '#9f7aea',
+                pink: '#f687b3',
+            };
+
+
+
+            // 2. Status Distribution Chart
+            const ctx2 = document.getElementById('statusChart').getContext('2d');
+            const statusChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Approved', 'Approved Pending', 'Rejected', 'Human Review', 'Draft'],
+                    datasets: [{
+                        data: [
+                            {{ approved_count|default:0 }},
+                            {{ approved_pending_count|default:0 }},
+                            {{ rejected_count|default:0 }},
+                            {{ human_review_count|default:0 }},
+                            {{ draft_count|default:0 }}
+                        ],
+                        backgroundColor: [
+                            colors.success,
+                            colors.warning,
+                            colors.danger,
+                            colors.info,
+                            colors.gray
+                        ],
+                        borderWidth: 2,
+                        borderColor: 'white',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15,
+                                font: { family: 'Inter', size: 11 }
+                            }
+                        }
+                    },
+                    cutout: '65%',
+                }
+            });
+
+            // 3. Income Distribution Chart
+            const ctx3 = document.getElementById('incomeChart').getContext('2d');
+            const incomeChart = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: {{ income_labels|safe|default:'["$0-$1k", "$1k-$2k", "$2k-$3k", "$3k-$5k", "$5k+"]' }},
+                    datasets: [{
+                        label: 'Applicants',
+                        data: {{ income_data|safe|default:'[5, 12, 18, 8, 3]' }},
+                        backgroundColor: [
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(102, 126, 234, 0.6)',
+                            'rgba(102, 126, 234, 0.4)',
+                            'rgba(102, 126, 234, 0.3)',
+                            'rgba(102, 126, 234, 0.2)'
+                        ],
+                        borderColor: colors.primary,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            ticks: { font: { family: 'Inter' } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: 'Inter', size: 10 } }
+                        }
+                    }
+                }
+            });
+
+            // 4. Employment Length Chart
+            const ctx4 = document.getElementById('employmentChart').getContext('2d');
+            const employmentChart = new Chart(ctx4, {
+                type: 'bar',
+                data: {
+                    labels: {{ employment_labels|safe|default:'["< 6mo", "6-2yr", "2 + Years", "5-10yr", "10+yr"]' }},
+                    datasets: [{
+                        label: 'Applicants',
+                        data: {{ employment_data|safe|default:'[8, 10, 15, 20, 12, 5]' }},
+                        backgroundColor: [
+                            'rgba(237, 137, 54, 0.8)',
+                            'rgba(237, 137, 54, 0.6)',
+                            'rgba(237, 137, 54, 0.4)',
+                            'rgba(237, 137, 54, 0.3)',
+                            'rgba(237, 137, 54, 0.2)',
+                            'rgba(237, 137, 54, 0.1)'
+                        ],
+                        borderColor: colors.warning,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            ticks: { font: { family: 'Inter' } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: 'Inter', size: 9 } }
+                        }
+                    }
+                }
+            });
+
+            // ============================================
+            // CHART PERIOD UPDATER
+            // ============================================
+
+            function updateChart(period, btn) {
+                // Update active button
+                document.querySelectorAll('.chart-actions button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // In a real app, fetch new data for the selected period
+                // For demo, just show a loading state
+                const chart = trendChart;
+                chart.data.labels = ['Loading...'];
+                chart.data.datasets.forEach(ds => ds.data = [0]);
+                chart.update();
+
+                // Simulate data load
+                setTimeout(() => {
+                    const dataMap = {
+                        week: {
+                            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                            apps: [5, 8, 6, 12, 10, 4, 3],
+                            approved: [2, 4, 3, 6, 5, 2, 1]
+                        },
+                        month: {
+                            labels: ['W1', 'W2', 'W3', 'W4'],
+                            apps: [20, 28, 24, 31],
+                            approved: [12, 15, 18, 20]
+                        },
+                        year: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                            apps: [12, 19, 15, 22, 28, 24, 31, 35, 30, 40, 45, 50],
+                            approved: [5, 8, 10, 12, 15, 18, 20, 22, 25, 28, 30, 35]
+                        }
+                    };
+
+                    const data = dataMap[period] || dataMap.week;
+                    chart.data.labels = data.labels;
+                    chart.data.datasets[0].data = data.apps;
+                    chart.data.datasets[1].data = data.approved;
+                    chart.update();
+                }, 500);
+            }
+
+            // ============================================
+            // DATE RANGE UPDATER
+            // ============================================
+
+            function updateDateRange() {
+                const from = document.getElementById('dateFrom').value;
+                const to = document.getElementById('dateTo').value;
+
+                if (from && to && from > to) {
+                    alert('❌ Date From cannot be after Date To');
+                    return;
+                }
+
+                // In a real app, reload the page with date parameters
+                window.location.href = `?date_from=${from}&date_to=${to}`;
+            }
+
+            // ============================================
+            // ANIMATE PROGRESS BARS
+            // ============================================
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const progressBars = document.querySelectorAll('.progress-bar');
+                progressBars.forEach((bar, index) => {
+                    const width = bar.style.width || '0%';
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 200 + (index * 100));
+                });
+            });
+
+            // ============================================
+            // AUTO-REFRESH (optional)
+            // ============================================
+
+            // Refresh data every 5 minutes
+            // setInterval(() => location.reload(), 300000);
+
+            console.log('📊 Analytics Dashboard loaded successfully!');
+            console.log(`📈 Total Applications: ${document.querySelector('.stat-card:nth-child(1) h3').textContent}`);
+        </script>
+
+    </body>
+</html>

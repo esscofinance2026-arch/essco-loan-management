@@ -1,0 +1,106 @@
+{% extends 'Appbase.html' %}
+{% load static %}
+
+{% block title %}Shop Now Pay Later - ESSCO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/finance.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="finance-section">
+
+    <h2>Shop Now Pay Later</h2>
+
+    <p class="subtitle">
+        It's easy, Affordable & Flexible.
+    </p>
+
+    <!-- Hero / CTA Section -->
+    <div class="finance-hero">
+        <div class="hero-content">
+            <h3>Ready Finance Credit Benefits</h3>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <span><i class="fa-regular fa-clock"></i></span>
+                    <div>
+                        <strong>Quick Approval</strong>
+                        <p>Complete the one-page application and get a decision quickly!</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span><i class="fa-solid fa-money-bill-1"></i></span>
+                    <div>
+                        <strong>Credit at Cash Prices</strong>
+                        <p>Manageable installment payments make everything affordable.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span><i class="fa-regular fa-credit-card"></i></span>
+                    <div>
+                        <strong>20% Down Payment</strong>
+                        <p>Make your budget work with no money down to purchase!</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span><i class="fa-solid fa-mobile-screen-button"></i></span>
+                    <div>
+                        <strong>Flexible Payment</strong>
+                        <p>Pay online or in-person at any Courts store.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="cta-container">
+                <a href="https://www.esscoonline.com/" class="btn-apply">Get financing</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- How to Apply -->
+    <div class="finance-card">
+        <h3>How Do I Apply?</h3>
+        <p>
+            To get started, click on apply now and upload the required documents
+            (which should take no more than 5 minutes to complete).
+        </p>
+    </div>
+
+    <!-- Requirements -->
+    <div class="finance-card">
+        <h3>Requirements</h3>
+        <ul>
+            <li>
+                <strong>Valid I.D.</strong>
+                <span>National I.D., Drivers Permit or Passport</span>
+            </li>
+            <li>
+                <strong>Proof of Income</strong>
+                <span>Job letter and recent pay slip</span>
+            </li>
+            <li>
+                <strong>Proof of Address</strong>
+                <span>Recent utility bill (electricity, water, telephone or cable bill, no more than 3 months old)</span>
+            </li>
+            <li>
+                <strong>References</strong>
+                <span>Contact details of 2 references (1 family and 1 friend)</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="finance-disclaimer">
+        <p>
+            <strong>*Subject to credit approval.</strong> Credit Terms and conditions apply.
+        </p>
+    </div>
+
+    <!-- Bottom CTA -->
+    <!-- <div class="finance-bottom-cta">
+        <a href="{% url 'apply' %}" class="btn-apply-large">APPLY NOW</a>
+    </div> -->
+
+</div>
+
+{% endblock %}

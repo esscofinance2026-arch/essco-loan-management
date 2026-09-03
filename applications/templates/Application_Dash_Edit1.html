@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        {% load widget_tweaks %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard · full screen</title>
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="{% static 'css/DashEdit.css' %}">
+        <link rel="icon" type="image/x-icon" href="{% static 'images/Essco_logo.ico' %}?v=2">
+    </head>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h1><i class="fas fa-edit"></i> Edit Application - {{ form.reference_number.value }}</h1>
+                <p>
+                    <i class="fas fa-user"></i>
+                    Updating: <span class="text-light fw-bold">{{ form.Fname.value }} {{ form.Lname.value }}</span>
+                </p>
+                <div class="badge">
+                    <i class="far fa-clock"></i> Created by: {{ form.instance.created_by }}
+                </div>
+                <div class="badge">
+                    <i class="far fa-clock"></i> On: {{ form.instance.created|date:"M d, Y H:i" }}
+                </div>
+                <div class="badge">
+                    <i class="far fa-clock"></i> Last Updated by: {{ form.instance.updated_by }}
+                </div>
+                <div class="badge">
+                    <i class="far fa-clock"></i> On: {{ form.instance.updated_at|date:"M d, Y H:i" }}
+                </div>
+            </div>
+            <br>
+            <div>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <a href="{% url 'admin_dashboard_delete' form.instance.id %}" class="btn btn-secondary" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                    Delete
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Display Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}error{% else %}{{ message.tags }}{% endif %}">
+                <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Edit Form -->
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.media }}
+
+        <!-- ✅ Add hidden field -->
+        <input type="hidden" name="version" value="{{ application.version }}">
+
+        <!-- Personal Information -->
+        <div class="form-section">
+            <h4><i class="fas fa-user"></i> Personal Information - {{ form.instance.reference_number  }} </h4>
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <label>Reference Number</label>
+                    <input type="text" class="form-control" value="{{ form.instance.reference_number }}" readonly disabled>
+                </div>
+                <!-- Hidden input to submit the value -->
+                <input type="hidden" name="reference_number" value="{{ form.instance.reference_number }}">
+            </div>
+            <div class="row" style="gap: 20px;">
+                <div class="col-md-3 form-group" >
+                    <label>Prefix</label>
+                    {{ form.Prefix|add_class:"form-control"  }}
+                </div>
+                <div class="col-md-3 form-group" >
+                    <label>First Name</label>
+                    {{ form.Fname|add_class:"form-control"  }}
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Last Name</label>
+                    {{ form.Lname|add_class:"form-control" }}
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Nationality</label>
+                    {{ form.Nationality|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row" style="gap: 20px;">
+                <div class="col-md-2 form-group">
+                    <label>Date of Birth</label>
+                    {{ form.DOB|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row" style="gap: 20px;">
+                <div class="col-md-3 form-group">
+                    <label>ID Number</label>
+                    {{ form.ID_number|add_class:"form-control" }}
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>ID Type</label>
+                    <select name="ID_Type" class="form-control">
+                        <option value="National ID card" {% if form.instance.ID_Type == 'National ID card' %}selected{% endif %}>National ID card</option>
+                        <option value="Valid Passport" {% if form.instance.ID_Type == 'Valid Passport' %}selected{% endif %}>Valid Passport</option>
+                        <option value="Valid Drivers license" {% if form.instance.ID_Type == 'Valid Drivers license' %}selected{% endif %}>Valid Drivers license</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="gap: 20px;">
+                <div class="col-md-3 form-group">
+                    <label>Gender</label>
+                    <select name="Gender" class="form-control">
+                        <option value="Male" {% if form.instance.Gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if form.instance.Gender == 'Female' %}selected{% endif %}>Female</option>
+                    </select>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Marital Status</label>
+                    <select name="Marital_Status" class="form-control">
+                        <option value="Single" {% if form.instance.Marital_Status == 'Single' %}selected{% endif %}>Single</option>
+                        <option value="Married" {% if form.instance.Marital_Status == 'Married' %}selected{% endif %}>Married</option>
+                        <option value="Divorced" {% if form.instance.Marital_Status == 'Divorced' %}selected{% endif %}>Divorced</option>
+                        <option value="Widowed" {% if form.instance.Marital_Status == 'Widowed' %}selected{% endif %}>Widowed</option>
+                    </select>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Number of Dependents</label>
+                    {{ form.Num_Dependents|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row" style="gap: 20px;">
+                <div class="col-md-6 form-group">
+                    <label>Address</label>
+                    {{ form.Address|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row" style="gap: 20px;">
+                <div class="col-md-3 form-group">
+                    <label>Parish</label>
+                    <select name="Parish" class="form-control">
+                        <option value="Christ Church" {% if form.instance.Parish == 'Christ Church' %}selected{% endif %}>Christ Church</option>
+                        <option value="Saint Philip" {% if form.instance.Parish == 'Saint Philip' %}selected{% endif %}>Saint Philip</option>
+                        <option value="Saint Michael" {% if form.instance.Parish == 'Saint Michael' %}selected{% endif %}>Saint Michael</option>
+                        <option value="Saint Thomas" {% if form.instance.Parish == 'Saint Thomas' %}selected{% endif %}>Saint Thomas</option>
+                        <option value="Saint Peter" {% if form.instance.Parish == 'Saint Peter' %}selected{% endif %}>Saint Peter</option>
+                        <option value="Saint Lucy" {% if form.instance.Parish == 'Saint Lucy' %}selected{% endif %}>Saint Lucy</option>
+                        <option value="Saint Joseph" {% if form.instance.Parish == 'Saint Joseph' %}selected{% endif %}>Saint Joseph</option>
+                        <option value="Saint John" {% if form.instance.Parish == 'Saint John' %}selected{% endif %}>Saint John</option>
+                        <option value="Saint James" {% if form.instance.Parish == 'Saint James' %}selected{% endif %}>Saint James</option>
+                        <option value="Saint George" {% if form.instance.Parish == 'Saint George' %}selected{% endif %}>Saint George</option>
+                        <option value="Saint Andrew" {% if form.instance.Parish == 'Saint Andrew' %}selected{% endif %}>Saint Andrew</option>
+                    </select>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Years at Address</label>
+                    {{ form.Length_at_Address|add_class:"form-control" }}
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Residential Status</label>
+                    <select name="Residential_Status" class="form-control">
+                        <option value="Owner" {% if form.instance.Residential_Status == 'Owner' %}selected{% endif %}>Owner</option>
+                        <option value="Tenant" {% if form.instance.Residential_Status == 'Tenant' %}selected{% endif %}>Tenant</option>
+                        <option value="Living with Parents" {% if form.instance.Residential_Status == 'Living with Parents' %}selected{% endif %}>Living with Parents</option>
+                        <option value="Shared Rental" {% if form.instance.Residential_Status == 'Shared Rental' %}selected{% endif %}>Shared Rental</option>
+                        <option value="Other" {% if form.instance.Residential_Status == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="gap: 50px;">
+                <div class="col-md-2 form-group">
+                    <label>Cell Phone</label>
+                    {{ form.Cell_Phone|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Home Phone</label>
+                    {{ form.Home_Phone|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Work Phone</label>
+                    {{ form.Work_Phone|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Email</label>
+                    {{ form.email|add_class:"form-control" }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Employment Information -->
+        <div class="form-section">
+            <h4><i class="fas fa-briefcase"></i> Employment Information</h4>
+            <div class="row" style="gap: 50px;">
+                <div class="col-md-2 form-group">
+                    <label>Employer Name</label>
+                    {{ form.Employer_Name|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Employer Number</label>
+                    {{ form.Employer_Num|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Employer Address</label>
+                    {{ form.Employer_Address|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Employment Type</label>
+                    <select name="Employer_Type" class="form-control">
+                        <option value="Permanent" {% if form.instance.Employer_Type == 'Permanent' %}selected{% endif %}>Permanent</option>
+                        <option value="Contract" {% if form.instance.Employer_Type == 'Contract' %}selected{% endif %}>Contract</option>
+                        <option value="Probationary" {% if form.instance.Employer_Type == 'Probationary' %}selected{% endif %}>Probationary</option>
+                        <option value="Self-Employed" {% if form.instance.Employer_Type == 'Self-Employed' %}selected{% endif %}>Self-Employed</option>
+                    </select>
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Job Title</label>
+                    {{ form.Job_Title|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row" style="gap: 50px;">
+                <div class="col-md-2 form-group">
+                    <label>Less than 2 Years?</label>
+                    <select name="less_than_six" class="form-control">
+                        <option value="Yes" {% if form.instance.less_than_six == 'Yes' %}selected{% endif %}>Yes</option>
+                        <option value="No" {% if form.instance.less_than_six == 'No' %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Length of Employment</label>
+                    <select name="Len_Employ" class="form-control">
+                        <option value="2 + Years" {% if form.instance.Len_Employ == '2 + Years' %}selected{% endif %}>2+ Years</option>
+                        <option value="6 months to 2 years" {% if form.instance.Len_Employ == '6 months to 2 years' %}selected{% endif %}>6 months to 2 years</option>
+                        <option value="Less than 6 months" {% if form.instance.Len_Employ == 'Less than 6 months' %}selected{% endif %}>Less than 6 months</option>
+                    </select>
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Gross Monthly Income ($)</label>
+                    {{ form.Gross_Monthly_Income|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Previous Employer</label>
+                    {{ form.Previous_Employer|add_class:"form-control" }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Information -->
+        <div class="form-section">
+            <h4><i class="fas fa-money-bill-wave"></i> Financial Information</h4>
+            <div class="row" style="gap: 50px;">
+                <div class="col-md-2 form-group">
+                    <label>Purchase Value ($)</label>
+                    {{ form.Purchase_Value|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Loan/Mortgage Payments ($)</label>
+                    {{ form.Loan_mortgages_payments|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Credit Card Payments ($)</label>
+                    {{ form.CCPayments|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Other Debt Payments ($)</label>
+                    {{ form.Other_Debt_Payments|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Rent ($)</label>
+                    {{ form.Rent|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row" style="gap: 50px;">
+                <div class="col-md-2 form-group">
+                    <label>Transportation ($)</label>
+                    {{ form.Transportation|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Insurance ($)</label>
+                    {{ form.Insurance|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Other Living Expenses ($)</label>
+                    {{ form.Other_Living_Expenses|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Food Expenses ($)</label>
+                    {{ form.food|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Utilities ($)</label>
+                    {{ form.utilities|add_class:"form-control" }}
+                </div>
+            </div>
+        </div>
+
+        <!-- References -->
+        <div class="form-section">
+            <h4><i class="fas fa-users"></i> References</h4>
+
+            <h5>Reference 1</h5>
+            <div class="row" style="gap: 50px;">
+                <div class="col-md-2 form-group">
+                    <label>Full Name</label>
+                    {{ form.Reference1_FullName|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Relationship</label>
+                    {{ form.Reference1_Relationship|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Employer</label>
+                    {{ form.Reference1_Employer|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row" style="gap: 50px;">
+                <div class="col-md-2 form-group">
+                    <label>Job Title</label>
+                    {{ form.Reference1_Job_Title|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Contact Number</label>
+                    {{ form.Reference1_Contact_Number|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Years Known</label>
+                    {{ form.Reference1_Len_Time_Known|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Address</label>
+                    {{ form.Reference1_Address|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <h5 class="mt-3">Reference 2</h5>
+            <div class="row" style="gap: 50px;">
+                <div class="col-md-2 form-group">
+                    <label>Full Name</label>
+                    {{ form.Reference2_FullName|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Relationship</label>
+                    {{ form.Reference2_Relationship|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Employer</label>
+                    {{ form.Reference2_Employer|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row" style="gap: 50px;">
+                <div class="col-md-2 form-group">
+                    <label>Job Title</label>
+                    {{ form.Reference2_Job_Title|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Contact Number</label>
+                    {{ form.Reference2_Contact_Number|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Years Known</label>
+                    {{ form.Reference2_Len_Time_Known|add_class:"form-control" }}
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Address</label>
+                    {{ form.Reference2_Address|add_class:"form-control" }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <div>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+            <div>
+                <button type="submit" name="action" value="save_continue" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save and Continue
+                </button>
+                <button type="submit" name="action" value="save"class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </div>
+        <div class="form-section">
+            <h4><i class="fas fa-user"></i> Calculations</h4>
+            <h3>Item Details</h3>
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <label>Item name</label>
+                    <span class="form-control"> {{ form.instance.item_name }} </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Purchase Value</label>
+                    <span class="form-control"> {{ form.instance.Purchase_Value }} </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>SKU #</label>
+                    <span class="form-control"> {{ form.instance.item_sku }} </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <h3>Income</h3>
+                    <label>Income</label>
+                    <span class="form-control"> ${{ form.instance.Gross_Monthly_Income|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <h3>Financed Amount</h3>
+                    <label>Financed Amount</label>
+                    <span class="form-control"> ${{ form.instance.Financed_Amt|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <h3>Deposit</h3>
+                    <label>Deposit</label>
+                    <span class="form-control"> ${{ form.instance.Deposit|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-2 form-group">
+                    <h3>Total Credit Allowed</h3>
+                    <label>Total Credit Allowed</label>
+                    <span class="form-control"> ${{ form.instance.Total_Credit_Allowed|floatformat:2 }} </span>
+                </div>
+            </div>
+            <h3>Totals</h3>
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <label>Total Monthly Living Expenses</label>
+                    <span class="form-control"> ${{ form.instance.Total_Monthly_living_expenses|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Total Monthly Debt</label>
+                    <span class="form-control"> ${{ form.instance.Total_Monthly_debt|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Total Monthly Obligations</label>
+                    <span class="form-control"> ${{ form.instance.Monthly_Obligations|floatformat:2 }} </span>
+                </div>
+            </div>
+            <h3>Ratios</h3>
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <label>Debt To Income Ratio</label>
+                    <span class="form-control"> {{ form.instance.Debt_To_Income_Ratio|floatformat:2 }}% </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Living Expense Ratio</label>
+                    <span class="form-control"> {{ form.instance.Living_Expense_Ratio|floatformat:2 }}% </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Total Debt Service Ratio</label>
+                    <span class="form-control"> {{ form.instance.Total_Debt_Service_Ratio|floatformat:2 }}% </span>
+                </div>
+            </div>
+
+            <h3>Tax</h3>
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <label>Income After Tax</label>
+                    <span class="form-control"> ${{ form.instance.Gross_Monthly_Income_AT|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>PAYE</label>
+                    <span class="form-control"> ${{ form.instance.PAYE|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>NIS</label>
+                    <span class="form-control"> ${{ form.instance.NIS|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Resilence & Regenration</label>
+                    <span class="form-control"> ${{ form.instance.RR|floatformat:2 }} </span>
+                </div>
+            </div>
+
+            <h3>Disposable Income and Term Amounts</h3>
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <label>Disposable Income</label>
+                    <span class="form-control"> ${{ form.instance.Disposable_Income|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Six Month Term</label>
+                    <span class="form-control"> ${{ form.instance.Six|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Twelve Month Term</label>
+                    <span class="form-control"> ${{ form.instance.Twelve|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Eighteen Month Term</label>
+                    <span class="form-control"> ${{ form.instance.Eighteen|floatformat:2 }} </span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <label>Disposable Income After Essco</label>
+                    <span class="form-control"> ${{ form.instance.Disposable_Income_After|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Twenty Four Month Term</label>
+                    <span class="form-control"> ${{ form.instance.Twenty_Four|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Thirty Month Term</label>
+                    <span class="form-control"> ${{ form.instance.Thirty|floatformat:2 }} </span>
+                </div>
+                <div class="col-md-2 form-group">
+                    <label>Thirty Six Month Term</label>
+                    <span class="form-control"> ${{ form.instance.Thirty_Six|floatformat:2 }} </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-section">
+            <h4><i class="fas fa-user"></i> Human Review </h4>
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <label>Initial Approval Status</label>
+                    <span class="form-control"> {{ form.instance.Approval_Status }} </span>
+                </div>
+                {% if form.instance.Final_Approval == 'Human Approved' %}
+                    <div class="col-md-3 form-group d-flex align-items-end">
+                        <a href="{% url 'preview_approval_email' form.instance.id %}"
+                           class="btn btn-email"
+                           target="_blank"
+                           style="background: #f0b31e; color: #1a3b5d; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer; transition: all 0.3s ease;"
+                           onmouseover="this.style.background='#e0a010'; this.style.transform='translateY(-2px)'"
+                           onmouseout="this.style.background='#f0b31e'; this.style.transform='translateY(0)'">
+                            <i class="fas fa-envelope"></i> 📧 Preview Approval Email
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="col-md-3 form-group d-flex align-items-end">
+                        <button class="btn btn-secondary" disabled style="padding: 10px 20px; border-radius: 6px; opacity: 0.6; cursor: not-allowed;">
+                            <i class="fas fa-lock"></i> Approval Required
+                        </button>
+                    </div>
+                {% endif %}
+                <!--
+                <a href="{% url 'preview_ap_initial_email' form.instance.id %}"
+                   class="btn btn-email"
+                   target="_blank"
+                   style="background: #f0b31e; color: #1a3b5d; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer; transition: all 0.3s ease;"
+                   onmouseover="this.style.background='#e0a010'; this.style.transform='translateY(-2px)'"
+                   onmouseout="this.style.background='#f0b31e'; this.style.transform='translateY(0)'">
+                    <i class="fas fa-envelope"></i> 📧 Preview Approval Email
+                </a> -->
+
+            </div>
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <label>Term (30 - 36 Terms only applicable to Approved Pending)</label>
+                    <label> (6 - 24 Terms are the only Terms available to Human Review)</label>
+                    <label> (OnlyApproved Pending status may choose repayment terms of 30 or 36 months)</label>
+                    <select name="Term" class="form-control">
+                        <option value="Six" {% if form.instance.Term == 'Six' %}selected{% endif %}>Six</option>
+                        <option value="Twelve" {% if form.instance.Term == 'Twelve' %}selected{% endif %}>Twelve</option>
+                        <option value="Eighteen" {% if form.instance.Term == 'Eighteen' %}selected{% endif %}>Eighteen</option>
+                        <option value="Twenty Four" {% if form.instance.Term == 'Twenty Four' %}selected{% endif %}>Twenty Four</option>
+                        <option value="Thirty" {% if form.instance.Term == 'Thirty' %}selected{% endif %}>Thirty</option>
+                        <option value="Thirty Six" {% if form.instance.Term == 'Thirty Six' %}selected{% endif %}>Thirty Six</option>
+                        <option value="other" {% if form.instance.Term == 'other' %}selected{% endif %}>other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <label>Identification Check</label>
+                    <select name="Identification_Check" class="form-control">
+                        <option value="Yes" {% if form.instance.Identification_Check == 'Yes' %}selected{% endif %}>Yes</option>
+                        <option value="No" {% if form.instance.Identification_Check == 'No' %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Existing Customer</label>
+                    <select name="Existing_Customer" class="form-control">
+                        <option value="Yes" {% if form.instance.Existing_Customer == 'Yes' %}selected{% endif %}>Yes</option>
+                        <option value="No" {% if form.instance.Existing_Customer == 'No' %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <label>Final Approval</label>
+                    <select name="Final_Approval" class="form-control">
+                        <option value="Human Rejected" {% if form.instance.Final_Approval == 'Human Rejected' %}selected{% endif %}>Human Rejected</option>
+                        <option value="Human Approved" {% if form.instance.Final_Approval == 'Human Approved' %}selected{% endif %}>Human Approved</option>
+                        <option value="other" {% if form.instance.Final_Approval == 'other' %}selected{% endif %}>other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <!--
+                <div class="col-md-6 form-group">
+                    {% if application.deposit_payment and application.deposit_payment.is_reversed %}
+                        <span class="badge bg-danger">Reversed</span>
+                    {% elif application.deposit_payment %}
+                        <span class="badge bg-success">
+                            Deposit: ${{ application.deposit_paid|floatformat:2 }}
+                        </span>
+                    {% else %}
+                        <a href="{% url 'payments:admin_record_payment' application.id %}" class="btn btn-success">Record Cash Deposit</a>
+                    {% endif %}
+                </div>
+                -->
+                <div class="col-md-6 form-group">
+                    {% if form.instance.Final_Approval == 'Human Approved' %}
+                        {% if application.loan %}
+                            <!-- Loan already exists → don't show deposit button -->
+                            <span class="badge bg-success">
+                                <i class="fas fa-check-circle"></i>
+                                Loan Created: {{ application.loan.loan_id }}
+                            </span>
+                            <span class="text-muted ms-2 small">
+                                Go to <a href="{% url 'staff_loan_detail' application.loan.id %}">loan detail</a> to make payments.
+                            </span>
+
+                        {% else %}
+                            <!-- No loan yet → show deposit button -->
+                            <a href="{% url 'payments:admin_record_payment' application.id %}" class="btn btn-success">
+                                <i class="fas fa-money-bill-wave"></i> Record Deposit
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="id_Notes">Additional Notes</label>
+                    <textarea
+                        name="Notes"
+                        id="id_Notes"
+                        class="form-control"
+                        rows="6">{{ application.Notes }}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="form-section">
+            <h4><i class="fas fa-user"></i> Consent Review </h4>
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <label>Consent</label>
+                    <span class="form-control"> {{ form.instance.accept_terms }} </span>
+                </div>
+            </div>
+        </div>
+        <!-- References -->
+        <div class="form-section">
+            <h4><i class="fas fa-users"></i> File Uploads </h4>
+
+            <div class="row">
+                <div class="col-md-5 form-group">
+                    <label>Identification</label>
+                    {% if application.Identification %}
+                        <p>
+                            <a href="{{ application.Identification.url }}" target="_blank">
+                                View current file
+                            </a>
+                        </p>
+                        <img src="{{ application.Identification.url }}" alt="Identification" style="max-width:400px; height:auto;">
+                    {% endif %}
+                    {{ form.Identification|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 form-group">
+                    <label>Payslip</label>
+                    {% if application.Payslip %}
+                        <p>
+                            <a href="{{ application.Payslip.url }}" target="_blank">
+                                View current file
+                            </a>
+                        </p>
+                        <img src="{{ application.Payslip.url }}" alt="Payslip" style="max-width:400px; height:auto;">
+                    {% endif %}
+                    {{ form.Payslip|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 form-group">
+                    <label>Job Letter</label>
+                    {% if application.Job_Letter %}
+                        <p>
+                            <a href="{{ application.Job_Letter.url }}" target="_blank">
+                                View current file
+                            </a>
+                        </p>
+                        <img src="{{ application.Job_Letter.url }}" alt="Job_Letter" style="max-width:400px; height:auto;">
+                    {% endif %}
+                    {{ form.Job_Letter|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 form-group">
+                    <label>Financial Statement</label>
+                    {% if application.Financial_Statement %}
+                        <p>
+                            <a href="{{ application.Financial_Statement.url }}" target="_blank">
+                                View current file
+                            </a>
+                        </p>
+                        <img src="{{ application.Financial_Statement.url }}" alt="Financial_Statement" style="max-width:400px; height:auto;">
+                    {% endif %}
+                    {{ form.Financial_Statement|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 form-group">
+                    <label>Bank Statement</label>
+                    {% if application.Bank_Statement %}
+                        <p>
+                            <a href="{{ application.Bank_Statement.url }}" target="_blank">
+                                View current file
+                            </a>
+                        </p>
+                        <img src="{{ application.Bank_Statement.url }}" alt="Bank_Statement" style="max-width:400px; height:auto;">
+                    {% endif %}
+                    {{ form.Bank_Statement|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 form-group">
+                    <label>Busines Registration</label>
+                    {% if application.Business_Registration %}
+                        <p>
+                            <a href="{{ application.Business_Registration.url }}" target="_blank">
+                                View current file
+                            </a>
+                        </p>
+                        <img src="{{ application.Business_Registration.url }}" alt="Business_Registration" style="max-width:400px; height:auto;">
+                    {% endif %}
+                    {{ form.Business_Registration|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 form-group">
+                    <label>Statement</label>
+                    {% if application.Statement %}
+                        <p>
+                            <a href="{{ application.Statement.url }}" target="_blank">
+                                View current file
+                            </a>
+                        </p>
+                        <img src="{{ application.Statement.url }}" alt="Statement" style="max-width:400px; height:auto;">
+                    {% endif %}
+                    {{ form.Statement|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 form-group">
+                    <label>Utility Bill</label>
+                    {% if application.Utility_Bill %}
+                        <p>
+                            <a href="{{ application.Utility_Bill.url }}" target="_blank">
+                                View current file
+                            </a>
+                        </p>
+                        <img src="{{ application.Utility_Bill.url }}" alt="Utility_Bill" style="max-width:400px; height:auto;">
+                    {% endif %}
+                    {{ form.Utility_Bill|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 form-group">
+                    <label>Selfie</label>
+                    {% if application.Selfie %}
+                        <p>
+                            <a href="{{ application.Selfie.url }}" target="_blank">
+                                View current file
+                            </a>
+                        </p>
+                        <img src="{{ application.Selfie.url }}" alt="Selfie" style="max-width:400px; height:auto;">
+                    {% endif %}
+                    {{ form.Selfie|add_class:"form-control" }}
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+
+
+</html>

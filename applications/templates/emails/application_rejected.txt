@@ -1,0 +1,19 @@
+Dear {{ application.Fname }},
+
+Thank you for choosing ESSCO Finance.
+
+Unfortunately, we are unable to approve your loan application at this time
+
+Application Reference:
+{{ reference }}
+
+We appreciate and welcome your interest in shopping with us.
+
+If you have any questions, please contact us and reference your application number above.
+
+Kind regards,
+
+Essco Finance
+Email: info@esscofinance.com
+Phone: (246) XXX-XXXX
+Website: https://www.esscofinance.com

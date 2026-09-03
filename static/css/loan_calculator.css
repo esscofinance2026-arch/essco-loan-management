@@ -1,0 +1,346 @@
+/* ============================================
+   LOAN CALCULATOR - ESSCO Style
+   ============================================ */
+:root {
+    --primary-red: #CC0000;
+    --dark-red: #8B0000;
+    --light-red: #ffe6e6;
+    --white: #FFFFFF;
+    --light-gray: #f5f5f5;
+    --medium-gray: #e0e0e0;
+    --dark-gray: #666666;
+    --black: #000000;
+    --border-gray: #dddddd;
+    --text-dark: #1a1a1a;
+    --text-light: #666666;
+    --primary-green: #198754;
+    --dark-green: #0c4128;
+}
+
+/* ----- Base Container ----- */
+.calculator-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #2d2d2d;
+    line-height: 1.7;
+}
+
+/* ----- Main Heading ----- */
+.calculator-section h2 {
+    font-size: 2.8rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #1a3b5d;
+    border-bottom: 4px solid var(--primary-red);
+    padding-bottom: 15px;
+    margin-bottom: 5px;
+}
+
+.calculator-section .subtitle {
+    font-size: 1.15rem;
+    color: #555;
+    margin-bottom: 40px;
+    font-weight: 300;
+}
+
+/* ----- Grid Layout ----- */
+.calculator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* ============================================
+   LEFT: FORM
+   ============================================ */
+.calculator-form {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 12px;
+    border-left: 5px solid var(--primary-red);
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #1a3b5d;
+    margin-bottom: 6px;
+    font-size: 1rem;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.currency-symbol {
+    position: absolute;
+    left: 14px;
+    font-weight: 600;
+    color: #1a3b5d;
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
+.percentage-symbol {
+    position: absolute;
+    right: 14px;
+    font-weight: 600;
+    color: #1a3b5d;
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background: white;
+    color: #2d2d2d;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #f0b31e;
+    box-shadow: 0 0 0 4px rgba(240, 179, 30, 0.15);
+}
+
+.input-wrapper .form-control {
+    padding-left: 30px;
+}
+
+.input-wrapper .form-control:has(+ .percentage-symbol) {
+    padding-right: 35px;
+}
+
+.help-text {
+    display: block;
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 4px;
+}
+
+/* ----- Disclaimer ----- */
+.disclaimer {
+    display: flex;
+    gap: 12px;
+    background: #fdf8ed;
+    padding: 16px 20px;
+    border-radius: 8px;
+    /* border-left: 4px solid #f0b31e; */
+    margin-top: 20px;
+}
+
+.disclaimer i {
+    color: #f0b31e;
+    font-size: 1.2rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.disclaimer p {
+    font-size: 0.85rem;
+    color: #555;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.disclaimer strong {
+    color: #1a3b5d;
+}
+
+/* ============================================
+   RIGHT: RESULTS
+   ============================================ */
+.calculator-results {
+    /*background: #1a3b5d;*/
+    background: #bf2034;
+    padding: 30px 35px;
+    border-radius: 12px;
+    color: #ffffff;
+    box-shadow: 0 8px 30px rgba(26, 59, 93, 0.25);
+}
+
+.calculator-results h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--white);
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ----- Summary Table ----- */
+.summary-table {
+    margin-bottom: 25px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-row span:first-child {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 400;
+}
+
+.summary-row span:last-child {
+    font-weight: 600;
+    color: #ffffff;
+}
+
+/* ----- Monthly Payment ----- */
+.monthly-payment {
+    background: rgba(240, 179, 30, 0.12);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin: 20px 0 25px 0;
+    border: 1px solid rgba(240, 179, 30, 0.2);
+}
+
+.monthly-payment p {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 5px 0;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.monthly-payment h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--white);
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+/* ----- Calculate Button ----- */
+.btn-calculate {
+    width: 100%;
+    padding: 14px 20px;
+    background: #f7f7f7;
+    color: var(--primary-red);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-calculate i {
+    font-size: 1.1rem;
+}
+
+.btn-calculate:hover {
+    background: #313131;
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(240, 179, 30, 0.4);
+}
+
+.btn-calculate:active {
+    transform: translateY(0px);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 968px) {
+    .calculator-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .calculator-form {
+        order: 2;
+    }
+
+    .calculator-results {
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .calculator-section h2 {
+        font-size: 2rem;
+    }
+
+    .calculator-form {
+        padding: 20px;
+    }
+
+    .calculator-results {
+        padding: 25px 20px;
+    }
+
+    .monthly-payment h1 {
+        font-size: 2rem;
+    }
+
+    .btn-calculate {
+        font-size: 1rem;
+        padding: 12px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .calculator-section {
+        padding: 25px 12px;
+    }
+
+    .calculator-section h2 {
+        font-size: 1.7rem;
+    }
+
+    .calculator-form {
+        padding: 16px;
+    }
+
+    .form-control {
+        font-size: 0.9rem;
+        padding: 10px 14px;
+    }
+
+    .calculator-results {
+        padding: 20px 16px;
+    }
+
+    .monthly-payment h1 {
+        font-size: 1.6rem;
+    }
+
+    .disclaimer {
+        padding: 12px 14px;
+    }
+
+    .disclaimer p {
+        font-size: 0.8rem;
+    }
+}

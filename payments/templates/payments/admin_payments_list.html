@@ -1,0 +1,396 @@
+<!-- payments/templates/payments/admin_payments_list.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}All Payments{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 25px;
+    }
+
+    .stat-box {
+        background: white;
+        padding: 18px 20px;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid #f0f0f0;
+    }
+
+    .stat-box .number {
+        font-size: 1.6rem;
+        font-weight: 700;
+    }
+
+    .stat-box .label {
+        font-size: 0.8rem;
+        color: #888;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .stat-box .number-blue { color: #1a56db; }
+    .stat-box .number-green { color: #0a8f4a; }
+    .stat-box .number-orange { color: #c07600; }
+    .stat-box .number-red { color: #b91c1c; }
+    .stat-box .number-gray { color: #6c757d; }
+
+    .filter-section {
+        background: white;
+        padding: 16px 20px;
+        border-radius: 10px;
+        border: 1px solid #f0f0f0;
+        margin-bottom: 20px;
+    }
+
+    .filter-section .form-control,
+    .filter-section .form-select {
+        border-radius: 8px;
+        padding: 8px 14px;
+        border: 2px solid #e0e0e0;
+        font-size: 0.9rem;
+    }
+
+    .filter-section .form-control:focus,
+    .filter-section .form-select:focus {
+        border-color: #BF2034;
+        box-shadow: 0 0 0 3px rgba(191, 32, 52, 0.12);
+    }
+
+    .filter-section .btn-filter {
+        padding: 8px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        background: #BF2034;
+        color: white;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .filter-section .btn-filter:hover {
+        background: #8B1A24;
+        transform: translateY(-2px);
+    }
+
+    .filter-section .btn-clear {
+        padding: 8px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        background: #f0f0f0;
+        color: #333;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .filter-section .btn-clear:hover {
+        background: #e0e0e0;
+    }
+
+    .badge-status {
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .badge-pending { background: #fff4e6; color: #c07600; }
+    .badge-confirmed { background: #e6f7ed; color: #0a8f4a; }
+    .badge-rejected { background: #fde8e8; color: #b91c1c; }
+    .badge-cancelled { background: #f0f0f0; color: #666; }
+    .badge-reversed { background: #fde8e8; color: #b91c1c; }
+
+    .table-payments thead th {
+        background: #f8f9fa;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        color: #495057;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .table-payments td {
+        vertical-align: middle;
+        padding: 10px 12px;
+    }
+
+    .table-payments .clickable-row {
+        cursor: pointer;
+    }
+
+    .table-payments .clickable-row:hover {
+        background: #f8f9fa;
+    }
+
+    /* ✅ Row styles for reversed payments */
+    .row-reversed {
+        background-color: #fff5f5 !important;
+        opacity: 0.85;
+    }
+
+    .row-reversed:hover {
+        background-color: #ffebeb !important;
+    }
+
+    .pagination-nav {
+        padding: 16px 20px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .pagination-nav .page-link {
+        color: #BF2034;
+        border-radius: 8px;
+    }
+
+    .pagination-nav .page-item.active .page-link {
+        background: #BF2034;
+        border-color: #BF2034;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block staff_content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title"><i class="fas fa-receipt text-primary me-2"></i>Payment Management</h1>
+        <p class="page-subtitle">View and manage all payments in the system.</p>
+    </div>
+    <a href="{% url 'payments:admin_pending_payments' %}" class="btn btn-warning">
+        <i class="fas fa-clock"></i> Pending Payments
+        {% if total_pending > 0 %}
+        <span class="badge bg-dark text-white ms-1">{{ total_pending }}</span>
+        {% endif %}
+    </a>
+</div>
+
+<!-- Stats -->
+<div class="stat-grid">
+    <div class="stat-box">
+        <div class="number number-blue">{{ total_payments }}</div>
+        <div class="label">Total Payments</div>
+    </div>
+    <div class="stat-box">
+        <div class="number number-green">${{ total_amount|floatformat:2 }}</div>
+        <div class="label">Total Amount</div>
+    </div>
+    <div class="stat-box">
+        <div class="number number-orange">{{ total_pending }}</div>
+        <div class="label">Pending</div>
+    </div>
+    <div class="stat-box">
+        <div class="number number-red">{{ total_rejected }}</div>
+        <div class="label">Rejected</div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="filter-section">
+    <form method="GET" class="row g-3">
+        <div class="col-md-3">
+            <input type="text" name="search" class="form-control" placeholder="Search receipts, customers..." value="{{ search_query }}">
+        </div>
+        <div class="col-md-2">
+            <select name="status" class="form-select">
+                <option value="">All Statuses</option>
+                {% for value, label in statuses %}
+                <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+                <!-- ✅ Add REVERSED to filter -->
+                <option value="REVERSED" {% if selected_status == 'REVERSED' %}selected{% endif %}>Reversed</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="category" class="form-select">
+                <option value="">All Categories</option>
+                {% for value, label in categories %}
+                <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="method" class="form-select">
+                <option value="">All Methods</option>
+                {% for method in payment_methods %}
+                <option value="{{ method.id }}" {% if selected_method|add:"0" == method.id %}selected{% endif %}>{{ method.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <div class="row g-2">
+                <div class="col-6">
+                    <input type="date" name="date_from" class="form-control" placeholder="From" value="{{ date_from }}">
+                </div>
+                <div class="col-6">
+                    <input type="date" name="date_to" class="form-control" placeholder="To" value="{{ date_to }}">
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn-filter"><i class="fas fa-search me-1"></i> Apply Filters</button>
+            <a href="{% url 'payments:admin_payments_list' %}" class="btn-clear"><i class="fas fa-times me-1"></i> Clear</a>
+        </div>
+    </form>
+</div>
+
+<!-- Payments Table -->
+<div class="staff-card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-list me-2"></i> Payments</span>
+        <span class="badge bg-secondary">{{ payments.paginator.count }}</span>
+    </div>
+    <div class="card-body p-0">
+        {% if payments %}
+        <div class="table-responsive">
+            <table class="table table-payments mb-0">
+                <thead>
+                    <tr>
+                        <th>Receipt</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>Method</th>
+                        <th>Linked To</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                    <!-- ✅ Row styling for reversed payments -->
+                    <tr class="{% if payment.is_reversed %}row-reversed{% endif %}">
+                        <td>
+                            <strong>{{ payment.receipt_number }}</strong>
+                            {% if payment.is_reversed %}
+                                <span class="badge badge-reversed ms-1">REVERSED</span>
+                            {% endif %}
+                        </td>
+                        <!--
+                        <td>
+                            {% if payment.customer %}
+                                {{ payment.customer.get_full_name|default:payment.customer.username }}
+                            {% elif payment.customer_name %}
+                                {{ payment.customer_name }}
+                            {% else %}
+                                <span class="text-muted">Unknown</span>
+                            {% endif %}
+                        </td>-->
+                        <td>
+                            {% if payment.customer %}
+                                {{ payment.customer.get_full_name|default:payment.customer.username }}
+                            {% elif payment.application %}
+                                {{ payment.application.Fname }} {{ payment.application.Lname }}
+                            {% else %}
+                                <span class="text-muted">Unknown</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if payment.is_reversed %}
+                                <del class="text-danger">${{ payment.amount|floatformat:2 }}</del>
+                                <span class="text-muted">$0.00</span>
+                            {% else %}
+                                ${{ payment.amount|floatformat:2 }}
+                            {% endif %}
+                        </td>
+                        <td>{{ payment.category }}</td>
+                        <td>{{ payment.payment_method.name }}</td>
+                        <td>
+                            {% if payment.loan %}
+                                <a href="{% url 'staff_loan_detail' payment.loan.id %}">{{ payment.loan.loan_id }}</a>
+                            {% elif payment.application %}
+                                {{ payment.application.reference_number }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ payment.created_at|date:"M d, Y H:i" }}</td>
+                        <td>
+                            {% if payment.is_reversed %}
+                                <span class="badge-status badge-reversed">
+                                    <i class="fas fa-undo-alt me-1"></i> REVERSED
+                                </span>
+                            {% else %}
+                                <span class="badge-status badge-{{ payment.status|lower }}">
+                                    {{ payment.status }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'payments:admin_payment_detail' payment.id %}" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                {% if payment.status == 'PENDING' %}
+                                    <a href="{% url 'payments:admin_confirm_payment' payment.id %}" class="btn btn-success">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                {% endif %}
+                                <!-- ✅ Show reverse button only for confirmed payments that aren't reversed -->
+                                {% if payment.status == 'CONFIRMED' and not payment.is_reversed %}
+                                    <a href="{% url 'payments:admin_reverse_payment' payment.id %}"
+                                       class="btn btn-danger"
+                                       onclick="return confirm('Are you sure you want to reverse this payment?')">
+                                        <i class="fas fa-undo-alt"></i>
+                                    </a>
+                                {% endif %}
+
+                                {% if payment.is_reversed %}
+                                    <a href="{% url 'payments:admin_un_reverse_payment' payment.id %}"
+                                       class="btn btn-warning"
+                                       onclick="return confirm('Are you sure you want to restore this payment?')">
+                                        <i class="fas fa-reply"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
+            <p class="text-muted">No payments found matching your criteria.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    {% if payments.paginator.num_pages > 1 %}
+    <div class="pagination-nav">
+        <nav aria-label="Payment pagination">
+            <ul class="pagination justify-content-center mb-0">
+                {% if payments.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ payments.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
+                </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <span class="page-link">Page {{ payments.number }} of {{ payments.paginator.num_pages }}</span>
+                </li>
+
+                {% if payments.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ payments.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ payments.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Last</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

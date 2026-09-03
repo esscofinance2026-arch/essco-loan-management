@@ -1,0 +1,41 @@
+<!-- loans/templates/loans/activate_loan.html -->
+{% extends 'Appbase.html' %}
+{% load static %}
+
+{% block title %}Activate Loan{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Activate Loan</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <p><strong>Loan:</strong> {{ loan.loan_id }}</p>
+                        <p><strong>Customer:</strong> {{ loan.customer.get_full_name }}</p>
+                        <p><strong>Status:</strong> {{ loan.status }}</p>
+                    </div>
+
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Confirm:</strong> Activating this loan will generate the payment schedule and start the loan term.
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-block">
+                            <i class="fas fa-play"></i> Activate Loan
+                        </button>
+                        <a href="{% url 'loans:loan_detail' loan.id %}" class="btn btn-secondary btn-block">
+                            Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

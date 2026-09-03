@@ -1,0 +1,106 @@
+<!-- loans/templates/loans/log_collection_activity.html -->
+{% extends 'Appbase.html' %}
+{% load static %}
+
+{% block title %}Log Collection Activity{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4>Log Collection Activity</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <p><strong>Loan:</strong> {{ loan.loan_id }}</p>
+                        <p><strong>Customer:</strong> {{ loan.customer.get_full_name }}</p>
+                        <p><strong>Outstanding:</strong> ${{ loan.outstanding_balance|floatformat:2 }}</p>
+                        <p><strong>Days Overdue:</strong> {{ loan.get_days_overdue }}</p>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Activity Type</label>
+                            <select name="activity_type" class="form-control" required>
+                                <option value="">Select...</option>
+                                <option value="PHONE_CALL">Phone Call</option>
+                                <option value="EMAIL">Email</option>
+                                <option value="SMS">SMS</option>
+                                <option value="LETTER">Letter</option>
+                                <option value="VISIT">Visit</option>
+                                <option value="OTHER">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Contact Status</label>
+                            <select name="contact_status" class="form-control" required>
+                                <option value="">Select...</option>
+                                <option value="CONTACTED">Contacted</option>
+                                <option value="NO_ANSWER">No Answer</option>
+                                <option value="WRONG_NUMBER">Wrong Number</option>
+                                <option value="PROMISE_TO_PAY">Promise to Pay</option>
+                                <option value="DISPUTE">Dispute</option>
+                                <option value="ESCALATED">Escalated</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Summary</label>
+                            <textarea name="summary" class="form-control" rows="3" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Notes (Optional)</label>
+                            <textarea name="notes" class="form-control" rows="2"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Promise Date</label>
+                                    <input type="date" name="promise_date" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Promise Amount</label>
+                                    <input type="number" name="promise_amount" step="0.01" class="form-control" placeholder="0.00">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Follow-up Date</label>
+                                    <input type="date" name="follow_up_date" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Need Follow-up?</label>
+                                    <div class="form-check">
+                                        <input type="checkbox" name="follow_up_required" class="form-check-input" id="followUp">
+                                        <label class="form-check-label" for="followUp">Yes, follow-up required</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-info btn-block">
+                            <i class="fas fa-save"></i> Log Activity
+                        </button>
+                        <a href="{% url 'loans:loan_detail' loan.id %}" class="btn btn-secondary btn-block">
+                            Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,230 @@
+/* ============================================
+   CONTACT PAGE - Matching About Us Styling
+   ============================================ */
+:root {
+    --primary-red: #CC0000;
+    --dark-red: #8B0000;
+    --light-red: #ffe6e6;
+    --white: #FFFFFF;
+    --light-gray: #f5f5f5;
+    --medium-gray: #e0e0e0;
+    --dark-gray: #666666;
+    --black: #000000;
+    --border-gray: #dddddd;
+    --text-dark: #1a1a1a;
+    --text-light: #666666;
+}
+
+/* ----- Base Container ----- */
+.contact-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #2d2d2d;
+    line-height: 1.7;
+}
+
+/* ----- Main Heading (matches About Us) ----- */
+.contact-section h2 {
+    font-size: 2.8rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #1a3b5d;
+    border-bottom: 4px solid var(--primary-red);
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+/* ----- Subtitle ----- */
+.contact-section .subtitle {
+    font-size: 1.15rem;
+    color: #555;
+    margin-bottom: 40px;
+    font-weight: 300;
+}
+
+/* ----- Contact Cards (individual contacts) ----- */
+.contact-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    background: #f8f9fa;
+    padding: 20px 25px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    border-left: 5px solid var(--primary-red);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.contact-card:hover {
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+}
+
+/* ----- Icon in cards ----- */
+.contact-icon {
+    font-size: 2rem;
+    line-height: 1.2;
+    min-width: 45px;
+    text-align: center;
+    margin-top: 2px;
+}
+
+/* ----- Content inside cards ----- */
+.contact-content h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-red);
+    margin: 0 0 8px 0;
+    letter-spacing: 0.5px;
+}
+
+.contact-content p {
+    margin: 4px 0;
+    font-size: 1rem;
+    color: #444;
+}
+
+.contact-content a {
+    color: #1a3b5d;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.contact-content a:hover {
+    color: var(--primary-red);
+    text-decoration: underline;
+}
+
+/* ----- Departments Title (matches H3 from About) ----- */
+.contact-section .departments-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1a3b5d;
+    margin-top: 50px;
+    margin-bottom: 25px;
+    display: inline-block;
+    position: relative;
+}
+
+.contact-section .departments-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: var(--primary-red);
+    margin-top: 5px;
+}
+
+/* ----- Department Grid (3 columns) ----- */
+.department-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+/* ----- Individual Department Card ----- */
+.department-card {
+    background: #f8f9fa;
+    padding: 25px 22px;
+    border-radius: 10px;
+    /* border-left: 5px solid var(--primary-red); */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.department-card:hover {
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.department-card h4 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-red);
+    margin: 0 0 15px 0;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+/* ----- Sub-sections inside department (Sales / Service) ----- */
+.department-card .dept-sub {
+    margin-bottom: 15px;
+}
+
+.department-card .dept-sub:last-child {
+    margin-bottom: 0;
+}
+
+.department-card .dept-sub p {
+    margin: 3px 0;
+    font-size: 0.98rem;
+    color: #444;
+}
+
+.department-card .dept-sub strong {
+    color: #1a3b5d;
+    font-weight: 600;
+}
+
+.department-card .dept-sub a {
+    color: #1a3b5d;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.department-card .dept-sub a:hover {
+    color: var(--primary-red);
+    text-decoration: underline;
+}
+
+/* ----- Responsive Tweaks ----- */
+@media (max-width: 768px) {
+    .contact-section h2 {
+        font-size: 2rem;
+    }
+
+    .contact-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 18px 20px;
+    }
+
+    .contact-icon {
+        font-size: 1.6rem;
+        min-width: auto;
+    }
+
+    .department-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-section .departments-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-section {
+        padding: 25px 12px;
+    }
+
+    .contact-section h2 {
+        font-size: 1.7rem;
+    }
+
+    .contact-card {
+        padding: 15px;
+    }
+
+    .department-card {
+        padding: 18px 16px;
+    }
+}

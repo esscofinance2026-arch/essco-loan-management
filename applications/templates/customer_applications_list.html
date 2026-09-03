@@ -1,0 +1,207 @@
+<!-- applications/templates/customer_applications_list.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Applications{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        margin-bottom: 30px;
+    }
+
+    .page-header h2 {
+        font-weight: 700;
+        color: #1a1a2e;
+    }
+
+    .page-header h2 span {
+        color: #CC0000;
+    }
+
+    .page-header .text-muted {
+        font-size: 0.95rem;
+    }
+
+    .table-applications {
+        margin-bottom: 0;
+    }
+
+    .table-applications thead th {
+        background: #f8f9fa;
+        border-bottom: 2px solid #e9ecef;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        color: #495057;
+    }
+
+    .table-applications td {
+        vertical-align: middle;
+        padding: 14px 12px;
+    }
+
+    .badge-status {
+        padding: 4px 14px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .badge-approved { background: #e6f7ed; color: #0a8f4a; }
+    .badge-pending { background: #fff4e6; color: #c07600; }
+    .badge-rejected { background: #fde8e8; color: #b91c1c; }
+    .badge-review { background: #e8edfd; color: #1a56db; }
+    .badge-approved-pending { background: #e6f7ed; color: #0a8f4a; }
+    .badge-human-approved { background: #e8edfd; color: #1a56db; }
+    .badge-human-rejected { background: #fde8e8; color: #b91c1c; }
+
+    .btn-action {
+        padding: 4px 12px;
+        font-size: 0.8rem;
+        border-radius: 6px;
+    }
+
+    .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+    .empty-state i {
+        font-size: 2rem;
+        color: #dee2e6;
+        margin-bottom: 16px;
+    }
+
+    .empty-state h5 {
+        color: #495057;
+        font-weight: 600;
+    }
+
+    .empty-state p {
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block dashboard_content %}
+<div class="page-header">
+    <h2 class="red-text">My <span>Applications</span></h2>
+    <p class="text-muted">Track the status of all your hire purchase applications.</p>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        {% if applications %}
+        <div class="table-responsive">
+            <table class="table table-applications table-hover">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Item</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Deposit</th>
+                        <th>Date</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td>
+                            <strong>{{ app.reference_number|default:"N/A" }}</strong>
+                        </td>
+                        <td>{{ app.item_name|default:"No item"|truncatechars:30 }}</td>
+                        <td>${{ app.Purchase_Value|floatformat:2 }}</td>
+                        <td>
+                            <span class="badge-status badge-{{ app.Approval_Status|lower|cut:' '|cut:'-' }}">
+                                {{ app.Approval_Status|default:"Pending" }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if app.deposit_status == 'PAID' %}
+                                <span class="badge bg-success">Paid</span>
+                            {% elif app.deposit_status == 'TRANSFERRED' %}
+                                <span class="badge bg-info text-white">Transferred</span>
+                            {% elif app.deposit_paid > 0 %}
+                                <span class="badge bg-warning">Partial</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Not Paid</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ app.created|date:"M d, Y" }}</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-1">
+                                <!-- ============================================================ -->
+                                <!-- PAY DEPOSIT BUTTON - THIS IS WHERE IT GOES -->
+                                <!-- ============================================================ -->
+                                <!-- applications/templates/customer_applications_list.html -->
+                                {% if app.Final_Approval == 'Human Approved' or app.Final_Approval == 'Approved Pending' %}
+                                    {% if app.deposit_status == 'PAID' %}
+                                        <span class="badge bg-success">Deposit Paid</span>
+                                    {% elif app.deposit_status == 'TRANSFERRED' %}
+                                        <span class="badge bg-info text-white">Loan Created</span>
+                                    {% else %}
+                                        <a href="{% url 'pay_deposit' app.id %}" class="btn btn-success btn-action">
+                                            <i class="fas fa-money-bill-wave"></i> Pay Deposit
+                                        </a>
+                                    {% endif %}
+                                {% elif app.Final_Approval == 'Human Rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Pending Review</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-file-alt"></i>
+            <h5>No Applications Yet</h5>
+            <p>You haven't submitted any applications. Start your journey with ESSCO Finance today.</p>
+            <a href="{% url 'apply' %}" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i> Apply Now
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Quick Action -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card bg-light">
+            <div class="card-body d-flex flex-wrap justify-content-between align-items-center">
+                <div>
+                    <span class="fw-bold">Ready to Apply?</span>
+                    <span class="text-muted ms-2">Get started with your hire purchase application today.</span>
+                </div>
+                <a href="{% url 'apply' %}" class="btn btn-primary mt-2 mt-sm-0">
+                    <i class="fas fa-plus-circle"></i> New Application
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card bg-light">
+            <div class="card-body d-flex flex-wrap justify-content-between align-items-center">
+                <div>
+                    <span class="fw-bold">Ready to Link?</span>
+                    <span class="text-muted ms-2">Applied? - Link your application today.</span>
+                </div>
+                <a href="{% url 'link_application' %}" class="btn btn-primary mt-2 mt-sm-0">
+                    <i class="fas fa-plus-circle"></i> Link Application
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

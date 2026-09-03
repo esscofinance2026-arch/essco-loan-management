@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Application Received - ESSCO</title>
+        <style>
+            /* Email-safe styles */
+            body {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                background-color: #f4f6f8;
+                margin: 0;
+                padding: 0;
+            }
+            a {
+                color: #1a3b5d;
+                text-decoration: none;
+            }
+            .button {
+                display: inline-block;
+                background: #e0a800; /* Darker, more accessible yellow */
+                color: #1a3b5d !important;
+                padding: 14px 25px;
+                border-radius: 50px;
+                text-decoration: none;
+                font-weight: 700;
+                font-size: 16px;
+                border: none;
+                cursor: pointer;
+            }
+            .divider {
+                border: 0;
+                height: 1px;
+                background: #e9ecef;
+                margin: 20px 0;
+            }
+            .divider-text {
+                text-align: center;
+                font-size: 14px;
+                color: #888;
+                margin: 0 0 20px 0;
+                letter-spacing: 1px;
+            }
+            @media only screen and (max-width: 600px) {
+                .header-title {
+                    font-size: 22px !important; /* Fallback */
+                    font-size: 5vw !important; /* Responsive scaling */
+                }
+                .body-padding {
+                    padding: 20px 20px !important;
+                }
+            }
+        </style>
+    </head>
+    <body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0;">
+
+        <table cellpadding="0" cellspacing="0" border="0" align="center" style="max-width: 600px; width: 100%; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.08);">
+            <tr>
+                <td>
+                    <!-- Header -->
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background: linear-gradient(135deg, #1a3b5d 0%, #2a5a7a 100%); padding: 30px 25px; text-align: center;">
+                        <tr>
+                            <td>
+                                <h1 class="header-title" style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 600;">Application Received</h1>
+                                <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0 0; font-size: 14px;">ESSCO Finance • {{ application.created|date:"F d, Y" }}</p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Body -->
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%" class="body-padding" style="padding: 35px 40px;">
+                        <tr>
+                            <td>
+                                <h2 style="color: #1a3b5d; font-size: 20px; margin: 0 0 15px 0;">Dear {{ name }},</h2>
+								<p style="color: #444; line-height: 1.7; font-size: 15px; margin: 0 0 20px 0;">
+                                	Thank you for choosing ESSCO Finance.
+                                </p>
+                                <p style="color: #444; line-height: 1.7; font-size: 15px; margin: 0 0 20px 0;">
+                                    We have successfully received your application.
+                                </p>
+                                <p style="color: #444; line-height: 1.7; font-size: 15px; margin: 0 0 20px 0;">
+                                    Our team will review the information you have provided and will contact you if we need anything further.
+                                    You will be notified as soon as there is an update on your application.
+                                </p>
+
+                                <div style="background: #f8f9fa; padding: 20px 25px; border-radius: 8px; margin: 0 0 20px 0; text-align: center; border: 1px dashed #d1d5db;">
+                                    <p style="margin: 0 0 5px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 1px;">Application Reference</p>
+                                    <p style="margin: 0; font-size: 32px; font-weight: 800; color: #c8102e; letter-spacing: 1px;">{{ reference }}</p>
+                                </div>
+
+                                <p style="color: #444; line-height: 1.7; font-size: 15px; margin: 0 0 25px 0;">
+                                    You will be notified via email once a decision has been made.
+                                </p>
+
+                                <p style="color: #444; line-height: 1.7; font-size: 15px; margin: 0 0 10px 0;">
+                                    Kind regards,
+                                    <br><br>
+                                    <strong>ESSCO Finance Team</strong>
+                                </p>
+
+                                <!-- CTA Button -->
+                                <p style="margin: 30px 0 0 0; text-align: center;">
+                                    <a href="https://www.esscoonline.com" class="button" style="display: inline-block; background: #e0a800; color: #1a3b5d; padding: 14px 25px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 16px; border: none; cursor: pointer;">Visit Our Store</a>
+                                </p>
+
+                                <!-- Contact Info -->
+                                <p style="font-size: 14px; color: #6c757d; margin: 25px 0 0 0; text-align: center;">
+                                    Questions? Contact our team at
+                                    <a href="tel:+12465370790" style="color: #1a3b5d; text-decoration: none; font-weight: 600;">+1 (246) 537-0790</a>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Divider with decorative element -->
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="padding: 0 40px;">
+                        <tr>
+                            <td>
+                                <hr class="divider" style="border: 0; height: 1px; background: #e9ecef; margin: 0 0 10px 0;">
+                                <p class="divider-text" style="text-align: center; font-size: 14px; color: #adb5bd; margin: 0 0 20px 0; letter-spacing: 1px;">◆</p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Footer -->
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="text-align: center; padding: 0 35px 25px 35px; font-size: 13px; color: #888;">
+                        <tr>
+                            <td>
+                                <p style="margin: 0; line-height: 1.6;">
+                                    &copy; 2026 Electric Sales & Service Ltd. All rights reserved.<br>
+                                    Clapham Court, Wildey Main Road, St. Michael, Barbados<br>
+                                    <a href="https://www.esscoonline.com" style="color: #1a3b5d; text-decoration: none;">www.esscoonline.com</a>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+    </body>
+</html>

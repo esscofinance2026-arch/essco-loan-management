@@ -1,0 +1,73 @@
+{% extends "Appbase.html" %}
+{% load static %}
+
+{% block title %}Unauthorized{% endblock %}
+
+{% block content %}
+<div class="unauthorized-container">
+    <div class="icon">🚫</div>
+    
+    <h1>Unauthorized</h1>
+    
+    <p>
+        You are not authorized to access this page.
+        If you believe this is an error, please contact your administrator.
+    </p>
+    
+    <a href="{% url 'Essco_Cover' %}" class="btn">Return Home</a>
+</div>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .unauthorized-container {
+        background: #fff;
+        padding: 50px;
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+        border-top: 8px solid #c62828;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        margin: 50px auto;
+    }
+
+    .icon {
+        font-size: 70px;
+        color: #c62828;
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        color: #c62828;
+        margin-bottom: 15px;
+        font-size: 2rem;
+    }
+
+    p {
+        color: #555;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+
+    .btn {
+        display: inline-block;
+        text-decoration: none;
+        background: #c62828;
+        color: white;
+        padding: 12px 28px;
+        border-radius: 5px;
+        transition: 0.3s ease;
+        font-weight: bold;
+    }
+
+    .btn:hover {
+        background: #a61d1d;
+    }
+</style>
+{% endblock %}

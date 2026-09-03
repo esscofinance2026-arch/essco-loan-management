@@ -1,0 +1,290 @@
+<!-- loans/templates/loans/record_payment.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Record Payment{% endblock %}
+
+{% block extra_css %}
+<style>
+    .payment-header {
+        background: linear-gradient(135deg, #BF2034 0%, #8B1A24 100%);
+        color: white;
+        padding: 25px 30px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+    }
+
+    .payment-header h3 {
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .customer-info {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+        border: 1px solid #e9ecef;
+    }
+
+    .customer-info .label {
+        font-size: 0.8rem;
+        color: #6c757d;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .customer-info .value {
+        font-weight: 600;
+    }
+
+    .deposit-progress {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #e9ecef;
+    }
+
+    .deposit-progress .progress-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    .deposit-progress .progress-value {
+        font-weight: 600;
+    }
+
+    .deposit-alert {
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+    }
+
+    .deposit-alert i {
+        font-size: 1.2rem;
+        margin-right: 10px;
+    }
+
+    .btn-deposit {
+        background: #BF2034;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-deposit:hover {
+        background: #8B1A24;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-installment {
+        background: #0a8f4a;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-installment:hover {
+        background: #067a3e;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .progress {
+        height: 20px;
+        border-radius: 10px;
+        background-color: #e9ecef;
+    }
+
+    .progress-bar {
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        line-height: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block staff_content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Header -->
+        <div class="payment-header">
+            <h3><i class="fas fa-credit-card me-2"></i>Record Payment</h3>
+            <p class="subtitle mb-0">Record a payment on behalf of a customer</p>
+        </div>
+
+        <!-- Customer Info -->
+        <div class="customer-info">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="label">Customer</div>
+                    <div class="value">
+                        {% if customer %}
+                            {{ customer.get_full_name|default:customer.username }}
+                        {% elif loan.customer %}
+                            {{ loan.customer.get_full_name|default:loan.customer.username }}
+                        {% elif loan.application %}
+                            {{ loan.application.Fname }} {{ loan.application.Lname }}
+                        {% elif loan.customer_name %}
+                            {{ loan.customer_name }}
+                        {% else %}
+                            Unknown Customer
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="label">Loan</div>
+                    <div class="value">{{ loan.loan_id }}</div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="label">Outstanding Balance</div>
+                    <div class="value text-danger">${{ loan.outstanding_balance|floatformat:2 }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- DEPOSIT STATUS -->
+        <!-- ========================================== -->
+        {% if must_be_deposit %}
+            <div class="deposit-alert" style="background: #fff4e6; border: 1px solid #ffd699;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle" style="color: #c07600;"></i>
+                    <div>
+                        <strong style="color: #c07600;">Deposit Required</strong>
+                        <br>
+                        <small class="text-muted">
+                            This payment <strong>must</strong> be recorded as a deposit.
+                            The loan will become <strong>ACTIVE</strong> once the deposit target is met.
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deposit Progress Bar -->
+            <div class="deposit-progress">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="progress-label">Deposit Target</div>
+                        <div class="progress-value">${{ deposit_target|floatformat:2 }}</div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="progress-label">Deposit Paid</div>
+                        <div class="progress-value text-success">${{ deposit_paid|floatformat:2 }}</div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="progress-label">Remaining</div>
+                        <div class="progress-value text-danger">${{ deposit_remaining|floatformat:2 }}</div>
+                    </div>
+                </div>
+                <div class="progress mt-2">
+                    <div class="progress-bar {% if deposit_percentage >= 100 %}bg-success{% else %}bg-info{% endif %}"
+                         role="progressbar"
+                         style="width: {{ deposit_percentage|floatformat:0 }}%;"
+                         aria-valuenow="{{ deposit_percentage|floatformat:0 }}"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
+                        {{ deposit_percentage|floatformat:2 }}%
+                    </div>
+                </div>
+                <small class="text-muted">
+                    {% if deposit_remaining > 0 %}
+                        Needs <strong>${{ deposit_remaining|floatformat:2 }}</strong> more to complete deposit.
+                    {% else %}
+                        🎉 Deposit complete! Loan will become ACTIVE.
+                    {% endif %}
+                </small>
+            </div>
+        {% else %}
+            <div class="deposit-alert" style="background: #e6f7ed; border: 1px solid #b8e6cc;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle" style="color: #0a8f4a;"></i>
+                    <div>
+                        <strong style="color: #0a8f4a;">Deposit Complete</strong>
+                        <br>
+                        <small class="text-muted">
+                            Deposit target has been met. Payment will be applied as an <strong>INSTALLMENT</strong>.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Payment Form -->
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- Payment Amount -->
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">
+                            {% if must_be_deposit %}
+                                <i class="fas fa-money-bill-wave me-1" style="color: #c07600;"></i>Deposit Amount
+                            {% else %}
+                                <i class="fas fa-credit-card me-1" style="color: #0a8f4a;"></i>Payment Amount
+                            {% endif %}
+                        </label>
+                        <input type="number" name="amount" step="0.01"
+                               class="form-control form-control-lg"
+                               value="{{ suggested_payment|floatformat:2 }}"
+                               min="0.01"
+                               max="{{ loan.outstanding_balance|floatformat:2 }}" required>
+                        <div class="d-flex justify-content-between mt-1">
+                            <small class="text-muted">Outstanding: ${{ loan.outstanding_balance|floatformat:2 }}</small>
+                            {% if must_be_deposit and deposit_remaining > 0 %}
+                                <small class="text-warning">Deposit remaining: ${{ deposit_remaining|floatformat:2 }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Payment Method</label>
+                        <select name="payment_method" class="form-control" required>
+                            <option value="">Select payment method...</option>
+                            {% for method in payment_methods %}
+                            <option value="{{ method.id }}">{{ method.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Notes <span class="text-muted">(Optional)</span></label>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="Notes about this payment..."></textarea>
+                    </div>
+
+                    <!-- Staff Note -->
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Staff Note:</strong> This payment will be auto-confirmed and recorded under your name.
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <button type="submit" class="{% if must_be_deposit %}btn-deposit{% else %}btn-installment{% endif %} w-100">
+                        <i class="fas fa-check-circle me-2"></i>
+                        {% if must_be_deposit %}
+                            Record Deposit Payment
+                        {% else %}
+                            Record Installment Payment
+                        {% endif %}
+                    </button>
+                    <a href="{% url 'staff_loan_detail' loan.id %}" class="btn btn-secondary w-100 mt-2">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

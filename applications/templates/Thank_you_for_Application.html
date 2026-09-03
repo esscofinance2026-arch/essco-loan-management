@@ -1,0 +1,42 @@
+{% extends 'Appbase.html' %}
+{% load static %}
+
+{% block title %}Thank You - ESSCO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/thank_you.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="thankyou-section">
+    <div class="thankyou-container">
+        
+        <!-- Checkmark Icon -->
+        <div class="checkmark-wrapper">
+            <div class="checkmark-circle">
+                <i class="fas fa-check"></i>
+            </div>
+        </div>
+        
+        <!-- Main Title -->
+        <h1>Thank You!</h1>
+        <h2>Your Application Has Been Received</h2>
+        
+        <!-- Message -->
+        <div class="message-box">
+            <p>
+                We have received your application and our team will review it shortly.
+            </p>
+            <p>
+                A confirmation email has been sent to your email address.
+            </p>
+            <p class="reference-note">
+                Your reference number: <strong>{{ reference|default:"ESS-000001" }}</strong>
+            </p>
+        </div>
+        
+    </div>
+</div>
+
+{% endblock %}

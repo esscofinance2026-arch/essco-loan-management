@@ -1,0 +1,114 @@
+<!-- applications/templates/pay_deposit.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pay Deposit{% endblock %}
+
+{% block extra_css %}
+<style>
+    .deposit-summary {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 24px;
+    }
+
+    .deposit-summary .label {
+        color: #6c757d;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .deposit-summary .value {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #1a1a2e;
+    }
+
+    .deposit-summary .highlight {
+        color: #BF2034;
+        font-size: 1.3rem;
+    }
+</style>
+{% endblock %}
+
+{% block dashboard_content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="fas fa-money-bill-wave"></i> Pay Deposit</h4>
+            </div>
+            <div class="card-body">
+                <!-- Application Summary -->
+                <div class="deposit-summary">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="label">Application</div>
+                            <div class="value">{{ application.reference_number|default:"N/A" }}</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="label">Item</div>
+                            <div class="value">{{ application.item_name|default:"No item" }}</div>
+                        </div>
+                        <div class="col-sm-6 mt-2">
+                            <div class="label">Purchase Value</div>
+                            <div class="value">${{ application.Purchase_Value|floatformat:2 }}</div>
+                        </div>
+                        <div class="col-sm-6 mt-2">
+                            <div class="label">Deposit Required</div>
+                            <div class="value highlight">${{ application.Deposit|floatformat:2 }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✅ Payment Form - Allow partial deposits -->
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Deposit Amount ($)</label>
+                        <input type="number" name="amount" step="0.01"
+                               class="form-control form-control-lg"
+                               value="{{ application.Deposit|floatformat:2 }}"
+                               min="0.01"
+                               max="{{ application.Deposit|floatformat:2 }}"
+                               required>
+                        <div class="d-flex justify-content-between mt-1">
+                            <small class="text-muted">Min: $0.01</small>
+                            <small class="text-muted">Max: ${{ application.Deposit|floatformat:2 }}</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Payment Method</label>
+                        <select name="payment_method" class="form-control" required>
+                            <option value="">Select payment method...</option>
+                            {% for method in payment_methods %}
+                            <option value="{{ method.id }}">{{ method.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Note:</strong> 
+                        <ul class="mb-0 mt-1">
+                            <li>You can pay the full deposit or a partial amount</li>
+                            <li>Your loan will be created after deposit is confirmed</li>
+                            <li>You can pay the remaining deposit later</li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-lg w-100">
+                        <i class="fas fa-check-circle"></i> Pay Deposit
+                    </button>
+                    <a href="{% url 'customer_dashboard_apps' %}" class="btn btn-secondary w-100 mt-2">
+                        Cancel
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

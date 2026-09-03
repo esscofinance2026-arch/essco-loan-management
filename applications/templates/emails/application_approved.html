@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% load static %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/application_approved.css' %}">
+        <title>Application Approved - ESSCO</title>
+    </head>
+    <body>
+
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <h1>🎉 Application Approved!</h1>
+                <p class="subtitle">ESSCO Finance • {{ application.created|date:"F d, Y" }}</p>
+            </div>
+
+            <!-- Body -->
+            <div class="body-content">
+                <h2>Dear {{ name }},</h2>
+
+                <p>
+                    We are pleased to inform you that your credit application has been
+                    <strong style="color: #28a745;">APPROVED</strong>!
+                </p>
+
+                <div style="text-align: center; margin: 20px 0;">
+                    <span class="badge">✅ APPROVED</span>
+                </div>
+
+                <!-- Details -->
+                <div class="details-box">
+                    <div class="row">
+                        <span class="label">Application ID</span>
+                        <span class="value">{{ reference }}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Item</span>
+                        <span class="value">{{ item_name }}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">SKU Number</span>
+                        <span class="value">{{ item_sku }}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Applicant</span>
+                        <span class="value">{{ name }}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Credit Limit</span>
+                        <span class="value">{{ credit_limit }}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Payment Term</span>
+                        <span class="value">{{ term }}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Deposit</span>
+                        <span class="value" style="color: #f0b31e; font-size: 18px;">{{ Deposit }}</span>
+                    </div>
+                    {% if monthly_payment %}
+                    <div class="row">
+                        <span class="label">Monthly Payment</span>
+                        <span class="value" style="color: #f0b31e; font-size: 18px;">{{ monthly_payment }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Next Steps -->
+                <div class="next-steps">
+                    <h4>📋 What Happens Next?</h4>
+                    <ul>
+                        <li>Visit our store to complete your purchase</li>
+                        <li>Bring your valid ID and this approval email</li>
+                        <li>Our team will assist you with the final steps</li>
+                    </ul>
+                </div>
+
+                <p style="margin-top: 20px;">
+                    <a href="https://www.esscoonline.com" class="cta-button">Visit Our Store</a>
+                </p>
+
+                <p style="font-size: 14px; color: #666; margin-top: 25px;">
+                    If you have any questions, please contact our customer service team at
+                    <a href="tel:+12465370790" style="color: #1a3b5d;">+1 (246) 537-0790</a>
+                </p>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>
+                    &copy; 2026 Electric Sales & Service Ltd. All rights reserved.<br>
+                    Clapham Court, Wildey Main Road, St. Michael, Barbados<br>
+                    <a href="https://www.esscoonline.com">www.esscoonline.com</a>
+                </p>
+            </div>
+        </div>
+
+    </body>
+</html>

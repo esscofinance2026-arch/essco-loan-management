@@ -1,0 +1,381 @@
+<!-- templates/link_application.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Link Your Application{% endblock %}
+
+{% block extra_css %}
+<style>
+    .link-header {
+        background: linear-gradient(135deg, #BF2034 0%, #8B1A24 100%);
+        color: white;
+        padding: 35px 0;
+        border-radius: 16px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 20px rgba(191, 32, 52, 0.25);
+    }
+
+    .link-header h1 {
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 4px;
+    }
+
+    .link-header .lead {
+        opacity: 0.85;
+        font-size: 1rem;
+    }
+
+    .link-card {
+        background: white;
+        border-radius: 12px;
+        padding: 35px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+    }
+
+    .link-card .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .link-card .form-control {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e0e0e0;
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+        background: #fafafa;
+    }
+
+    .link-card .form-control:focus {
+        border-color: #BF2034;
+        box-shadow: 0 0 0 3px rgba(191, 32, 52, 0.15);
+        background: white;
+    }
+
+    .link-card .form-control:disabled {
+        background-color: #f5f5f5;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .link-card .form-control::placeholder {
+        color: #aaa;
+    }
+
+    .btn-link-primary {
+        background: linear-gradient(135deg, #BF2034 0%, #8B1A24 100%);
+        color: white;
+        border: none;
+        padding: 14px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+        font-size: 1.05rem;
+    }
+
+    .btn-link-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(191, 32, 52, 0.3);
+        color: white;
+    }
+
+    .btn-link-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-outline-link {
+        color: #BF2034;
+        border: 2px solid #BF2034;
+        background: transparent;
+        padding: 10px 25px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-outline-link:hover {
+        background: #BF2034;
+        color: white;
+        transform: translateY(-2px);
+        text-decoration: none;
+        color: white;
+    }
+
+    /* Alert Styles */
+    .alert-link-custom {
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+        border-left: 4px solid;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .alert-link-custom i {
+        font-size: 1.2rem;
+        margin-top: 2px;
+    }
+
+    .alert-link-custom .alert-content {
+        flex: 1;
+    }
+
+    .alert-link-custom .btn-close {
+        font-size: 0.75rem;
+        padding: 0.5rem;
+    }
+
+    .alert-link-custom.alert-success {
+        background: #e8f5e9;
+        color: #2e7d32;
+        border-left-color: #4caf50;
+    }
+
+    .alert-link-custom.alert-info {
+        background: #e3f2fd;
+        color: #0d47a1;
+        border-left-color: #2196f3;
+    }
+
+    .alert-link-custom.alert-warning {
+        background: #fff3e0;
+        color: #e65100;
+        border-left-color: #ff9800;
+    }
+
+    .alert-link-custom.alert-danger {
+        background: #ffebee;
+        color: #c62828;
+        border-left-color: #f44336;
+    }
+
+    .alert-link-custom.alert-error {
+        background: #ffebee;
+        color: #c62828;
+        border-left-color: #f44336;
+    }
+
+    .link-info-text {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .link-info-text strong {
+        color: #BF2034;
+    }
+
+    .link-divider {
+        border: none;
+        border-top: 2px solid #f0f0f0;
+        margin: 25px 0;
+    }
+
+    .link-help-text {
+        color: #999;
+        font-size: 0.85rem;
+    }
+
+    .link-help-text a {
+        color: #BF2034;
+        text-decoration: none;
+    }
+
+    .link-help-text a:hover {
+        text-decoration: underline;
+    }
+
+    .text-danger-custom {
+        color: #dc3545;
+        font-size: 0.85rem;
+    }
+
+    .text-danger-custom i {
+        margin-right: 4px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .link-header {
+            padding: 24px 0;
+        }
+
+        .link-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .link-card {
+            padding: 20px;
+        }
+
+        .btn-link-primary {
+            padding: 12px 20px;
+            font-size: 0.95rem;
+        }
+
+        .btn-outline-link {
+            padding: 8px 20px;
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .link-card {
+            padding: 15px;
+        }
+
+        .link-card .form-control {
+            font-size: 1rem;
+            padding: 0.6rem 0.8rem;
+        }
+
+        .alert-link-custom {
+            padding: 12px 15px;
+            font-size: 0.9rem;
+        }
+
+        .text-center .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block dashboard_content %}
+<div class="container">
+    <!-- Header -->
+    <div class="link-header text-center">
+        <h1>
+            <i class="fas fa-link me-2"></i>Link Your Application
+        </h1>
+        <p class="lead mb-0">Connect your application to your account</p>
+    </div>
+
+    <!-- Link Card -->
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="link-card">
+                <!-- Messages
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert-link-custom alert-{{ message.tags }} fade show" role="alert">
+                            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'info' %}info-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}times-circle{% endif %}"></i>
+                            <div class="alert-content">
+                                {{ message }}
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                -->
+                <!-- Status Alerts -->
+                {% if has_linked %}
+                    <div class="alert-link-custom alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="alert-content">
+                            You have <strong>{{ linked_count }}</strong> application(s) already linked to your account.
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if has_unlinked %}
+                    <div class="alert-link-custom alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="alert-content">
+                            We found <strong>{{ unlinked_count }}</strong> unlinked application(s) with your email address.
+                            Enter your ID number below to link one.
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if not has_unlinked and not has_linked %}
+                    <div class="alert-link-custom alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div class="alert-content">
+                            No applications found with your email address.
+                            <a href="{% url 'apply' %}" class="fw-bold">Apply now</a>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Description -->
+                <p class="link-info-text mb-4">
+                    <i class="fas fa-info-circle"></i>
+                    Enter the ID number you used on your application to link it to your account.
+                </p>
+
+                <!-- Form -->
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <label for="id_number" class="form-label">
+                            <i class="fas fa-id-card me-1"></i> ID Number
+                        </label>
+                        <input type="text"
+                               class="form-control"
+                               id="id_number"
+                               name="id_number"
+                               placeholder="e.g., 940827-0017"
+                               {% if not has_unlinked %}disabled{% endif %}
+                               required
+                               autofocus>
+                        {% if not has_unlinked %}
+                            <div class="text-danger-custom mt-2">
+                                <i class="fas fa-lock"></i>
+                                No unlinked applications available to link.
+                            </div>
+                        {% else %}
+                            <div class="link-help-text mt-2">
+                                <i class="fas fa-info-circle"></i>
+                                Format: YYMMDD-XXXX (the ID number you used on your application)
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="link-help-text mb-4">
+                        <i class="fas fa-envelope"></i>
+                        Your email <strong>{{ user.email }}</strong> will be used to verify your identity.
+                    </div>
+
+                    <button type="submit" class="btn-link-primary"
+                            {% if not has_unlinked %}disabled{% endif %}>
+                        <i class="fas fa-link me-2"></i>
+                        {% if has_unlinked %}
+                            Link Application
+                        {% else %}
+                            No Applications to Link
+                        {% endif %}
+                    </button>
+                </form>
+
+                <hr class="link-divider">
+
+                <!-- Navigation -->
+                <div class="text-center">
+                    <a href="{% url 'customer_dashboard' %}" class="btn-outline-link">
+                        <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                    </a>
+                </div>
+
+                <hr class="link-divider">
+
+                <!-- Support -->
+                <p class="link-help-text text-center mb-0">
+                    <i class="fas fa-question-circle me-1"></i>
+                    Can't find your application? <a href="{% url 'contact_us' %}">Contact Support</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

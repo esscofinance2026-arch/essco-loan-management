@@ -1,0 +1,136 @@
+<!-- payments/templates/payments/admin_pending_payments.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Pending Payments{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 25px;
+    }
+
+    .stat-box {
+        background: white;
+        padding: 18px 20px;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid #f0f0f0;
+    }
+
+    .stat-box .number {
+        font-size: 1.6rem;
+        font-weight: 700;
+    }
+
+    .stat-box .label {
+        font-size: 0.8rem;
+        color: #888;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .stat-box .number-orange { color: #c07600; }
+    .stat-box .number-red { color: #b91c1c; }
+    .stat-box .number-blue { color: #1a56db; }
+
+    .badge-pending {
+        background: #fff4e6;
+        color: #c07600;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .btn-sm {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+    }
+</style>
+{% endblock %}
+
+{% block staff_content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title"><i class="fas fa-clock text-warning me-2"></i>Pending Payments</h1>
+        <p class="page-subtitle">Review and confirm payments awaiting manual verification.</p>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="stat-grid">
+    <div class="stat-box">
+        <div class="number number-orange">{{ total_pending }}</div>
+        <div class="label">Pending Payments</div>
+    </div>
+    <div class="stat-box">
+        <div class="number number-red">${{ total_amount|floatformat:2 }}</div>
+        <div class="label">Total Amount</div>
+    </div>
+    <div class="stat-box">
+        <div class="number number-blue">{{ pending_payments|length }}</div>
+        <div class="label">Awaiting Action</div>
+    </div>
+</div>
+
+<!-- Pending Payments Table -->
+<div class="staff-card">
+    <div class="card-header">
+        <i class="fas fa-list me-2"></i> Pending Payments
+    </div>
+    <div class="card-body p-0">
+        {% if pending_payments %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Receipt</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>Method</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in pending_payments %}
+                    <tr>
+                        <td><strong>{{ payment.receipt_number }}</strong></td>
+                        <td>{{ payment.customer.get_full_name|default:payment.customer.username }}</td>
+                        <td>${{ payment.amount|floatformat:2 }}</td>
+                        <td>{{ payment.category }}</td>
+                        <td>{{ payment.payment_method.name }}</td>
+                        <td>{{ payment.created_at|date:"M d, Y H:i" }}</td>
+                        <td><span class="badge-pending">PENDING</span></td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-1">
+                                <a href="{% url 'payments:admin_confirm_payment' payment.id %}" class="btn btn-success btn-sm">
+                                    <i class="fas fa-check"></i> Confirm
+                                </a>
+                                <a href="{% url 'payments:admin_reject_payment' payment.id %}" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-times"></i> Reject
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+            <h5>All caught up!</h5>
+            <p class="text-muted">No pending payments require action.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

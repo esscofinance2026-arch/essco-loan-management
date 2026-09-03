@@ -1,0 +1,110 @@
+<!-- applications/templates/applications/admin_unlink_applications.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Unlink Applications (Admin){% endblock %}
+
+{% block staff_content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="staff-card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-unlink me-2"></i>Unlink Applications</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Admin Tool:</strong> Unlink applications from users. This will remove the application from the user's dashboard.
+                </div>
+
+                {% if total_linked > 0 %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>{{ total_linked }}</strong> linked applications found.
+                </div>
+                {% endif %}
+
+                <!-- ✅ DROPDOWN - Select application to unlink -->
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Select Application to Unlink <span class="text-danger">*</span></label>
+                        <select name="application_id" class="form-control" required>
+                            <option value="">Select application...</option>
+                            {% for app in linked_applications %}
+                            <option value="{{ app.id }}">
+                                {{ app.reference_number|default:"No Ref" }} - {{ app.Fname }} {{ app.Lname }} 
+                                ({{ app.email }}) - Linked to: {{ app.customer.get_full_name|default:app.customer.username }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- ✅ Show selected application details -->
+                    <!-- This will show once an application is selected -->
+
+                    <div class="form-group mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="confirm" value="yes" class="form-check-input" id="confirmCheck" required>
+                            <label class="form-check-label fw-bold" for="confirmCheck">
+                                I confirm I want to unlink this application
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Warning:</strong> This will remove the link between the application and the user.
+                        The user will no longer see this application in their dashboard.
+                    </div>
+
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="fas fa-unlink"></i> Unlink Application
+                    </button>
+                </form>
+
+                <hr>
+
+                <!-- ✅ List of all linked applications -->
+                <div class="mt-3">
+                    <h6>Linked Applications <span class="badge bg-success">{{ total_linked }}</span></h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Reference</th>
+                                    <th>Customer Name</th>
+                                    <th>Email</th>
+                                    <th>Linked To</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for app in linked_applications|slice:":20" %}
+                                <tr>
+                                    <td>{{ app.reference_number|default:"N/A" }}</td>
+                                    <td>{{ app.Fname }} {{ app.Lname }}</td>
+                                    <td>{{ app.email }}</td>
+                                    <td>{{ app.customer.get_full_name|default:app.customer.username }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No linked applications</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <a href="{% url 'admin_link_application' %}" class="btn btn-secondary w-100 mt-2">
+                    <i class="fas fa-arrow-left"></i> Back to Link Applications
+                </a>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary w-100 mt-2">
+                    Back to Admin Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

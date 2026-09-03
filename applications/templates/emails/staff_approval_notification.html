@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Application Approved - Staff Notification</title>
+    </head>
+    <body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 20px;">
+
+        <table cellpadding="0" cellspacing="0" border="0" align="center" style="max-width: 600px; width: 100%; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.08);">
+            <tr>
+                <td style="background: linear-gradient(135deg, #1a3b5d 0%, #2a5a7a 100%); padding: 30px; text-align: center;">
+                    <h1 style="color: #ffffff; margin: 0; font-size: 24px;">📋 Application Approved</h1>
+                    <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0 0;">Staff Notification</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 30px;">
+                    <h2 style="color: #1a3b5d;">Hello {{ recipient_name }},</h2>
+
+                    <p style="color: #444; line-height: 1.7;">
+                        An application has been approved and requires your attention.
+                    </p>
+
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745; margin: 20px 0;">
+                        <h3 style="color: #1a3b5d; margin-top: 0;">Application Details</h3>
+
+                        <p><strong>Applicant:</strong> {{ applicant_name }}</p>
+                        <p><strong>Email:</strong> {{ applicant_email }}</p>
+                        <p><strong>Phone:</strong> {{ applicant_phone }}</p>
+                        <p><strong>Application ID:</strong> {{ application_id }}</p>
+                        <p><strong>Item:</strong> {{ item_name }}</p>
+                        <p><strong>Sku Number:</strong> {{ sku }}</p>
+
+                        <p><strong>Payment Term:</strong> {{ payment_term }}</p>
+                        <p><strong>Deposit:</strong> {{ deposit }}</p>
+                        <p><strong>Purchase Value</strong> {{ Purchase_Value }}</p>
+                        <p><strong>Submission Date:</strong> {{ submission_date }}</p>
+                    </div>
+                <!--
+                    <div style="background: #fdf8ed; padding: 18px 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #1a3b5d; margin: 0 0 8px 0;">📋 Next Steps</h4>
+                        <ul style="margin: 8px 0 0 0; padding-left: 20px; color: #444; font-size: 14px; line-height: 1.8;">
+                            <li>Review the application details</li>
+                            <li>Contact the applicant if needed</li>
+                            <li>Complete any additional processing</li>
+                        </ul>
+                    </div>
+
+                    <p style="margin-top: 20px; text-align: center;">
+                        <a href="https://yourdomain.com/admin/essco/applicationmodel/{{ application_id }}/change/"
+                           style="display: inline-block; background: #28a745; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: 600;">
+                            View Application
+                        </a>
+                    </p>
+                -->
+                    <p style="font-size: 14px; color: #666; margin-top: 25px; text-align: center;">
+                        If you have any questions, please contact the admin team.
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center; padding: 20px; font-size: 13px; color: #888; border-top: 1px solid #e9ecef;">
+                    <p>
+                        &copy; 2026 ESSCO Finance. All rights reserved.
+                    </p>
+                </td>
+            </tr>
+        </table>
+
+    </body>
+</html>

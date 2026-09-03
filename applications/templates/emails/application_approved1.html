@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Application Approved - ESSCO</title>
+    </head>
+    <body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0;">
+
+        <table cellpadding="0" cellspacing="0" border="0" align="center" style="max-width: 600px; width: 100%; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.08);">
+            <tr>
+                <td>
+                    <!-- Header -->
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background: linear-gradient(135deg, #1a3b5d 0%, #2a5a7a 100%); padding: 30px; text-align: center;">
+                        <tr>
+                            <td>
+                                <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 600;">🎉 Application Approved!</h1>
+                                <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0 0; font-size: 14px;">ESSCO Finance • {{ application.created|date:"F d, Y" }}</p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Body -->
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="padding: 30px 35px;">
+                        <tr>
+                            <td>
+                                <h2 style="color: #1a3b5d; font-size: 20px; margin: 0 0 10px 0;">Dear {{ name }},</h2>
+
+                                <p style="color: #444; line-height: 1.7; font-size: 15px; margin: 10px 0;">
+                                    Your application with ESSCO Finance has been
+                                    <strong style="color: #28a745;">APPROVED</strong>!
+                                </p>
+
+                                <div style="text-align: center; margin: 20px 0;">
+                                    <span style="display: inline-block; background: #28a745; color: #ffffff; padding: 8px 20px; border-radius: 50px; font-weight: 700; font-size: 14px; letter-spacing: 1px;">✅ APPROVED</span>
+                                </div>
+
+                                <!-- Details Box using TABLE -->
+                                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background: #f8f9fa; padding: 20px 25px; border-radius: 10px; border-left: 4px solid #f0b31e; margin: 20px 0;">
+
+                                    <!-- Application ID -->
+                                    <tr>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #666; font-weight: 500; width: 40%;">Application ID</td>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #1a3b5d; font-weight: 600; text-align: right;">{{ reference }}</td>
+                                    </tr>
+
+                                    <!-- Item -->
+                                    <tr>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #666; font-weight: 500;">Item</td>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #1a3b5d; font-weight: 600; text-align: right;">{{ item_name }}</td>
+                                    </tr>
+
+                                    <!-- Applicant -->
+                                    <tr>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #666; font-weight: 500;">Applicant</td>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #1a3b5d; font-weight: 600; text-align: right;">{{ name }}</td>
+                                    </tr>
+
+                                    <!-- Credit Limit -->
+                                    <tr>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #666; font-weight: 500;">Credit Limit</td>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #1a3b5d; font-weight: 600; text-align: right;">{{ credit_limit }}</td>
+                                    </tr>
+
+                                    <!-- Payment Term -->
+                                    <tr>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #666; font-weight: 500;">Payment Term</td>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #1a3b5d; font-weight: 600; text-align: right;">{{ term }}</td>
+                                    </tr>
+                                    <!-- Item Price -->
+                                    <tr>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #666; font-weight: 500;"> Item Price </td>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #1a3b5d; font-weight: 600; text-align: right;"> {{ item_price }} </td>
+                                    </tr>
+                                    <!-- Financed Amount -->
+                                    <tr>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #666; font-weight: 500;">Financed Amount</td>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #1a3b5d; font-weight: 600; text-align: right;">{{ Financed_Amt }} </td>
+                                    </tr>
+                                    <!-- Deposit -->
+                                    <tr>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #666; font-weight: 500;">Deposit</td>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #f0b31e; font-weight: 600; font-size: 18px; text-align: right;">{{ Deposit }}</td>
+                                    </tr>
+
+                                    <!-- Monthly Payment -->
+                                    {% if monthly_payment %}
+                                    <tr>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #666; font-weight: 500;">Monthly Payment</td>
+                                        <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef; color: #f0b31e; font-weight: 600; font-size: 18px; text-align: right;">{{ monthly_payment }}</td>
+                                    </tr>
+                                    {% endif %}
+
+                                </table>
+
+                                <!-- Next Steps -->
+                                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background: #fdf8ed; padding: 18px 25px; border-radius: 10px; margin: 20px 0;">
+                                    <tr>
+                                        <td>
+                                            <h4 style="color: #1a3b5d; margin: 0 0 8px 0; font-size: 15px;">📋 What Happens Next?</h4>
+                                            <ul style="margin: 8px 0 0 0; padding-left: 20px; color: #444; font-size: 14px; line-height: 1.8;">
+                                                <li>The completion of your Hire Purchase Agreement, which will be issued to you electronically for review and acceptance.</li>
+                                                <li>Once your Hire Purchase Agreement has been completed and your deposit has been received and confirmed, our Sales Team will contact you to finalise the arrangement and coordinate the release of your purchase.</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <p style="color: #444; line-height: 1.7; font-size: 15px; margin: 0 0 10px 0;">
+                                    Kind regards,
+                                    <br><br>
+                                    <strong>ESSCO Finance Team</strong>
+                                </p>
+
+                                <p style="margin-top: 20px; text-align: center;">
+                                    <a href="https://www.esscoonline.com" style="display: inline-block; background: #f0b31e; color: #1a3b5d; padding: 14px 35px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 16px; border: none; cursor: pointer;">Visit Our Store</a>
+                                </p>
+
+                                <p style="font-size: 14px; color: #666; margin-top: 25px; text-align: center;">
+                                    If you have any questions, please contact our customer service team at
+                                    <a href="tel:+12465370790" style="color: #1a3b5d; text-decoration: none;">+1 (246) 537-0790</a>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Footer -->
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="text-align: center; padding: 20px 35px; font-size: 13px; color: #888; border-top: 1px solid #e9ecef;">
+                        <tr>
+                            <td>
+                                <p>
+                                    &copy; 2026 Electric Sales & Service Ltd. All rights reserved.<br>
+                                    Clapham Court, Wildey Main Road, St. Michael, Barbados<br>
+                                    <a href="https://www.esscoonline.com" style="color: #1a3b5d; text-decoration: none;">www.esscoonline.com</a>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+    </body>
+</html>

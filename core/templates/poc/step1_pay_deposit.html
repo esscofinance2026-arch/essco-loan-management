@@ -1,0 +1,56 @@
+<!-- poc/step1_pay_deposit.html -->
+{% extends "Appbase.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Step 1: Pay Deposit</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>Application:</strong> {{ application.application_id }}<br>
+                        <strong>Total Amount:</strong> ${{ application.total_amount_financed|floatformat:2 }}<br>
+                        <strong>Suggested Deposit (10%):</strong> ${{ suggested_deposit|floatformat:2 }}
+                    </div>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Deposit Amount ($)</label>
+                            <input type="number" name="amount" step="0.01" 
+                                   class="form-control form-control-lg" 
+                                   value="{{ suggested_deposit|floatformat:2 }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Payment Method</label>
+                            <select name="payment_method" class="form-control">
+                                <option value="CASH">Cash</option>
+                                <option value="POS">POS/Card</option>
+                                <option value="BANK_TRANSFER">Bank Transfer</option>
+                                <option value="MOBILE_MONEY">Mobile Money</option>
+                            </select>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>POC Mode:</strong> This will auto-confirm the payment and 
+                            create the loan immediately.
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success btn-block">
+                            <i class="fas fa-money-bill-wave"></i> Pay Deposit & Create Loan
+                        </button>
+                        <a href="{% url 'poc_dashboard' %}" class="btn btn-secondary btn-block">
+                            Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

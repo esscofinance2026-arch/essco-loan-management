@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .config-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 0;
+        }
+
+        .config-card {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+        }
+
+        .config-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f7fafc;
+        }
+
+        .config-header .left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .config-header .left .back-btn {
+            color: #718096;
+            text-decoration: none;
+            padding: 8px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .config-header .left .back-btn:hover {
+            background: #f7fafc;
+            color: #2d3748;
+        }
+
+        .config-header .left h2 {
+            margin: 0;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .config-header .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-warning {
+            background: #ed8936;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #dd6b20;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(237, 137, 54, 0.3);
+        }
+
+        .btn-danger {
+            background: #fc8181;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #f56565;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(252, 129, 129, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.85rem;
+        }
+
+        /* Interest Rate Tiles Grid */
+        .rates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .rate-tile {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .rate-tile:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .rate-tile.inactive {
+            opacity: 0.6;
+            border-color: #e2e8f0;
+        }
+
+        .rate-tile.inactive:hover {
+            opacity: 0.8;
+        }
+
+        .rate-tile .tile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .rate-tile .tile-header .rate-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .rate-tile .tile-header .rate-badge {
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .rate-badge.active {
+            background: #c6f6d5;
+            color: #276749;
+        }
+
+        .rate-badge.inactive {
+            background: #fed7d7;
+            color: #9b2c2c;
+        }
+
+        .rate-tile .rate-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 10px 0;
+        }
+
+        .rate-tile .rate-value .percent {
+            font-size: 1.2rem;
+            color: #a0aec0;
+        }
+
+        .rate-tile .rate-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 15px 0;
+            padding: 15px 0;
+            border-top: 1px solid #f7fafc;
+            border-bottom: 1px solid #f7fafc;
+        }
+
+        .rate-tile .rate-details .detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .rate-tile .rate-details .detail-row .label {
+            color: #a0aec0;
+        }
+
+        .rate-tile .rate-details .detail-row .value {
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        .rate-tile .tile-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .rate-tile .tile-actions .btn {
+            flex: 1;
+            justify-content: center;
+            min-width: 60px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .empty-state h3 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #276749;
+            border: 1px solid #9ae6b4;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #9b2c2c;
+            border: 1px solid #feb2b2;
+        }
+
+        .alert-info {
+            background: #bee3f8;
+            color: #2a69ac;
+            border: 1px solid #90cdf4;
+        }
+
+        .alert-warning {
+            background: #fefcbf;
+            color: #975a16;
+            border: 1px solid #f6e05e;
+        }
+
+        .text-muted { color: #a0aec0; }
+        .mt-2 { margin-top: 10px; }
+        .mt-3 { margin-top: 15px; }
+        .mb-2 { margin-bottom: 10px; }
+        .mb-3 { margin-bottom: 20px; }
+        .d-flex { display: flex; }
+        .gap-2 { gap: 10px; }
+        .align-items-center { align-items: center; }
+        .flex-wrap { flex-wrap: wrap; }
+
+        @media (max-width: 768px) {
+            .config-card {
+                padding: 20px;
+            }
+
+            .config-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .config-header .left {
+                flex-wrap: wrap;
+            }
+
+            .config-header .actions {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .config-header .actions .btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .rates-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .rate-tile .tile-actions .btn {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container config-container">
+        <div class="config-card">
+            <!-- Header -->
+            <div class="config-header">
+                <div class="left">
+                    <a href="{% url 'settings' %}" class="back-btn">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                    <h2>💰 Interest Rates</h2>
+                </div>
+                <!--
+                <div class="actions">
+                    <a href="" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Add New Rate
+                    </a>
+                    <a href="" class="btn btn-secondary">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </div>-->
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Stats Summary -->
+            <div class="d-flex gap-2 flex-wrap mb-3">
+                <span class="btn btn-sm btn-secondary" style="cursor: default;">
+                    Total: <strong>{{ rates|length }}</strong>
+                </span>
+                <span class="btn btn-sm btn-success" style="cursor: default;">
+                    Active: <strong>{{ active_count }}</strong>
+                </span>
+                <span class="btn btn-sm btn-danger" style="cursor: default;">
+                    Inactive: <strong>{{ inactive_count }}</strong>
+                </span>
+            </div>
+
+            <!-- Interest Rates Grid -->
+            {% if rates %}
+            <div class="rates-grid">
+                {% for rate in rates %}
+                <a href="{% url 'interest_rate_edit' rate.id %}">
+                    <div class="rate-tile {% if not rate.is_active %}inactive{% endif %}">
+                        <!-- Tile Header -->
+                        <div class="tile-header">
+                            <span class="rate-name">{{ rate.name }}</span>
+                            <span class="rate-badge {% if rate.is_active %}active{% else %}inactive{% endif %}">
+                                <i class="fas fa-circle"></i>
+                                {% if rate.is_active %}ACTIVE{% else %}INACTIVE{% endif %}
+                            </span>
+                        </div>
+
+                        <!-- Rate Value -->
+                        <div class="rate-value">
+                            {{ rate.rate }}<span class="percent">%</span>
+                        </div>
+
+                        <!-- Rate Details -->
+                        <div class="rate-details">
+                            <div class="detail-row">
+                                <span class="label">Min Loan Amount</span>
+                                <span class="value">${{ rate.min_loan_amount|floatformat:2 }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Max Loan Amount</span>
+                                <span class="value">
+                                    {% if rate.max_loan_amount %}
+                                        ${{ rate.max_loan_amount|floatformat:2 }}
+                                    {% else %}
+                                        <span class="text-muted">No Limit</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Last Updated</span>
+                                <span class="value">{{ rate.updated_at|date:"M d, Y" }}</span>
+                            </div>
+                            {% if rate.notes %}
+                            <div class="detail-row">
+                                <span class="label">Notes</span>
+                                <span class="value" style="font-weight: 400; font-size: 0.85rem;">{{ rate.notes }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% comment %}
+                        <!-- Tile Actions
+                        <div class="tile-actions">
+                            <a href="{% url 'interest_rate_edit' rate.id %}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            {% if rate.is_active %}
+                            <a href="{% url 'interest_rate_toggle' rate.id %}" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-pause"></i> Disable
+                            </a>
+                            {% else %}
+                            <a href="{% url 'interest_rate_toggle' rate.id %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-play"></i> Enable
+                            </a>
+                            {% endif %}
+                            <a href="{% url 'interest_rate_delete' rate.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this rate?')">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </div>-->
+                        {% endcomment %}
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <i class="fas fa-percent"></i>
+                <h3>No Interest Rates Found</h3>
+                <p class="text-muted">Click the "Add New Rate" button to create your first interest rate.</p>
+                <a href="" class="btn btn-primary mt-3">
+                    <i class="fas fa-plus"></i> Add Your First Rate
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-hide alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert:not(.alert-info)');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.transition = 'opacity 0.5s';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
+                }, 5000);
+            });
+
+            // Add hover effect to tiles
+            const tiles = document.querySelectorAll('.rate-tile');
+            tiles.forEach(tile => {
+                tile.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('inactive')) {
+                        this.style.borderColor = '#667eea';
+                    }
+                });
+                tile.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('inactive')) {
+                        this.style.borderColor = '#e2e8f0';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

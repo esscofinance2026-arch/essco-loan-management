@@ -1,0 +1,20 @@
+ESSCO Finance
+Payment Reminder - {{ loan_id }}
+
+Dear {{ customer_name }},
+
+This is a friendly reminder that your next payment is due soon.
+
+Loan ID: {{ loan_id }}
+Installment #: {{ installment_number }}
+Due Date: {{ due_date }}
+Amount: {{ amount }}
+Outstanding Balance: {{ outstanding_balance }}
+Days until due: {{ days_until_due }}
+
+Make Payment: {{ payment_url }}
+
+Need help? Contact us at {{ support_email }}
+
+ESSCO Finance
+Clapham Court • Wildey Main Road • St. Michael

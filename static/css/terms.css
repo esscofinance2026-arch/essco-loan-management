@@ -1,0 +1,193 @@
+/* ============================================
+   TERMS & CONDITIONS - Matching About Us Styling
+   ============================================ */
+
+/* ----- Base Container ----- */
+.terms-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #2d2d2d;
+    line-height: 1.8;
+}
+
+/* ----- Main Heading (matches About Us) ----- */
+.terms-section h2 {
+    font-size: 2.8rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #1a3b5d;
+    border-bottom: 4px solid #f0b31e;
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+/* ----- Subtitle ----- */
+.terms-section .subtitle {
+    font-size: 1.15rem;
+    color: #555;
+    margin-bottom: 40px;
+    font-weight: 300;
+}
+
+/* ----- Terms Cards ----- */
+.terms-card {
+    background: #f8f9fa;
+    padding: 25px 30px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border-left: 5px solid #f0b31e;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.terms-card:hover {
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+}
+
+/* ----- Card Headings (H3) ----- */
+.terms-card h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1a3b5d;
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* ----- Card Paragraphs ----- */
+.terms-card p {
+    font-size: 1rem;
+    color: #444;
+    margin: 12px 0;
+}
+
+.terms-card p:first-of-type {
+    margin-top: 0;
+}
+
+.terms-card p:last-of-type {
+    margin-bottom: 0;
+}
+
+/* ----- Card Lists ----- */
+.terms-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+}
+
+.terms-card ul li {
+    padding: 6px 0 6px 30px;
+    position: relative;
+    font-size: 1rem;
+    color: #444;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.terms-card ul li:last-child {
+    border-bottom: none;
+}
+
+.terms-card ul li::before {
+    content: '▸';
+    position: absolute;
+    left: 8px;
+    color: #f0b31e;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* ----- Special styling for Legal Notice ----- */
+.terms-card.legal-notice {
+    border-left-color: #1a3b5d;
+    background: #f0f2f5;
+}
+
+.terms-card.legal-notice h3 {
+    color: #1a3b5d;
+}
+
+/* ----- Special styling for Acceptance ----- */
+.terms-card.acceptance {
+    border-left-color: #28a745;
+    background: #f0faf0;
+}
+
+.terms-card.acceptance h3 {
+    color: #1a7a2d;
+}
+
+/* ----- Responsive Tweaks ----- */
+@media (max-width: 768px) {
+    .terms-section h2 {
+        font-size: 2rem;
+    }
+
+    .terms-card {
+        padding: 20px;
+    }
+
+    .terms-card h3 {
+        font-size: 1.2rem;
+    }
+
+    .terms-card ul li {
+        padding: 5px 0 5px 25px;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .terms-section {
+        padding: 25px 12px;
+    }
+
+    .terms-section h2 {
+        font-size: 1.7rem;
+    }
+
+    .terms-card {
+        padding: 16px 18px;
+    }
+
+    .terms-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .terms-card p {
+        font-size: 0.95rem;
+    }
+
+    .terms-card ul li {
+        font-size: 0.9rem;
+        padding: 4px 0 4px 22px;
+    }
+
+    .terms-card ul li::before {
+        left: 4px;
+        font-size: 1rem;
+    }
+}
+
+/* ----- Print Styles (for legal printing) ----- */
+@media print {
+    .terms-section {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .terms-card {
+        background: #fff !important;
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+    }
+
+    .terms-card:hover {
+        background: #fff !important;
+        box-shadow: none !important;
+    }
+}

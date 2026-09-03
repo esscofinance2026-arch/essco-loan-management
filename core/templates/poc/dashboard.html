@@ -1,0 +1,152 @@
+<!-- poc/templates/poc/dashboard.html -->
+{% extends "Appbase.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3>🚀 QuickBooks Integration POC</h3>
+            <p class="mb-0">Proof of Concept - Complete Flow from Deposit to QuickBooks</p>
+        </div>
+        <div class="card-body">
+            <!-- Application Info -->
+            <div class="alert alert-info">
+                <strong>Application:</strong> {{ application.application_id }}<br>
+                <strong>Customer:</strong> {{ application.customer.get_full_name }}<br>
+                <strong>Amount:</strong> ${{ application.total_amount_financed|floatformat:2 }}
+            </div>
+
+            <!-- Progress Steps -->
+            <div class="row mt-4">
+                <!-- Step 1 -->
+                <div class="col-md-3">
+                    <div class="card {% if has_deposit %}border-success{% else %}border-secondary{% endif %}">
+                        <div class="card-body text-center">
+                            <h1>{% if has_deposit %}✅{% else %}1️⃣{% endif %}</h1>
+                            <h5>Step 1</h5>
+                            <p>Pay Deposit</p>
+                            {% if has_deposit %}
+                                <span class="badge badge-success">Complete</span>
+                            {% else %}
+                                <!-- ✅ This will only show if application exists -->
+                                <a href="{% url 'poc_step1_pay_deposit' application.id %}" class="btn btn-primary btn-sm">
+                                    Start
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="col-md-3">
+                    <div class="card {% if has_deposit %}border-success{% else %}border-secondary{% endif %}">
+                        <div class="card-body text-center">
+                            <h1>{% if has_deposit %}✅{% else %}2️⃣{% endif %}</h1>
+                            <h5>Step 2</h5>
+                            <p>Record Payment</p>
+                            {% if has_deposit %}
+                                <span class="badge badge-success">Complete</span>
+                                {% if latest_payment %}
+                                    <br><a href="{% url 'poc_step2_view_payment' latest_payment.id %}" class="btn btn-info btn-sm mt-1">View</a>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge badge-secondary">Pending</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="col-md-3">
+                    <div class="card {% if has_loan %}border-success{% else %}border-secondary{% endif %}">
+                        <div class="card-body text-center">
+                            <h1>{% if has_loan %}✅{% else %}3️⃣{% endif %}</h1>
+                            <h5>Step 3</h5>
+                            <p>Create Loan</p>
+                            {% if has_loan %}
+                                <span class="badge badge-success">Complete</span>
+                                <br><a href="{% url 'poc_step3_view_loan' loan.id %}" class="btn btn-info btn-sm mt-1">View</a>
+                            {% else %}
+                                <span class="badge badge-secondary">Pending</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="col-md-3">
+                    <div class="card {% if is_synced %}border-success{% else %}border-secondary{% endif %}">
+                        <div class="card-body text-center">
+                            <h1>{% if is_synced %}✅{% else %}4️⃣{% endif %}</h1>
+                            <h5>Step 4</h5>
+                            <p>Push to QuickBooks</p>
+                            {% if is_synced %}
+                                <span class="badge badge-success">Complete</span>
+                            {% elif has_loan %}
+                                <a href="{% url 'poc_step4_push_quickbooks' loan.id %}" class="btn btn-primary btn-sm">
+                                    Push Now
+                                </a>
+                            {% else %}
+                                <span class="badge badge-secondary">Pending</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Summary -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Current Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Deposit Status
+                                    <span class="badge badge-{% if application.deposit_status == 'PAID' or application.deposit_status == 'TRANSFERRED' %}success{% else %}warning{% endif %}">
+                                        {{ application.get_deposit_status_display }}
+                                    </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Latest Payment
+                                    {% if latest_payment %}
+                                        <span class="badge badge-success">
+                                            {{ latest_payment.receipt_number }} - ${{ latest_payment.amount|floatformat:2 }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-secondary">No payment</span>
+                                    {% endif %}
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Loan Created
+                                    <span class="badge badge-{% if has_loan %}success{% else %}secondary{% endif %}">
+                                        {% if has_loan %}{{ loan.loan_id }}{% else %}No{% endif %}
+                                    </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    QuickBooks Synced
+                                    <span class="badge badge-{% if is_synced %}success{% else %}secondary{% endif %}">
+                                        {% if is_synced %}Yes ({{ loan.quickbooks_customer_id }}){% else %}No{% endif %}
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reset Button -->
+            <div class="row mt-4">
+                <div class="col-md-12 text-center">
+                    <a href="{% url 'poc_reset' %}" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Reset POC Data
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

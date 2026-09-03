@@ -1,0 +1,483 @@
+<!-- loans/templates/loans/loan_detail.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Loan {{ loan.loan_id }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .loan-header {
+        background: linear-gradient(135deg, #BF2034 0%, #8B1A24 100%);
+        color: white;
+        padding: 25px 30px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+    }
+
+    .loan-header h3 {
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .loan-header .subtitle {
+        opacity: 0.8;
+        font-size: 0.95rem;
+    }
+
+    .loan-header .badge-status {
+        padding: 6px 18px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .badge-active { background: #e6f7ed; color: #0a8f4a; }
+    .badge-delinquent { background: #fff4e6; color: #c07600; }
+    .badge-defaulted { background: #fde8e8; color: #b91c1c; }
+    .badge-paid_off { background: #e8edfd; color: #1a56db; }
+    .badge-draft { background: #f0f0f0; color: #666; }
+    .badge-closed { background: #e9ecef; color: #495057; }
+
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 25px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 18px 20px;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid #f0f0f0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .stat-card .label {
+        font-size: 0.8rem;
+        color: #888;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .stat-card .value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-top: 4px;
+    }
+
+    .stat-card .value-primary { color: #1a56db; }
+    .stat-card .value-success { color: #0a8f4a; }
+    .stat-card .value-danger { color: #b91c1c; }
+    .stat-card .value-warning { color: #c07600; }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .info-row:last-child { border-bottom: none; }
+    .info-row .label { color: #6c757d; font-weight: 500; }
+    .info-row .value { font-weight: 600; }
+
+    .btn-action-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .btn-action-group .btn {
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .badge-status-sm {
+        padding: 3px 10px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .badge-paid { background: #e6f7ed; color: #0a8f4a; }
+    .badge-partial { background: #fff4e6; color: #c07600; }
+    .badge-pending { background: #f0f0f0; color: #666; }
+    .badge-overdue { background: #fde8e8; color: #b91c1c; }
+
+    .table-loan thead th {
+        background: #f8f9fa;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        color: #495057;
+    }
+
+    .table-loan td {
+        vertical-align: middle;
+        padding: 10px 12px;
+    }
+
+    @media (max-width: 768px) {
+        .stat-grid { grid-template-columns: repeat(2, 1fr); }
+        .loan-header { padding: 20px; }
+        .loan-header h3 { font-size: 1.2rem; }
+        .stat-card .value { font-size: 1.1rem; }
+    }
+
+    @media (max-width: 576px) {
+        .stat-grid { grid-template-columns: 1fr; }
+        .btn-action-group .btn { width: 100%; text-align: center; }
+    }
+</style>
+{% endblock %}
+
+{% block dashboard_content %}
+<div class="container">
+    <!-- ===== LOAN HEADER ===== -->
+    <div class="loan-header">
+        <div class="d-flex flex-wrap justify-content-between align-items-center">
+            <div>
+                <h3><i class="fas fa-hand-holding-usd me-2"></i>Loan {{ loan.loan_id }}</h3>
+                <p class="subtitle mb-0">
+                    {{ customer_name }} · {{ loan.customer.email }}
+                </p>
+            </div>
+            <div class="mt-2 mt-md-0">
+                <span class="badge-status badge-{{ loan.status|lower }}">
+                    {{ loan.get_status_display }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- DEPOSIT STATUS (KEEP THIS)                 -->
+    <!-- ========================================== -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5><i class="fas fa-money-bill-wave me-2"></i>Deposit Status</h5>
+        </div>
+        <div class="card-body">
+
+            {% if deposit_reversed %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-undo-alt me-2"></i>
+                    <strong>Deposit Reversed</strong>
+                    <p class="mb-0 mt-1">Your deposit has been reversed. Please contact support.</p>
+                </div>
+
+            {% elif deposit_complete %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>Deposit Complete!</strong>
+                    <p class="mb-0 mt-1">
+                        Total deposit paid: <strong>${{ deposit_paid|floatformat:2 }}</strong>
+                    </p>
+                    {% if loan.first_payment_date %}
+                        <p class="text-muted small mb-0">
+                            First payment due: {{ loan.first_payment_date|date:"M d, Y" }}
+                        </p>
+                    {% endif %}
+                </div>
+
+            {% elif deposit_target > 0 %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-clock me-2"></i>
+                    <strong>Deposit In Progress</strong>
+
+                    <div class="row mt-2">
+                        <div class="col-4">
+                            <small class="text-muted">Target</small>
+                            <div><strong>${{ deposit_target|floatformat:2 }}</strong></div>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted">Paid</small>
+                            <div><strong class="text-success">${{ deposit_paid|floatformat:2 }}</strong></div>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted">Remaining</small>
+                            <div><strong class="text-danger">${{ deposit_remaining|floatformat:2 }}</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="progress mt-2" style="height: 20px;">
+                        <div class="progress-bar bg-info"
+                             role="progressbar"
+                             style="width: {{ deposit_percentage|floatformat:0 }}%;"
+                             aria-valuenow="{{ deposit_percentage|floatformat:0 }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                            {{ deposit_percentage|floatformat:0 }}%
+                        </div>
+                    </div>
+                </div>
+                <!--
+                <a href="{% url 'loans:process_payment' loan.id %}" class="btn btn-success mt-2">
+                    <i class="fas fa-money-bill-wave me-2"></i>
+                    {% if deposit_paid > 0 %}
+                        Continue Paying Deposit
+                    {% else %}
+                        Pay Deposit
+                    {% endif %}
+                </a>-->
+
+            {% else %}
+                <div class="alert alert-secondary">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>No Deposit Required</strong>
+                    <p class="mb-0 mt-1">This loan does not require a deposit.</p>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- LOAN DETAILS & FINANCIAL SUMMARY          -->
+    <!-- ========================================== -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6>Loan Details</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Loan ID:</strong> {{ loan.loan_id }}</p>
+                    <p><strong>Status:</strong> {{ loan.get_status_display }}</p>
+                    <p><strong>Interest Rate:</strong> {{ loan.interest_rate }}%</p>
+                    <p><strong>Tenure:</strong> {{ loan.tenure_months }} months</p>
+                    <p><strong>Monthly Payment:</strong> ${{ loan.monthly_installment|floatformat:2 }}</p>
+                    <p><strong>Start Date:</strong> {{ loan.start_date|date:"M d, Y" }}</p>
+                    <p><strong>Maturity Date:</strong> {{ loan.maturity_date|date:"M d, Y" }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6>Financial Summary</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Principal (Starting):</strong> ${{ loan.application.Financed_Amt|floatformat:2 }}</p>
+                    <p><strong>Outstanding Principal:</strong> ${{ loan.outstanding_balance|floatformat:2 }}</p>
+                    <!--
+                    <p><strong>Interest (Starting):</strong> ${{ loan.total_interest|floatformat:2 }}
+                    <p><strong>Interest Remaining:</strong> ${{ remaining_interest|floatformat:2 }}</p>
+
+                    <p><strong>Total Payable:</strong> ${{ loan.total_payable|floatformat:2 }}</p>-->
+
+                    <p><strong>Total Paid:</strong> ${{ loan.total_paid|floatformat:2 }}</p>
+
+                    <!--<p><strong>Outstanding Balance:</strong> <span class="text-danger">${{ loan.outstanding_balance|floatformat:2 }}</span></p>-->
+                    {% if next_payment %}
+                        <p><strong>Next Payment Due:</strong> {{ next_payment.due_date|date:"M d, Y" }}</p>
+                    {% endif %}
+                    {% if days_overdue > 0 %}
+                        <p><strong>Days Overdue:</strong> <span class="text-danger">{{ days_overdue }} days</span></p>
+                    {% endif %}
+                </div>
+                 <!-- ✅ Deposit Information -->
+                <div class="card-body">
+                    <p><strong>Deposit Paid:</strong> ${{ loan.deposit_paid|floatformat:2 }}</p>
+                    <p><strong>Deposit Target:</strong> ${{ loan.deposit_target|floatformat:2 }}</p>
+                    <p><strong>Deposit Remaining:</strong> ${{ loan.deposit_remaining|floatformat:2 }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ACTION BUTTONS                            -->
+    <!-- ========================================== -->
+    <div class="card mt-3">
+        <div class="card-body">
+            <div class="btn-action-group">
+
+                <!-- ✅ Smart Payment Button: changes based on whether a loan exists -->
+                {% if loan %}
+                    <!-- Loan exists → use record_payment -->
+                    <a href="{% url 'loans:record_payment' loan.id %}" class="btn btn-primary">
+                        <i class="fas fa-hand-holding-usd"></i> Make Payment
+                    </a>
+                {% else %}
+                    <!-- No loan yet → use process_payment -->
+                    <a href="{% url 'loans:process_payment' loan.id %}" class="btn btn-success">
+                        <i class="fas fa-money-bill-wave"></i> Pay Deposit
+                    </a>
+                {% endif %}
+
+                <!-- ✅ STAFF‑ONLY: Activate Loan (hidden from customers) -->
+                {% if request.user.is_staff and loan.status == 'DRAFT' %}
+                    <a href="{% url 'loans:activate_loan' loan.id %}" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Activate Loan
+                    </a>
+                {% endif %}
+
+                {% if loan.outstanding_balance <= 0 and loan.status != 'PAID_OFF' %}
+                    <a href="{% url 'loans:close_loan' loan.id %}" class="btn btn-info">
+                        <i class="fas fa-check"></i> Close Loan
+                    </a>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+   <!-- ========================================== -->
+    <!-- PAYMENT SCHEDULE                           -->
+    <!-- ========================================== -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h6><i class="fas fa-calendar-alt me-2"></i>Payment Schedule</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Due Date</th>
+                            <th>Principal</th>
+                            <th>Interest</th>
+                            <th>Total</th>
+                            <th>Paid</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in schedule %}
+                        <tr>
+                            <td>{{ s.installment_number }}</td>
+                            <td>{{ s.due_date|date:"M d, Y" }}</td>
+                            <td>${{ s.principal_due|floatformat:2 }}</td>
+                            <td>${{ s.interest_due|floatformat:2 }}</td>
+                            <td><strong>${{ s.total_due|floatformat:2 }}</strong></td>
+                            <td>${{ s.total_paid|floatformat:2 }}</td>
+                            <td>
+                                <span class="badge
+                                    {% if s.status == 'PAID' %}bg-success
+                                    {% elif s.status == 'PARTIAL' %}bg-warning text-dark
+                                    {% elif s.status == 'OVERDUE' %}bg-danger
+                                    {% else %}bg-secondary{% endif %}
+                                ">
+                                    {{ s.get_status_display|default:s.status|default:'Pending' }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">No payment schedule available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PAYMENT HISTORY                            -->
+    <!-- ========================================== -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h6><i class="fas fa-receipt me-2"></i>Payment History</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Receipt</th>
+                            <th>Amount</th>
+                            <th>Category</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in payments %}
+                        <tr>
+                            <td>{{ p.created_at|date:"M d, Y" }}</td>
+                            <td>{{ p.receipt_number }}</td>
+                            <td>${{ p.amount|floatformat:2 }}</td>
+                            <td>
+                                {% if p.is_reversed %}
+                                    <span class="badge bg-danger">Reversed</span>
+                                {% elif p.category == 'DEPOSIT' %}
+                                    <span class="badge bg-info">Deposit</span>
+                                {% elif p.category == 'INSTALLMENT' %}
+                                    <span class="badge bg-success">Installment</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ p.category }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ p.payment_method.name }}</td>
+                            <td>
+                                <span class="badge
+                                    {% if p.is_reversed %}bg-danger
+                                    {% elif p.status == 'CONFIRMED' %}bg-success
+                                    {% elif p.status == 'PENDING' %}bg-warning
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ p.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">No payments recorded.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- FEES                                       -->
+    <!-- ========================================== -->
+    {% if fees %}
+    <div class="card mt-4">
+        <div class="card-header">
+            <h6><i class="fas fa-tag text-warning me-2"></i>Fees &amp; Charges</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Assessed</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fee in fees %}
+                        <tr>
+                            <td>{{ fee.get_fee_type_display }}</td>
+                            <td>${{ fee.amount|floatformat:2 }}</td>
+                            <td>{{ fee.assessed_date|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="badge {% if fee.is_waived %}bg-success{% elif fee.is_paid %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if fee.is_waived %}Waived{% elif fee.is_paid %}Paid{% else %}Due{% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

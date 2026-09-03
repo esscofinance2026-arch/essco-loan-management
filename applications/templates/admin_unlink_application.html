@@ -1,0 +1,58 @@
+<!-- applications/templates/applications/admin_unlink_application.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Unlink Application{% endblock %}
+
+{% block staff_content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="staff-card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-unlink me-2"></i>Unlink Application</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h6>Application Details</h6>
+                    <p><strong>Reference:</strong> {{ application.reference_number }}</p>
+                    <p><strong>Customer:</strong> {{ application.Fname }} {{ application.Lname }}</p>
+                    <p><strong>Email:</strong> {{ application.email }}</p>
+                    <p><strong>Currently Linked To:</strong> 
+                        {% if user %}
+                            {{ user.get_full_name|default:user.username }} ({{ user.email }})
+                        {% else %}
+                            <span class="text-muted">Not linked</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Warning:</strong> This will remove the link between this application and the user.
+                    The user will no longer see this application in their dashboard.
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="form-group mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="confirm" value="yes" class="form-check-input" id="confirmCheck" required>
+                            <label class="form-check-label fw-bold" for="confirmCheck">
+                                I confirm I want to unlink this application
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="fas fa-unlink"></i> Unlink Application
+                    </button>
+                    <a href="{% url 'admin_link_application' %}" class="btn btn-secondary w-100 mt-2">
+                        Cancel
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

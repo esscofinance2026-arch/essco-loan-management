@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>ESSCO Finance</title>
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="{% static 'css/Appbase.css' %}">
+        <link rel="stylesheet" href="{% static 'css/Applyform.css' %}">
+
+        {% block extra_css %}{% endblock %}
+
+        <link rel="icon" type="image/x-icon" href="{% static 'images/ESSCO-Finance-Icon.png' %}?v=2">
+
+    </head>
+    <body>
+        <!-- WRAP EVERYTHING IN APP-WRAPPER -->
+        <div class="app-wrapper">
+            <!-- Top Bar -->
+            <!-- <div class="top-bar">
+                <div class="container">
+                    <div class="contact-mini">
+                        <span><i class="fas fa-phone-alt"></i>+1 (246) 537-0790</span>
+                        <span><i class="fas fa-map-marker-alt"></i> Clapham Court • Wildey Main Road • St. Michael</span>
+                    </div>
+
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/share/1DHGMn1kNq/"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/esscobarbados?igsh=aDYxdDhtdjd6OTdk"><i class="fab fa-instagram"></i></a>
+                        <a href="https://bb.linkedin.com/company/esscoonline"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.youtube.com/@esscobarbados1482/featured"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div> -->
+
+
+
+            <!-- Main Navigation -->
+            <div class="main-nav">
+                <div class="container nav-flex">
+                    <div class="logo-area">
+                        <span class="lock-icon"><!--
+                            <img src="https://www.esscoonline.com/wp-content/uploads/2026/03/RD290-logo-hr-bk-copperate.svg"
+                            width="200" height="100" alt="ESSCO Logo" style="display:inline-block;">
+                            -->
+                            <a href="{% url 'Essco_Cover' %}" >
+                                <img src="{% static 'images/ESSCO Finance Logo.svg' %}" width="160" height="80" alt="ESSCO Logo" style="display:inline-block;">
+                            </a>
+                        </span>
+                    </div>
+                    <!--
+                    <div class="search-area">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search for products, parts, brands...">
+                    </div> -->
+                    <div class="nav-links">
+                        <a href="{% url 'Essco_Cover' %}">Home</a>
+                        <a href="{% url 'finance' %}">Finance</a>
+                        <a href="{% url 'about_us' %}">About Us</a>
+
+                        {% if user.is_authenticated %}
+                            {% if user.is_authenticated and user.is_customer %}
+                                <a href="{% url 'customer_dashboard' %}" >Account</a>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if user.is_authenticated %}
+                            {% if user.is_authenticated and user.is_staff %}
+                                <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+                            {% endif %}
+                        {% endif %}
+
+                        <a href="{% url 'contact_us' %}">Contact Us</a>
+                        {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-outline-sm">
+                                Logout
+                            </button>
+                        </form>
+                        {% else %}
+                        <a href="{% url 'login' %}" class="btn-outline-sm">Login</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <main class="main-content">
+                {% block content %}
+                <!-- Page content goes here -->
+                {% endblock %}
+            </main>
+
+            <!-- FOOTER -->
+            <footer class="footer">
+                <div class="footer-container">
+                    <!-- Column 1: Company Info -->
+                    <div class="footer-col">
+                        <div class="logo-text">
+                            Road to <span>ESSCO</span>
+                        </div>
+                        <span class="est">Est. 1936</span>
+                        <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; line-height: 1.6; margin-bottom: 15px;">
+                            Electric Sales & Service Ltd<br>
+                            Bringing value home since 1936.
+                        </p>
+                        <div class="social-icons">
+                            <a href="https://www.facebook.com/share/1DHGMn1kNq/"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://www.instagram.com/esscobarbados?igsh=aDYxdDhtdjd6OTdk"><i class="fab fa-instagram"></i></a>
+                            <a href="https://bb.linkedin.com/company/esscoonline"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="https://www.youtube.com/@esscobarbados1482/featured"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Quick Links -->
+                    <div class="footer-col">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="{% url 'about_us' %}">About Us</a></li>
+                            <li><a href="{% url 'location' %}">Locations</a></li>
+                            <li><a href="{% url 'loan_calculator' %}">Loan Calculator</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 3: Customer Service -->
+                    <div class="footer-col">
+                        <h3>Customer Service</h3>
+                        <ul>
+                            <li><a href="#">My Account</a></li>
+                            <li><a href="#">My Orders</a></li>
+                            <li><a href="#">Shipping & Delivery</a></li>
+                            <li><a href="#">Returns & Exchanges</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 4: Contact & Payment -->
+                    <div class="footer-col">
+                        <h3>Contact Us</h3>
+                        <div class="contact-info">
+                            <p>
+                                <i class="fas fa-phone-alt"></i>
+                                +1 (246) 537-0790
+                            </p>
+                            <p>
+                                <i class="fas fa-envelope"></i>
+                                ESSCO@electricsales.com
+                            </p>
+                        </div>
+
+                        <h3 style="margin-top: 20px;">We Accept</h3>
+                        <div class="payment-icons">
+                            <i class="fab fa-cc-visa"></i>
+                            <i class="fab fa-cc-mastercard"></i>
+                            <i class="fab fa-cc-amex"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Bar -->
+                <div class="bottom-bar">
+                    <p>
+                        &copy; 2026 Electric Sales & Service Ltd. All rights reserved.
+                    </p>
+                    <div class="footer-links">
+                        <a href="{% url 'privacy' %}">Privacy Policy</a>
+                        <span class="separator">|</span>
+                        <a href="{% url 'terms' %}">Terms & Conditions</a>
+                        <span class="separator">|</span>
+                        <a href="#">Sitemap</a>
+                        <span class="separator">|</span>
+                        <a href="#" style="display: flex; align-items: center; gap: 5px;">
+                            <i class="fas fa-globe"></i> Barbados
+                        </a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <!-- END APP-WRAPPER -->
+    </body>
+</html>

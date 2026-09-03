@@ -1,0 +1,56 @@
+<!-- payments/templates/payments/admin_un_reverse_payment.html -->
+
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Un-Reverse Payment{% endblock %}
+
+{% block staff_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4><i class="fas fa-undo-alt me-2"></i>Restore Payment</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <p><strong>Payment:</strong> {{ payment.receipt_number }}</p>
+                        <p><strong>Amount:</strong> ${{ payment.amount|floatformat:2 }}</p>
+                        <p><strong>Category:</strong> {{ payment.category }}</p>
+                        <p><strong>Reversed By:</strong> {{ payment.reversed_by.get_full_name|default:payment.reversed_by.username }}</p>
+                        <p><strong>Reversed At:</strong> {{ payment.reversed_at|date:"Y-m-d H:i" }}</p>
+                        <p><strong>Reason:</strong> {{ payment.reversal_reason|default:"No reason provided" }}</p>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Warning:</strong> This will restore the payment and re-apply it to the loan schedule.
+                        <ul>
+                            <li>Restore the payment to CONFIRMED status</li>
+                            <li>Re-apply the payment to the loan schedule</li>
+                            <li>Recalculate loan totals</li>
+                        </ul>
+                    </div>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="confirm" required>
+                            <label class="form-check-label" for="confirm">
+                                I confirm I want to restore this payment
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">
+                            <i class="fas fa-undo-alt me-2"></i>Restore Payment
+                        </button>
+                        <a href="{% url 'payments:admin_payment_detail' payment.id %}" class="btn btn-secondary w-100 mt-2">
+                            Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

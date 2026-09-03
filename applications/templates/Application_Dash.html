@@ -1,0 +1,1064 @@
+{% extends "staff_base.html" %}
+
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+/* ============================================================
+   TABLE WRAPPER
+============================================================ */
+
+.table-wrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+}
+
+
+/* ============================================================
+   TABLE HEADER
+============================================================ */
+
+.table-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e9ecef;
+    gap: 12px;
+}
+
+
+/* ============================================================
+   FILTER LINKS
+============================================================ */
+
+.table-header .filter-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.table-header .filter-links a {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    color: #6c757d;
+    background: #f8f9fa;
+}
+
+.table-header .filter-links a:hover {
+    background: #e9ecef;
+    color: #333;
+}
+
+.table-header .filter-links a.active {
+    background: #BF2034;
+    color: white;
+}
+
+
+/* ============================================================
+   SEARCH AREA
+============================================================ */
+
+.search-section {
+    padding: 16px 24px;
+    border-bottom: 1px solid #e9ecef;
+    background: #ffffff;
+}
+
+.search-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.search-input-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-input-wrapper i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+.search-input {
+    width: 100%;
+    height: 42px;
+    padding: 8px 42px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    outline: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #BF2034;
+    box-shadow: 0 0 0 3px rgba(191, 32, 52, 0.08);
+}
+
+.search-btn {
+    height: 42px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: none;
+    background: #BF2034;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background: #8B1A24;
+    transform: translateY(-1px);
+}
+
+.clear-search-btn {
+    height: 42px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    background: white;
+    color: #555;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.clear-search-btn:hover {
+    background: #f8f9fa;
+    color: #333;
+}
+
+
+/* ============================================================
+   SEARCH RESULTS
+============================================================ */
+
+.search-results-info {
+    margin-top: 10px;
+    font-size: 0.82rem;
+    color: #6c757d;
+}
+
+
+/* ============================================================
+   TABLE TOOLS
+============================================================ */
+
+.table-tools {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.table-tools .btn {
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.table-tools .btn-outline {
+    background: transparent;
+    border: 1px solid #e0e0e0;
+    color: #555;
+}
+
+.table-tools .btn-outline:hover {
+    background: #f8f9fa;
+    border-color: #ccc;
+}
+
+.table-tools .btn-primary {
+    background: #BF2034;
+    color: white;
+    border: none;
+}
+
+.table-tools .btn-primary:hover {
+    background: #8B1A24;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(191, 32, 52, 0.3);
+}
+
+
+/* ============================================================
+   TABLE
+============================================================ */
+
+.table-responsive {
+    overflow-x: auto;
+    padding: 0;
+}
+
+.table {
+    margin-bottom: 0;
+    width: 100%;
+}
+
+.table thead th {
+    background: #f8f9fa;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #495057;
+    padding: 12px 16px;
+    border-bottom: 2px solid #e9ecef;
+    white-space: nowrap;
+}
+
+.table tbody td {
+    padding: 12px 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+
+/* ============================================================
+   BADGES
+============================================================ */
+
+.table .badge-status {
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-approved {
+    background: #e6f7ed;
+    color: #0a8f4a;
+}
+
+.badge-pending {
+    background: #fff4e6;
+    color: #c07600;
+}
+
+.badge-rejected {
+    background: #fde8e8;
+    color: #b91c1c;
+}
+
+.badge-review {
+    background: #e8edfd;
+    color: #1a56db;
+}
+
+.badge-human-approved {
+    background: #e6f7ed;
+    color: #0a8f4a;
+}
+
+.badge-human-rejected {
+    background: #fde8e8;
+    color: #b91c1c;
+}
+
+
+/* ============================================================
+   EDIT BUTTON
+============================================================ */
+
+.table .btn-edit {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    background: #BF2034;
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.table .btn-edit:hover {
+    background: #8B1A24;
+    color: white;
+    text-decoration: none;
+}
+
+
+/* ============================================================
+   TABLE FOOTER
+============================================================ */
+
+.table-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    border-top: 1px solid #e9ecef;
+    font-size: 0.85rem;
+    color: #6c757d;
+    gap: 12px;
+}
+
+.table-footer .pagination {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.table-footer .pagination .page-link {
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    color: #555;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.table-footer .pagination .page-link:hover {
+    background: #f8f9fa;
+    border-color: #ccc;
+}
+
+.table-footer .pagination .page-link.active {
+    background: #BF2034;
+    color: white;
+    border-color: #BF2034;
+}
+
+.table-footer .pagination .page-link.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 768px) {
+
+    .table-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .table-tools {
+        flex-wrap: wrap;
+    }
+
+    .search-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-input-wrapper {
+        min-width: 100%;
+    }
+
+    .search-btn,
+    .clear-search-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .table-footer {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .table thead th,
+    .table tbody td {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+}
+
+</style>
+
+{% endblock %}
+
+
+{% block staff_content %}
+
+<!-- ============================================================
+     PAGE HEADER
+============================================================ -->
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h1 class="page-title">
+            <i class="fas fa-hand-holding-usd text-primary me-2"></i>
+            Application Management
+        </h1>
+
+        <p class="page-subtitle">
+            View and manage all applications in the system.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================
+     STATS
+============================================================ -->
+
+<div class="row g-3 mb-4">
+
+    <!-- TOTAL -->
+
+    <div class="col-md-3 col-6">
+
+        <div class="stat-box">
+
+            <div class="number number-blue">
+                {{ total_app }}
+            </div>
+
+            <div class="label">
+                Total Applications
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- APPROVED PENDING -->
+
+    <div class="col-md-3 col-6">
+
+        <div class="stat-box">
+
+            <div class="number number-green">
+                {{ AP }}
+            </div>
+
+            <div class="label">
+                Approved Pending Applications
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- HUMAN REVIEW -->
+
+    <div class="col-md-3 col-6">
+
+        <div class="stat-box">
+
+            <div class="number number-orange">
+                {{ HR }}
+            </div>
+
+            <div class="label">
+                Human Review Applications
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- REJECTED -->
+
+    <div class="col-md-3 col-6">
+
+        <div class="stat-box">
+
+            <div class="number number-Red">
+                {{ reject_count }}
+            </div>
+
+            <div class="label">
+                Rejected Applications
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================
+     TABLE WRAPPER
+============================================================ -->
+
+<div class="table-wrapper">
+
+
+    <!-- ========================================================
+         TABLE HEADER
+    ========================================================= -->
+
+    <div class="table-header">
+
+
+        <!-- FILTER LINKS -->
+
+        <div class="filter-links">
+
+            <!-- ALL -->
+
+            <a
+                href="{% url 'admin_dashboard' %}"
+                class="{% if current_filter == 'all' %}active{% endif %}"
+            >
+
+                <i class="fas fa-list me-1"></i>
+                All
+
+            </a>
+
+
+            <!-- APPROVED PENDING -->
+
+            <a
+                href="{% url 'admin_dashboard' %}?filter=approved"
+                class="{% if current_filter == 'approved' %}active{% endif %}"
+            >
+
+                <i class="fas fa-check-circle me-1"></i>
+                Approved Pending
+
+            </a>
+
+
+            <!-- HUMAN REVIEW -->
+
+            <a
+                href="{% url 'admin_dashboard' %}?filter=human"
+                class="{% if current_filter == 'human' %}active{% endif %}"
+            >
+
+                <i class="fas fa-user me-1"></i>
+                Human Review
+
+            </a>
+
+
+            <!-- REJECTED -->
+
+            <a
+                href="{% url 'admin_dashboard' %}?filter=rejected"
+                class="{% if current_filter == 'rejected' %}active{% endif %}"
+            >
+
+                <i class="fas fa-times-circle me-1"></i>
+                Rejected
+
+            </a>
+
+
+            <!-- FINAL APPROVED -->
+
+            <a
+                href="{% url 'admin_dashboard' %}?filter=final_approved"
+                class="{% if current_filter == 'final_approved' %}active{% endif %}"
+            >
+
+                <i class="fas fa-check-double me-1"></i>
+                Approved
+
+            </a>
+
+        </div>
+
+
+        <!-- ====================================================
+             ACTION BUTTONS
+        ===================================================== -->
+
+        <div class="table-tools">
+
+            <a
+                href="{% url 'admin_link_application' %}"
+                class="btn btn-primary"
+            >
+
+                <i class="fas fa-plus me-1"></i>
+                Link Application
+
+            </a>
+
+
+            <a
+                href="{% url 'admin_unlink_application' %}"
+                class="btn btn-primary"
+            >
+
+                <i class="fas fa-unlink me-1"></i>
+                Unlink Applications
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================
+         SEARCH
+    ========================================================= -->
+
+    <div class="search-section">
+
+        <form
+            method="GET"
+            action="{% url 'admin_dashboard' %}"
+            class="search-form"
+        >
+
+            <!-- Preserve current filter -->
+
+            {% if current_filter != 'all' %}
+
+                <input
+                    type="hidden"
+                    name="filter"
+                    value="{{ current_filter }}"
+                >
+
+            {% endif %}
+
+
+            <!-- Search box -->
+
+            <div class="search-input-wrapper">
+
+                <i class="fas fa-search"></i>
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ search_query }}"
+                    class="search-input"
+                    placeholder="Search by ID number, reference number, first name or last name..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <!-- Search -->
+
+            <button
+                type="submit"
+                class="search-btn"
+            >
+
+                <i class="fas fa-search me-1"></i>
+                Search
+
+            </button>
+
+
+            <!-- Clear -->
+
+            {% if search_query %}
+
+                <a
+                    href="{% url 'admin_dashboard' %}{% if current_filter != 'all' %}?filter={{ current_filter }}{% endif %}"
+                    class="clear-search-btn"
+                >
+
+                    <i class="fas fa-times"></i>
+                    Clear
+
+                </a>
+
+            {% endif %}
+
+        </form>
+
+
+        <!-- SEARCH RESULT INFORMATION -->
+
+        {% if search_query %}
+
+            <div class="search-results-info">
+
+                <i class="fas fa-info-circle me-1"></i>
+
+                Showing
+                <strong>{{ filtered_count }}</strong>
+                result{{ filtered_count|pluralize }}
+                for
+                <strong>"{{ search_query }}"</strong>
+
+                {% if current_filter != 'all' %}
+
+                    within the
+                    <strong>{{ current_filter }}</strong>
+                    filter.
+
+                {% endif %}
+
+            </div>
+
+        {% elif current_filter != 'all' %}
+
+            <div class="search-results-info">
+
+                <i class="fas fa-filter me-1"></i>
+
+                Showing
+                <strong>{{ filtered_count }}</strong>
+                application{{ filtered_count|pluralize }}
+                matching this filter.
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ========================================================
+         TABLE
+    ========================================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Ref Number
+                    </th>
+
+                    <th>
+                        First Name
+                    </th>
+
+                    <th>
+                        Last Name
+                    </th>
+
+                    <th>
+                        ID Number
+                    </th>
+
+                    <th>
+                        Approval Status
+                    </th>
+
+                    <th>
+                        Created
+                    </th>
+
+                    <th>
+                        Final Decision
+                    </th>
+
+                    <th class="text-center">
+                        Action
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for app in application %}
+
+                    <tr>
+
+                        <!-- REFERENCE -->
+
+                        <td>
+
+                            <strong>
+                                {{ app.reference_number|default:"N/A" }}
+                            </strong>
+
+                        </td>
+
+
+                        <!-- FIRST NAME -->
+
+                        <td>
+                            {{ app.Fname|default:"N/A" }}
+                        </td>
+
+
+                        <!-- LAST NAME -->
+
+                        <td>
+                            {{ app.Lname|default:"N/A" }}
+                        </td>
+
+
+                        <!-- ID -->
+
+                        <td>
+                            {{ app.ID_number|default:"N/A" }}
+                        </td>
+
+
+                        <!-- APPROVAL STATUS -->
+
+                        <td>
+
+                            <span
+                                class="badge-status
+                                {% if app.Approval_Status == 'Approved Pending' %}
+                                    badge-approved
+                                {% elif app.Approval_Status == 'Human Review' %}
+                                    badge-review
+                                {% elif app.Approval_Status == 'Rejected' %}
+                                    badge-rejected
+                                {% else %}
+                                    badge-pending
+                                {% endif %}"
+                            >
+
+                                {{ app.Approval_Status|default:"Pending" }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- CREATED -->
+
+                        <td>
+
+                            {{ app.created|date:"M d, Y" }}
+
+                        </td>
+
+
+                        <!-- FINAL APPROVAL -->
+
+                        <td>
+
+                            <span
+                                class="badge-status
+                                {% if app.Final_Approval == 'Human Approved' %}
+                                    badge-human-approved
+                                {% elif app.Final_Approval == 'Human Rejected' %}
+                                    badge-human-rejected
+                                {% else %}
+                                    badge-pending
+                                {% endif %}"
+                            >
+
+                                {{ app.Final_Approval|default:"Pending" }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- ACTION -->
+
+                        <td class="text-center">
+
+                            <a
+                                href="{% url 'admin_dashboard_edit' app.id %}"
+                                class="btn-edit"
+                            >
+
+                                <i class="fas fa-edit me-1"></i>
+                                Edit
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="text-center text-muted py-5"
+                        >
+
+                            <i
+                                class="fas fa-inbox fa-2x d-block mb-2"
+                            ></i>
+
+                            {% if search_query %}
+
+                                No applications found matching
+                                "<strong>{{ search_query }}</strong>".
+
+                            {% elif current_filter != 'all' %}
+
+                                No applications found for this filter.
+
+                            {% else %}
+
+                                No applications found.
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- ========================================================
+         TABLE FOOTER
+    ========================================================= -->
+
+    <div class="table-footer">
+
+
+        <!-- LAST UPDATED -->
+
+        <span>
+
+            <i class="far fa-clock me-1"></i>
+
+            Last updated:
+            {% now "M d, Y H:i" %}
+
+        </span>
+
+
+        <!-- PAGINATION -->
+
+        <div class="pagination">
+
+
+            <!-- PREVIOUS -->
+
+            {% if page_obj.has_previous %}
+
+                <a
+                    href="?page={{ page_obj.previous_page_number }}{% if current_filter != 'all' %}&filter={{ current_filter }}{% endif %}{% if search_query %}&search={{ search_query|urlencode }}{% endif %}"
+                    class="page-link"
+                >
+
+                    <i class="fas fa-chevron-left"></i>
+
+                </a>
+
+            {% else %}
+
+                <span class="page-link disabled">
+
+                    <i class="fas fa-chevron-left"></i>
+
+                </span>
+
+            {% endif %}
+
+
+            <!-- CURRENT PAGE -->
+
+            <span class="page-link active">
+
+                {{ page_obj.number }}
+                of
+                {{ page_obj.paginator.num_pages }}
+
+            </span>
+
+
+            <!-- NEXT -->
+
+            {% if page_obj.has_next %}
+
+                <a
+                    href="?page={{ page_obj.next_page_number }}{% if current_filter != 'all' %}&filter={{ current_filter }}{% endif %}{% if search_query %}&search={{ search_query|urlencode }}{% endif %}"
+                    class="page-link"
+                >
+
+                    <i class="fas fa-chevron-right"></i>
+
+                </a>
+
+            {% else %}
+
+                <span class="page-link disabled">
+
+                    <i class="fas fa-chevron-right"></i>
+
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- RECORD COUNT -->
+
+        <span>
+
+            <i class="fas fa-table me-1"></i>
+
+            {% if page_obj.paginator.count > 0 %}
+
+                {{ page_obj.start_index }}
+                –
+                {{ page_obj.end_index }}
+
+            {% else %}
+
+                0
+
+            {% endif %}
+
+            of
+            {{ page_obj.paginator.count }}
+
+        </span>
+
+    </div>
+
+</div>
+
+{% endblock %}

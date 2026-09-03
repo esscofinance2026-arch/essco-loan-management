@@ -1,0 +1,210 @@
+<!-- poc/templates/poc/step2_view_payment.html -->
+{% extends "Appbase.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4>Step 2: Payment Recorded ✅</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <h5>✅ Payment Confirmed!</h5>
+                        <p>Deposit has been recorded and confirmed.</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Payment Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Receipt Number</th>
+                                    <td><strong>{{ payment.receipt_number }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th>Amount</th>
+                                    <td><strong>${{ payment.amount|floatformat:2 }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th>Category</th>
+                                    <td><span class="badge badge-info">{{ payment.category }}</span></td>
+                                </tr>
+                                <tr>
+                                    <th>Payment Method</th>
+                                    <td>{{ payment.payment_method.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>
+                                        <span class="badge badge-{% if payment.status == 'CONFIRMED' %}success{% elif payment.status == 'PENDING' %}warning{% else %}secondary{% endif %}">
+                                            {{ payment.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Confirmed By</th>
+                                    <td>{{ payment.confirmed_by.get_full_name|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Confirmed At</th>
+                                    <td>{{ payment.confirmed_at|date:"Y-m-d H:i:s"|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Auto-create Loan</th>
+                                    <td>
+                                        {% if payment.auto_create_loan %}
+                                            <span class="badge badge-success">ON</span>
+                                        {% else %}
+                                            <span class="badge badge-secondary">OFF</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Notes</th>
+                                    <td>{{ payment.notes|default:"-" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Application Info -->
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5>Application Reference</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if application %}
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Application ID</th>
+                                    <td><strong>{{ application.reference_number|default:"N/A" }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th>Customer</th>
+                                    <td>{{ application.Fname }} {{ application.Lname }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Amount Financed</th>
+                                    <td>${{ application.Financed_Amt|floatformat:2|default:"0.00" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Purchase Value</th>
+                                    <td>${{ application.Purchase_Value|floatformat:2|default:"0.00" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Deposit Status</th>
+                                    <td>
+                                        <span class="badge badge-{% if application.deposit_status == 'PAID' %}success{% elif application.deposit_status == 'TRANSFERRED' %}info{% else %}warning{% endif %}">
+                                            {{ application.deposit_status|default:"PENDING" }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Approval Status</th>
+                                    <td>{{ application.Approval_Status|default:"-" }}</td>
+                                </tr>
+                            </table>
+                            {% else %}
+                            <div class="alert alert-warning">
+                                No application linked to this payment.
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Loan Info (if created) -->
+                    {% if loan %}
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5>Loan Created ✅</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle"></i> 
+                                Loan <strong>{{ loan.loan_id }}</strong> was auto-created from this payment!
+                            </div>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Loan ID</th>
+                                    <td><strong>{{ loan.loan_id }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th>Principal</th>
+                                    <td>${{ loan.principal_amount|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Interest Rate</th>
+                                    <td>{{ loan.interest_rate }}%</td>
+                                </tr>
+                                <tr>
+                                    <th>Tenure</th>
+                                    <td>{{ loan.tenure_months }} months</td>
+                                </tr>
+                                <tr>
+                                    <th>Monthly Installment</th>
+                                    <td>${{ loan.monthly_installment|floatformat:2 }}</td>
+                                </tr>
+                            </table>
+                            <a href="{% url 'poc_step3_view_loan' loan.id %}" class="btn btn-primary">
+                                <i class="fas fa-eye"></i> View Loan (Step 3)
+                            </a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5>Loan Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-clock"></i> 
+                                No loan created yet. 
+                                {% if payment.auto_create_loan %}
+                                    Loan will be created automatically on confirmation.
+                                {% else %}
+                                    Staff must manually create the loan.
+                                {% endif %}
+                            </div>
+                            
+                            {% if payment.auto_create_loan %}
+                            <div class="alert alert-info">
+                                <strong>Tip:</strong> Click "Create Loan Now" to manually trigger loan creation.
+                                <form method="POST" action="{% url 'poc_create_loan_manual' payment.id %}" class="mt-2">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-plus"></i> Create Loan Now
+                                    </button>
+                                </form>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Navigation -->
+                    <div class="mt-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="{% url 'poc_dashboard' %}" class="btn btn-secondary btn-block">
+                                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                                </a>
+                            </div>
+                            {% if loan %}
+                            <div class="col-md-6">
+                                <a href="{% url 'poc_step3_view_loan' loan.id %}" class="btn btn-primary btn-block">
+                                    <i class="fas fa-arrow-right"></i> View Loan (Step 3)
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

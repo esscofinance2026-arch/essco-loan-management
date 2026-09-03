@@ -1,0 +1,470 @@
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block staff_content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>QuickBooks Comparison</h2>
+        <div>
+            <button type="button" id="compareBtn" class="btn btn-primary">
+                <i class="fas fa-exchange-alt"></i> Compare & Show Mismatches
+            </button>
+            <a href="{% url 'quickbooks_comparison' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-sync"></i> Reset
+            </a>
+        </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="card mb-4">
+        <div class="card-body bg-light">
+            <form method="get" class="row g-2 align-items-center" id="searchForm">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
+                        <input 
+                            type="text" 
+                            name="search" 
+                            class="form-control" 
+                            placeholder="Search by customer name, email, or loan ID..."
+                            value="{{ search_query|default:'' }}"
+                            id="searchInput"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <a href="{% url 'quickbooks_comparison' %}" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-undo"></i> Clear
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="showMismatchesOnly" name="show_mismatches" {% if show_mismatches %}checked{% endif %}>
+                        <label class="form-check-label" for="showMismatchesOnly">
+                            <i class="fas fa-exclamation-triangle text-warning"></i> Show mismatches only
+                        </label>
+                    </div>
+                    {% if mismatches_count > 0 %}
+                    <span class="badge bg-danger ms-2">{{ mismatches_count }} mismatches found</span>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mismatches Summary -->
+    {% if mismatches %}
+    <div class="alert alert-warning mb-4">
+        <h5><i class="fas fa-exclamation-triangle"></i> Mismatches Detected ({{ mismatches|length }})</h5>
+        <ul class="mb-0">
+            {% for mismatch in mismatches|slice:":10" %}
+            <li>{{ mismatch }}</li>
+            {% endfor %}
+            {% if mismatches|length > 10 %}
+            <li><em>...and {{ mismatches|length|add:"-10" }} more mismatches</em></li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Summary Stats -->
+    {% if show_data %}
+    <div class="row mb-4">
+        <div class="col-md-2">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h6 class="card-title">Customers</h6>
+                    <h3>{{ quickbooks_customers|length }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h6 class="card-title">Invoices</h6>
+                    <h3>{{ quickbooks_invoices|length }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6 class="card-title">Payments</h6>
+                    <h3>{{ quickbooks_payments|length }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h6 class="card-title">Sales Receipts</h6>
+                    <h3>{{ quickbooks_sales_receipts|length }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-secondary text-white">
+                <div class="card-body">
+                    <h6 class="card-title">Total Transactions</h6>
+                    <h3>{{ total_transactions }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card {% if mismatches_count > 0 %}bg-danger{% else %}bg-success{% endif %} text-white">
+                <div class="card-body">
+                    <h6 class="card-title">Mismatches</h6>
+                    <h3>{{ mismatches_count }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Data Tables - Only show if data is loaded -->
+    {% if show_data %}
+    
+    <!-- QuickBooks Customers -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5>QuickBooks Customers ({{ quickbooks_customers|length }})</h5>
+            {% if quickbooks_customers.has_other_pages %}
+            <div>
+                <span class="text-muted">Page {{ quickbooks_customers.number }} of {{ quickbooks_customers.paginator.num_pages }}</span>
+            </div>
+            {% endif %}
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>QB ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Extracted ID</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in quickbooks_customers %}
+                        <tr class="{% if customer.mismatch %}table-danger{% endif %}">
+                            <td>{{ customer.Id }}</td>
+                            <td>{{ customer.DisplayName }}</td>
+                            <td>{{ customer.PrimaryEmailAddr.Address|default:"N/A" }}</td>
+                            <td>
+                                {% with extracted_id=customer.extracted_customer_id %}
+                                    {% if extracted_id %}
+                                        <span class="badge bg-info">{{ extracted_id }}</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Missing</span>
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                {% if customer.mismatch %}
+                                    <span class="badge bg-danger"><i class="fas fa-times"></i> Mismatch</span>
+                                {% else %}
+                                    <span class="badge bg-success"><i class="fas fa-check"></i> Matched</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-center py-4 text-muted">No customers found</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if quickbooks_customers.has_other_pages %}
+            <div class="card-footer">
+                <nav aria-label="Customer pagination">
+                    <ul class="pagination justify-content-center mb-0">
+                        {% if quickbooks_customers.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page={{ quickbooks_customers.previous_page_number }}&search={{ search_query }}&show_mismatches={{ show_mismatches }}&compare={{ compare_triggered }}">Previous</a></li>
+                        {% endif %}
+                        {% for num in quickbooks_customers.paginator.page_range %}
+                            <li class="page-item {% if quickbooks_customers.number == num %}active{% endif %}">
+                                <a class="page-link" href="?page={{ num }}&search={{ search_query }}&show_mismatches={{ show_mismatches }}&compare={{ compare_triggered }}">{{ num }}</a>
+                            </li>
+                        {% endfor %}
+                        {% if quickbooks_customers.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ quickbooks_customers.next_page_number }}&search={{ search_query }}&show_mismatches={{ show_mismatches }}&compare={{ compare_triggered }}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- QuickBooks Invoices -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5>QuickBooks Invoices ({{ quickbooks_invoices|length }})</h5>
+            <div>
+                <span class="badge bg-primary">Total: {{ quickbooks_invoices|length }}</span>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>QB ID</th>
+                            <th>Doc Number</th>
+                            <th>Customer Ref</th>
+                            <th>Amount</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for invoice in quickbooks_invoices %}
+                        <tr class="{% if invoice.mismatch %}table-danger{% endif %}">
+                            <td>{{ invoice.Id }}</td>
+                            <td>
+                                <span class="badge bg-secondary">{{ invoice.DocNumber|default:"N/A" }}</span>
+                            </td>
+                            <td>{{ invoice.CustomerRef.value }}</td>
+                            <td><strong>${{ invoice.TotalAmt|floatformat:2 }}</strong></td>
+                            <td>${{ invoice.Balance|floatformat:2 }}</td>
+                            <td>
+                                {% if invoice.mismatch %}
+                                    <span class="badge bg-danger"><i class="fas fa-times"></i> Mismatch</span>
+                                {% else %}
+                                    <span class="badge bg-success"><i class="fas fa-check"></i> Matched</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="text-center py-4 text-muted">No invoices found</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- QuickBooks Payments (Principal Payments) -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5>QuickBooks Payments (Principal) ({{ quickbooks_payments|length }})</h5>
+            <div>
+                <span class="badge bg-success">Total: {{ quickbooks_payments|length }}</span>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>QB ID</th>
+                            <th>Customer Ref</th>
+                            <th>Amount</th>
+                            <th>Invoice Ref</th>
+                            <th>Payment Ref</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in quickbooks_payments %}
+                        <tr class="{% if payment.mismatch %}table-danger{% endif %}">
+                            <td>{{ payment.Id }}</td>
+                            <td>{{ payment.CustomerRef.value }}</td>
+                            <td><strong>${{ payment.TotalAmt|floatformat:2 }}</strong></td>
+                            <td>
+                                {% with linked_txn=payment.Line.0.LinkedTxn.0 %}
+                                    {% if linked_txn %}
+                                        <span class="badge bg-info">{{ linked_txn.TxnId }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">N/A</span>
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                <span class="badge {% if 'DEP' in payment.PaymentRefNum|default:'' %}bg-warning{% elif 'PRIN' in payment.PaymentRefNum|default:'' %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {{ payment.PaymentRefNum|default:"N/A" }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if payment.mismatch %}
+                                    <span class="badge bg-danger"><i class="fas fa-times"></i> Mismatch</span>
+                                {% else %}
+                                    <span class="badge bg-success"><i class="fas fa-check"></i> Matched</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="text-center py-4 text-muted">No payments found</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- QuickBooks Sales Receipts (Interest Payments) -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5>QuickBooks Sales Receipts (Interest) ({{ quickbooks_sales_receipts|length }})</h5>
+            <div>
+                <span class="badge bg-warning">Total: {{ quickbooks_sales_receipts|length }}</span>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>QB ID</th>
+                            <th>Customer Ref</th>
+                            <th>Amount</th>
+                            <th>Doc Number</th>
+                            <th>Payment Ref</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for receipt in quickbooks_sales_receipts %}
+                        <tr>
+                            <td>{{ receipt.Id }}</td>
+                            <td>{{ receipt.CustomerRef.value }}</td>
+                            <td><strong>${{ receipt.TotalAmt|floatformat:2 }}</strong></td>
+                            <td>
+                                <span class="badge bg-info">{{ receipt.DocNumber|default:"N/A" }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning">{{ receipt.PaymentRefNum|default:"N/A" }}</span>
+                            </td>
+                            <td>
+                                {% if receipt.mismatch %}
+                                    <span class="badge bg-danger"><i class="fas fa-times"></i> Mismatch</span>
+                                {% else %}
+                                    <span class="badge bg-success"><i class="fas fa-check"></i> Matched</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="text-center py-4 text-muted">No sales receipts found</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-5">
+        <i class="fas fa-search fa-4x text-muted mb-3"></i>
+        <h4 class="text-muted">No data to display</h4>
+        <p class="text-muted">Search for customers or click "Compare & Show Mismatches" to view discrepancies.</p>
+        <div class="mt-3">
+            <button type="button" class="btn btn-primary btn-lg me-2" onclick="document.getElementById('searchInput').focus();">
+                <i class="fas fa-search"></i> Start Searching
+            </button>
+            <button type="button" class="btn btn-outline-primary btn-lg" id="compareBtnEmpty">
+                <i class="fas fa-exchange-alt"></i> Compare All
+            </button>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const compareBtn = document.getElementById('compareBtn');
+    const compareBtnEmpty = document.getElementById('compareBtnEmpty');
+    const searchInput = document.getElementById('searchInput');
+    const showMismatchesOnly = document.getElementById('showMismatchesOnly');
+    const searchForm = document.getElementById('searchForm');
+    
+    function triggerCompare() {
+        const url = new URL(window.location.href);
+        url.searchParams.set('compare', 'true');
+        if (searchInput && searchInput.value) {
+            url.searchParams.set('search', searchInput.value);
+        }
+        window.location.href = url.toString();
+    }
+    
+    if (compareBtn) {
+        compareBtn.addEventListener('click', triggerCompare);
+    }
+    
+    if (compareBtnEmpty) {
+        compareBtnEmpty.addEventListener('click', triggerCompare);
+    }
+    
+    if (showMismatchesOnly) {
+        showMismatchesOnly.addEventListener('change', function() {
+            searchForm.submit();
+        });
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
+            }
+        });
+    }
+    
+    document.querySelectorAll('.table-danger, .table-warning').forEach(function(row) {
+        row.setAttribute('title', 'This item has a mismatch');
+        row.style.cursor = 'help';
+    });
+});
+</script>
+
+<style>
+    .table-danger {
+        background-color: #f8d7da !important;
+    }
+    .table-danger:hover {
+        background-color: #f5c6cb !important;
+    }
+    
+    .table-warning {
+        background-color: #fff3cd !important;
+    }
+    .table-warning:hover {
+        background-color: #ffe69c !important;
+    }
+    
+    .badge i {
+        margin-right: 4px;
+    }
+    
+    .card {
+        transition: box-shadow 0.2s ease-in-out;
+    }
+    .card:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    @media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+        .badge {
+            font-size: 0.75rem;
+        }
+    }
+    
+    .fa-search {
+        color: #6c757d;
+        opacity: 0.5;
+    }
+    
+    .alert-warning {
+        border-left: 4px solid #ffc107;
+    }
+</style>
+{% endblock %}

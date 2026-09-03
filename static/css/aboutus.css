@@ -1,0 +1,109 @@
+/* Reset & Base */
+.about-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #2d2d2d;
+    line-height: 1.7;
+}
+
+/* Headings */
+.about-section h2 {
+    font-size: 2.8rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #1a3b5d;
+    border-bottom: 4px solid #BF2034; /* ESSCO's signature yellow/gold */
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+}
+
+.about-section h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1a3b5d;
+    margin-top: 50px;
+    margin-bottom: 15px;
+    display: inline-block;
+    position: relative;
+}
+/* Decorative underline for H3 */
+.about-section h3::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: #BF2034;
+    margin-top: 5px;
+}
+
+/* Paragraphs */
+.about-section p {
+    font-size: 1.1rem;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+/* Images */
+.about-section img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 15px 0;
+}
+
+.about-section img:hover {
+    transform: scale(1.01);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+/* The "WE ARE ESSCO!" Feature Boxes */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+.feature-item {
+    background: #f8f9fa;
+    padding: 25px 20px;
+    border-radius: 10px;
+    text-align: center;
+    /* border-left: 5px solid #BF2034; */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    transition: background 0.2s;
+}
+
+.feature-item:hover {
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.feature-item strong {
+    display: block;
+    font-size: 1.2rem;
+    color: #BF2034;
+    margin-bottom: 8px;
+}
+
+.feature-item span {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+    .about-section h2 {
+        font-size: 2rem;
+    }
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+}

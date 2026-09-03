@@ -1,0 +1,59 @@
+<!-- payments/templates/payments/admin_confirm_payment.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Confirm Payment{% endblock %}
+
+{% block staff_content %}
+<div class="row">
+    <div class="col-lg-6 mx-auto">
+        <div class="staff-card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-check-circle me-2"></i>Confirm Payment</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <p><strong>Receipt:</strong> {{ payment.receipt_number }}</p>
+                    <p><strong>Customer:</strong> {{ payment.customer.get_full_name|default:payment.customer.username }}</p>
+                    <p><strong>Amount:</strong> ${{ payment.amount|floatformat:2 }}</p>
+                    <p><strong>Category:</strong> {{ payment.category }}</p>
+                    <p><strong>Method:</strong> {{ payment.payment_method.name }}</p>
+                    <p><strong>Date:</strong> {{ payment.created_at|date:"M d, Y H:i" }}</p>
+                    {% if payment.loan %}
+                    <p><strong>Loan:</strong> {{ payment.loan.loan_id }}</p>
+                    {% endif %}
+                    {% if payment.application %}
+                    <p><strong>Application:</strong> {{ payment.application.reference_number }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Confirming this payment will:</strong>
+                    <ul class="mb-0 mt-1">
+                        <li>Mark it as CONFIRMED</li>
+                        <li>Apply it to the loan balance</li>
+                        {% if payment.category == 'DEPOSIT' %}
+                        <li>Auto-create the loan</li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <label>Notes (Optional)</label>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="Any notes about this confirmation..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-check"></i> Confirm Payment
+                    </button>
+                    <a href="{% url 'payments:admin_pending_payments' %}" class="btn btn-secondary w-100 mt-2">
+                        Cancel
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+<!-- quickbooks/templates/quickbooks/connect.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block staff_content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-cloud"></i> Connect to QuickBooks</h4>
+                </div>
+                <div class="card-body text-center p-4">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <div class="mb-4">
+                        <i class="fas fa-link text-primary" style="font-size: 4rem;"></i>
+                    </div>
+                    
+                    <h5 class="mb-3">QuickBooks Integration</h5>
+                    <p class="text-muted mb-4">
+                        Connect your QuickBooks Online account to automatically sync customers, 
+                        invoices, and payments. This will allow you to manage your financial data 
+                        seamlessly between systems.
+                    </p>
+                    
+                    {% if auth_url %}
+                        <a href="{{ auth_url }}" class="btn btn-success btn-lg px-5">
+                            <i class="fas fa-link me-2"></i> Connect QuickBooks
+                        </a>
+                    {% else %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i> 
+                            Unable to generate authorization URL. Please check your QuickBooks settings.
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mt-4">
+                        <small class="text-muted">
+                            By connecting, you agree to share your QuickBooks data with Essco Finance.
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-light text-center py-2">
+                    <small class="text-muted">
+                        <i class="fas fa-lock text-success"></i> Your data is encrypted and secure
+                    </small>
+                </div>
+            </div>
+            
+            <!-- Back button -->
+            <div class="text-center mt-3">
+                <a href="{% url 'sync_dashboard' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

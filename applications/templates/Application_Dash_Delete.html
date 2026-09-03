@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        {% load widget_tweaks %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard · full screen</title>
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="{% static 'css/DashEdit.css' %}">
+        <link rel="icon" type="image/x-icon" href="{% static 'images/Essco_logo.ico' %}?v=2">
+    </head>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h1><i class="fas fa-edit"></i> Delete Application</h1>
+                <p>
+                    <i class="fas fa-user"></i>
+                    Updating: <span class="text-light fw-bold">{{ items.Fname }} {{ items.Lname }}</span>
+                </p>
+                <div class="badge">
+                    <i class="far fa-clock"></i> Created: {{ items.created|date:"M d, Y H:i" }}
+                </div>
+                <div class="badge">
+                    <i class="far fa-clock"></i> Last Updated: {{ form.id|default:'New' }}
+                </div>
+            </div>
+            <div>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <h4 class = "Delete" style="text-align: center;">Are you sure you want to delete?</h4>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-section">
+            <button type="submit" class="btn btn-primary">  <i class="fas fa-trash"></i> Yes </button>
+        </div>
+    </form>
+    <div class="form-section">
+        <h4><i class="fas fa-user"></i> Personal Information</h4>
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label>Full Name</label>
+                <span class="form-control">{{ items.Fname }} {{ items.Lname }}</span>
+            </div>
+            <div class="col-md-6 form-group">
+                <label>Date of Birth</label>
+                <span class="form-control">{{ items.DOB }}</span>
+            </div>
+            <div class="col-md-6 form-group">
+                <label>Nationality</label>
+                <span class="form-control">{{ items.Nationality }}</span>
+            </div>
+            <div class="col-md-6 form-group">
+                <label>ID Number</label>
+                <span class="form-control">{{ items.ID_number }}</span>
+            </div>
+        </div>
+    </div>
+</html>

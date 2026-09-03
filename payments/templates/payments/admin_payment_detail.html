@@ -1,0 +1,169 @@
+<!-- payments/templates/payments/admin_payment_detail.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Payment Details{% endblock %}
+
+{% block staff_content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="staff-card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Payment Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Receipt:</strong> {{ payment.receipt_number }}</p>
+                        <p>
+                            <strong>
+                                Customer:
+                            </strong>
+                                {% if payment.customer %}
+                                    {{ payment.customer.get_full_name|default:payment.customer.username }}
+                                {% elif payment.application %}
+                                    {{ payment.application.Fname }} {{ payment.application.Lname }}
+                                {% else %}
+                                    <span class="text-muted">Unknown</span>
+                                {% endif %}
+
+                        </p>
+                        <p><strong>Amount:</strong> <span class="text-success">${{ payment.amount|floatformat:2 }}</span></p>
+                        <p><strong>Category:</strong> {{ payment.category }}</p>
+                        <p><strong>Method:</strong> {{ payment.payment_method.name }}</p>
+                        <p><strong>Status:</strong>
+                            {% if payment.is_reversed %}
+                                <span class="badge bg-danger">REVERSED</span>
+                            {% else %}
+                                <span class="badge bg-{{ payment.status|lower }}">{{ payment.status }}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Created:</strong> {{ payment.created_at|date:"M d, Y H:i" }}</p>
+                        <p><strong>Confirmed:</strong> {{ payment.confirmed_at|date:"M d, Y H:i"|default:"Not confirmed" }}</p>
+                        <p><strong>Confirmed By:</strong> {{ payment.confirmed_by|default:"-" }}</p>
+                        <p><strong>Auto-create Loan:</strong> {% if payment.auto_create_loan %}Yes{% else %}No{% endif %}</p>
+                        <p><strong>Loan:</strong> {% if payment.loan %}{{ payment.loan.loan_id }}{% else %}None{% endif %}</p>
+                        <p><strong>Application:</strong> {% if payment.application %}{{ payment.application.reference_number }}{% else %}None{% endif %}</p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <h6>Allocation</h6>
+                <div class="row">
+                    <div class="col-md-3">
+                        <p><strong>Deposit:</strong> ${{ deposit_portion|floatformat:2 }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p><strong>Principal:</strong> ${{ payment.principal_applied|floatformat:2 }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p><strong>Interest:</strong> ${{ payment.interest_applied|floatformat:2 }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p><strong>Fees:</strong> ${{ payment.fees_applied|floatformat:2 }}</p>
+                    </div>
+                </div>
+
+                {% if payment.notes %}
+                <hr>
+                <h6>Notes</h6>
+                <p>{{ payment.notes|linebreaks }}</p>
+                {% endif %}
+
+                <hr>
+
+                <!-- ========================================== -->
+                <!-- SPLIT DETAILS (if this payment was split)  -->
+                <!-- ========================================== -->
+                {% if payment.has_split %}
+                <div class="card mt-3">
+                    <div class="card-header bg-info text-white">
+                        <h6><i class="fas fa-cut me-2"></i>Split Details</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Total Payment:</strong> ${{ payment.amount|floatformat:2 }}</p>
+                                <p><strong>Deposit Portion:</strong> <span class="text-success">${{ payment.split_details.deposit_portion|floatformat:2 }}</span></p>
+                                <p><strong>Installment Portion:</strong> <span class="text-primary">${{ payment.split_details.installment_portion|floatformat:2 }}</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Deposit Complete:</strong>
+                                    <span class="badge {% if payment.split_details.deposit_complete %}bg-success{% else %}bg-warning{% endif %}">
+                                        {{ payment.split_details.deposit_complete|yesno:"Yes,No" }}
+                                    </span>
+                                </p>
+                                <p><strong>Outstanding Balance After:</strong> ${{ payment.split_details.outstanding_balance|floatformat:2 }}</p>
+                            </div>
+                        </div>
+                        <div class="alert alert-info mt-2 mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            This payment was split internally. The deposit portion was applied to the deposit target, and the installment portion was applied to the loan schedule.
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- ========================================== -->
+                <!-- NOTES (always show if they exist)          -->
+                <!-- ========================================== -->
+                {% if payment.notes %}
+                <hr>
+                <h6>Notes</h6>
+                <div class="card bg-light">
+                    <div class="card-body py-2">
+                        {{ payment.notes|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- ============================================================ -->
+                <!-- ✅ ACTION BUTTONS SECTION - REVERSE BUTTON GOES HERE          -->
+                <!-- ============================================================ -->
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <a href="{% url 'payments:admin_payments_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Payments
+                    </a>
+
+                    {% if payment.status == 'PENDING' %}
+                        <a href="{% url 'payments:admin_confirm_payment' payment.id %}" class="btn btn-success">
+                            <i class="fas fa-check"></i> Confirm
+                        </a>
+                        <a href="{% url 'payments:admin_reject_payment' payment.id %}" class="btn btn-danger">
+                            <i class="fas fa-times"></i> Reject
+                        </a>
+                    {% endif %}
+
+                    <!-- ✅ REVERSE PAYMENT BUTTON - Only show if NOT reversed -->
+                    {% if not payment.is_reversed and payment.status == 'CONFIRMED' %}
+                        <a href="{% url 'payments:admin_reverse_payment' payment.id %}" class="btn btn-danger">
+                            <i class="fas fa-undo"></i> Reverse Payment
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- ✅ REVERSAL INFO - Show if payment was reversed -->
+                {% if payment.is_reversed %}
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-info-circle"></i>
+                    This payment was reversed on {{ payment.reversed_at|date:"M d, Y H:i" }}
+                    by
+                    {% if payment.reversed_by %}
+                        {{ payment.reversed_by.get_full_name|default:payment.reversed_by.username }}
+                    {% else %}
+                        <span class="text-muted">System</span>
+                    {% endif %}
+                    .
+                    Reason: {{ payment.reversal_reason|default:"Not specified" }}
+                </div>
+                {% endif %}
+                <!-- ============================================================ -->
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

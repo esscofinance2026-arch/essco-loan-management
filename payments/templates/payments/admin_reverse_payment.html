@@ -1,0 +1,147 @@
+<!-- payments/templates/payments/admin_reverse_payment.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Reverse Payment{% endblock %}
+
+{% block extra_css %}
+<style>
+    .payment-info {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+        border: 1px solid #e9ecef;
+    }
+
+    .payment-info .row {
+        margin-top: 4px;
+    }
+
+    .payment-info .label {
+        font-size: 0.8rem;
+        color: #6c757d;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .payment-info .value {
+        font-weight: 600;
+    }
+
+    .warning-box {
+        background: #fde8e8;
+        border-left: 4px solid #b91c1c;
+        padding: 14px 18px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .warning-box i {
+        color: #b91c1c;
+        margin-right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block staff_content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="staff-card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-undo me-2"></i>Reverse Payment</h5>
+            </div>
+            <div class="card-body">
+                <!-- Payment Information -->
+                <div class="payment-info">
+                    <h6 class="fw-bold mb-2">Payment Details</h6>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <span class="label">Receipt</span><br>
+                            <span class="value">{{ payment.receipt_number }}</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="label">Amount</span><br>
+                            <span class="value text-danger">${{ payment.amount|floatformat:2 }}</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="label">Date</span><br>
+                            <span class="value">{{ payment.created_at|date:"M d, Y H:i" }}</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="label">Category</span><br>
+                            <span class="value">{{ payment.category }}</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="label">Customer</span><br>
+                            <span class="value">
+                                {% if payment.customer %}
+                                    {{ payment.customer.get_full_name|default:payment.customer.username }}
+                                {% elif payment.customer_name %}
+                                    {{ payment.customer_name }}
+                                {% else %}
+                                    Unknown Customer
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="label">Loan</span><br>
+                            <span class="value">{{ payment.loan.loan_id|default:"N/A" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Warning -->
+                <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Warning:</strong> Reversing this payment will:
+                    <ul class="mb-0 mt-1">
+                        <li>Remove the payment from the loan</li>
+                        <li>Increase the outstanding balance</li>
+                        <li>Update the payment schedule</li>
+                        <li>This action <strong>cannot</strong> be undone</li>
+                    </ul>
+                </div>
+
+                <!-- Reversal Form -->
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Reason for Reversal <span class="text-danger">*</span></label>
+                        <select name="reason" class="form-control" required>
+                            <option value="">Select reason...</option>
+                            {% for value, label in reversal_reasons %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Additional Notes</label>
+                        <textarea name="reason_notes" class="form-control" rows="2" placeholder="Provide additional details about why this payment is being reversed..."></textarea>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Internal Notes <span class="text-muted">(Optional)</span></label>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="Internal notes for audit purposes..."></textarea>
+                    </div>
+
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <strong>Confirm:</strong> This action cannot be undone. Please verify the payment details before proceeding.
+                    </div>
+
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="fas fa-undo"></i> Reverse Payment
+                    </button>
+                    <a href="{% url 'payments:admin_payment_detail' payment.id %}" class="btn btn-secondary w-100 mt-2">
+                        Cancel
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

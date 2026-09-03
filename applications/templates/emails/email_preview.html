@@ -1,0 +1,105 @@
+<html>
+    <head>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/email_preview.css' %}">
+
+    </head>
+
+    <div class="email-preview-container">
+
+        <!-- Header -->
+        <div class="email-preview-header">
+            <h1>📧 Approval Email Preview</h1>
+            <div class="email-preview-actions">
+                <a href="{% url 'admin_dashboard_edit' application.id %}" class="btn-edit">
+                    ✏️ Edit Application
+                </a>
+                <a href="{% url 'admin_dashboard' %}" class="btn-back">
+                    ← Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        <div class="flash-messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- Application Info -->
+        <div class="application-info">
+            <div class="info-item">
+                <span class="label">Application ID</span>
+                <span class="value">#{{ application.id }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Applicant</span>
+                <span class="value">{{ application.Fname }} {{ application.Lname }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Email</span>
+                <span class="value">{{ application.email }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Credit Limit</span>
+                <span class="value">${{ application.Total_Credit_Allowed|default:"0.00"|floatformat:2 }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Item</span>
+                <span class="value">${{ application.item_name }}</span>
+            </div>
+
+            <div class="info-item">
+                <span class="label">Initial Status</span>
+                <span class="value">
+                    <span class="status-badge {% if application.Approval_Status == 'Approved Pending' %}approved{% elif application.Approval_Status == 'Rejected' %}rejected{% elif application.Approval_Status == 'Human Review' %}review{% else %}pending{% endif %}">
+                        {{ application.Approval_Status }}
+                    </span>
+                </span>
+            </div>
+            <div class="info-item">
+                <span class="label">Final Approval</span>
+                <span class="value">{{ application.Final_Approval|default:"Pending" }}</span>
+            </div>
+        </div>
+
+        <!-- Email Preview -->
+        <div class="email-iframe-wrapper">
+            <div id="email-content" style="padding: 20px; background: white;"></div>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="bottom-actions">
+            {% if application.Approval_Status == 'Approved Pending' or application.Approval_Status == 'Human Review' or application.Final_Approval == 'Human Approved'%}
+                <form method="post" action="{% url 'send_approval_email' application.id %}"
+                      onsubmit="return confirm('Are you sure you want to send this approval email to {{ application.email }}?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-send">
+                        📨 Send Approval Email Now
+                    </button>
+                </form>
+            {% else %}
+                <button class="btn-send" disabled>
+                    ⚠️ Application Not Ready for Approval
+                </button>
+                <p class="note">
+                    This application is currently "{{ application.Approval_Status }}".
+                    It must be "Approved Pending" or "Human Review" before sending.
+                </p>
+            {% endif %}
+
+            <a href="{% url 'admin_dashboard' %}" class="btn-back">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+    </div>
+    <script>
+        // Inject the email HTML directly into the div
+        document.getElementById('email-content').innerHTML = `{{ email_html|safe }}`;
+    </script>
+
+</html>

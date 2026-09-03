@@ -1,0 +1,221 @@
+<!-- loans/templates/loans/edit_schedule.html -->
+{% extends "staff_base.html" %}
+{% load static %}
+
+{% block title %}Edit Payment Schedule{% endblock %}
+
+{% block extra_css %}
+<style>
+    .schedule-info {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+        border: 1px solid #e9ecef;
+    }
+
+    .schedule-info .label {
+        font-size: 0.8rem;
+        color: #6c757d;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .schedule-info .value {
+        font-weight: 600;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-group .form-control {
+        border-radius: 8px;
+        padding: 10px 14px;
+        border: 2px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+
+    .form-group .form-control:focus {
+        border-color: #BF2034;
+        box-shadow: 0 0 0 3px rgba(191, 32, 52, 0.12);
+    }
+
+    .form-group .form-control.is-invalid {
+        border-color: #dc3545;
+    }
+
+    .btn-save {
+        background: #BF2034;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-save:hover {
+        background: #8B1A24;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(191, 32, 52, 0.3);
+        color: white;
+    }
+
+    .btn-cancel {
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        width: 100%;
+    }
+
+    .alert-info {
+        background: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 12px 16px;
+        border-radius: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block staff_content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="staff-card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-calendar-edit me-2"></i>Edit Payment Schedule</h5>
+            </div>
+            <div class="card-body">
+                <!-- Schedule Info -->
+                <div class="schedule-info">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="label">Loan</div>
+                            <div class="value">{{ loan.loan_id }}</div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="label">Installment</div>
+                            <div class="value">#{{ installment_number }} of {{ loan.tenure_months }}</div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="label">Customer</div>
+                            <div class="value">{{ customer.get_full_name|default:customer.username }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Form -->
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Due Date</label>
+                                <input type="date" name="due_date" class="form-control" value="{{ due_date }}" required>
+                                <small class="text-muted">Change the due date for this installment</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select name="status" class="form-control">
+                                    <option value="PENDING" {% if status == 'PENDING' %}selected{% endif %}>Pending</option>
+                                    <option value="PARTIAL" {% if status == 'PARTIAL' %}selected{% endif %}>Partial</option>
+                                    <option value="PAID" {% if status == 'PAID' %}selected{% endif %}>Paid</option>
+                                    <option value="OVERDUE" {% if status == 'OVERDUE' %}selected{% endif %}>Overdue</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Principal Amount ($)</label>
+                                <input type="number" name="principal_due" step="0.01" class="form-control" value="{{ principal_due|floatformat:2 }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Interest Amount ($)</label>
+                                <input type="number" name="interest_due" step="0.01" class="form-control" value="{{ interest_due|floatformat:2 }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Total ($)</label>
+                                <input type="text" class="form-control" value="{{ total_due|floatformat:2 }}" disabled>
+                                <small class="text-muted">Auto-calculated</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes (Optional)</label>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="Reason for editing this schedule..."></textarea>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Note:</strong> Changing this schedule will affect the loan's outstanding balance and payment calculations. Please verify all changes before saving.
+                    </div>
+
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <!--<a href="{% url 'loans:loan_detail' loan.id %}" class="btn btn-secondary btn-cancel mt-2">-->
+                    <a href="{% url 'staff_loan_detail' loan.id %}" class="btn btn-secondary btn-cancel mt-2">
+                        Cancel
+                    </a>
+                </form>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="staff-card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0 fw-bold"><i class="fas fa-bolt text-warning me-2"></i>Quick Actions</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'loans:loan_detail' loan.id %}" class="btn btn-sm btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Loan
+                    </a>
+                    <a href="{% url 'loans:process_payment' loan.id %}" class="btn btn-sm btn-success">
+                        <i class="fas fa-money-bill-wave"></i> Record Payment
+                    </a>
+                    <button class="btn btn-sm btn-warning" onclick="alert('Test reminder will go here')">
+                        <i class="fas fa-bell"></i> Test Reminder
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-calculate total when principal or interest changes
+document.addEventListener('DOMContentLoaded', function() {
+    const principalInput = document.querySelector('input[name="principal_due"]');
+    const interestInput = document.querySelector('input[name="interest_due"]');
+    const totalInput = document.querySelector('input[disabled]');
+
+    function updateTotal() {
+        const principal = parseFloat(principalInput.value) || 0;
+        const interest = parseFloat(interestInput.value) || 0;
+        totalInput.value = (principal + interest).toFixed(2);
+    }
+
+    principalInput.addEventListener('input', updateTotal);
+    interestInput.addEventListener('input', updateTotal);
+});
+</script>
+{% endblock %}

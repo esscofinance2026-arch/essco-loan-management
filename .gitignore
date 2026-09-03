@@ -1,0 +1,50 @@
+# Django
+*.pyc
+__pycache__/
+*.log
+*.sqlite3
+*.db
+local_settings.py
+settings.py  # ← Keep secrets out!
+
+# Environment
+.env
+.env.local
+.env.production
+*.env
+
+# Secrets
+secrets.json
+credentials.json
+oauth2*
+*_secret*
+
+# Virtual environment
+venv/
+env/
+myenv/
+.virtualenvs/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Django
+staticfiles/
+media/
+*.log
+
+# QuickBooks tokens (if any)
+*quickbooks_token*
